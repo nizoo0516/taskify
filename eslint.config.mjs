@@ -1,11 +1,9 @@
 import js from "@eslint/js";
-import tseslint from "typescript-eslint";
+import importPlugin from "eslint-plugin-import";
+import jsxA11y from "eslint-plugin-jsx-a11y";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
-import jsxA11y from "eslint-plugin-jsx-a11y";
-import importPlugin from "eslint-plugin-import";
-import tailwindcss from "eslint-plugin-tailwindcss";
-import prettier from "eslint-config-prettier";
+import tseslint from "typescript-eslint";
 
 export default [
   {
@@ -19,11 +17,10 @@ export default [
       "react-hooks": reactHooks,
       "jsx-a11y": jsxA11y,
       import: importPlugin,
-      tailwindcss,
     },
     rules: {
       // React
-      "react/react-in-jsx-scope": "off", // Next.js는 필요 없음
+      "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
       "react/jsx-uses-vars": "error",
 
@@ -38,21 +35,11 @@ export default [
       "import/order": [
         "error",
         {
-          groups: [
-            ["builtin", "external"],
-            ["internal"],
-            ["parent", "sibling", "index"],
-          ],
+          groups: [["builtin", "external"], ["internal"], ["parent", "sibling", "index"]],
           "newlines-between": "always",
           alphabetize: { order: "asc", caseInsensitive: true },
         },
       ],
-
-      // Tailwind 정리
-      "tailwindcss/classnames-order": "warn",
-
-      // Prettier와 충돌 방지
-      ...prettier.rules,
     },
     languageOptions: {
       parser: tseslint.parser,
@@ -74,6 +61,12 @@ export default [
           project: "./tsconfig.json",
         },
       },
+    },
+  },
+  {
+    files: ["next-env.d.ts"],
+    rules: {
+      "@typescript-eslint/triple-slash-reference": "off",
     },
   },
 ];
