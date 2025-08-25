@@ -67,6 +67,16 @@ jobs:
             ### 원문(GitHub Issue Body)
             ${{ github.event.issue.body }}
 
+      # Debug step
+      - name: Debug md2jira output
+        run: echo "OUTPUT = >>>${{ steps.md2jira.outputs.output-text }}<<<"
+
+      - name: Debug details
+        run: echo "DETAILS = >>>${{ steps.issue-parser.outputs.details_md }}<<<"
+
+      - name: Debug tasks
+        run: echo "TASKS = >>>${{ steps.issue-parser.outputs.tasks_md }}<<<"
+
       # Jira 이슈 생성
       - name: Create Issue
         id: create
