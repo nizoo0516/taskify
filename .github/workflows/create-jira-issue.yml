@@ -97,10 +97,8 @@ jobs:
         run: echo "Jira Issue ${{ steps.issue-parser.outputs.parent_key }}/${{ steps.create.outputs.issue }} was created"
 
       # (선택) 브랜치 생성
-      - name: Checkout dev again
+      - name: Checkout main again
         uses: actions/checkout@v4
-        with:
-          ref: dev
 
       - name: Create branch with Ticket number
         run: |
