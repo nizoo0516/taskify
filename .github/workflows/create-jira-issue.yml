@@ -22,19 +22,17 @@ jobs:
         with:
           ref: dev
 
-      # GitHub Issue Form 파싱 (있으면 사용 / 없으면 넘어감)
+      # GitHub Issue Form 파싱
       - name: Issue Parser
         id: issue-parser
         uses: stefanbuck/github-issue-parser@v3
         with:
           template-path: .github/ISSUE_TEMPLATE/issue_form.yml
 
-      - name: Log Issue Parser
+      - name: Log Issue Parser JSON
         run: echo '${{ steps.issue-parser.outputs.jsonString }}'
 
-      # ─────────────────────────────────────────────────────────
-      # 여기가 "내 템플릿"을 구성하는 곳입니다 (Markdown → Jira위키 변환)
-      # ─────────────────────────────────────────────────────────
+      # Markdown → Jira 변환
       - name: Convert Markdown template to Jira Syntax
         id: md2jira
         uses: peter-evans/jira2md@v1
@@ -45,34 +43,23 @@ jobs:
             - ${{ github.event.issue.html_url }}
 
             ## 📖 전체 설명
-            > 사용자의 관점에서 어떤 흐름을 만들고 싶은지, 그리고 수행해야 할 작업 내용을 간략하게 설명해주세요.  
-            > 예) 사용자는 Navbar를 통해 내 정보/로그아웃/대시보드 메뉴에 접근할 수 있다.
-            - 항목
-            - 항목
-            - 항목
+            ${{ steps.issue-parser.outputs.details_md }}
 
             ---
 
             ## 📑 세부 계획 (Checklist)
-            - [ ] 항목
-            - [ ] 항목
-            - [ ] 항목
+            ${{ steps.issue-parser.outputs.tasks_md }}
 
             ---
 
             ## ✅ 완료 조건 (Acceptance Criteria)
             > 구현 후 반드시 확인해야 하는 동작/조건을 작성해주세요.  
             > 예) 드롭다운 메뉴 클릭 시 페이지가 정상적으로 이동한다.
-            - [ ] 항목
-            - [ ] 항목
-            - [ ] 항목
 
             ---
 
             ## 📚 참고 자료
-            - 항목
-            - 항목
-            - 항목
+            - (필요시 추가)
 
             ---
 
@@ -84,23 +71,21 @@ jobs:
         id: create
         uses: atlassian/gajira-create@v3
         with:
-          # ← 프로젝트 키(예: TS 로 바꾸세요)
-          project: TS
-          # 이슈 타입 (원래 Sub-task를 사용하셨기에 유지)
-          issuetype: Sub-task
+          project: TS # ← 실제 Jira 프로젝트 키
+          issuetype: Sub-task # ← Jira에서 사용할 이슈 타입
           summary: "${{ github.event.issue.title }}"
           description: "${{ steps.md2jira.outputs['output-text'] }}"
           fields: |
             {
               "parent": {
-                "key": "${{ steps.issue-parser.outputs.issueparser_parentKey }}"
+                "key": "${{ steps.issue-parser.outputs.parent_key }}"
               }
             }
 
       - name: Log created issue
-        run: echo "Jira Issue ${{ steps.issue-parser.outputs.issueparser_parentKey }}/${{ steps.create.outputs.issue }} was created"
+        run: echo "Jira Issue ${{ steps.issue-parser.outputs.parent_key }}/${{ steps.create.outputs.issue }} was created"
 
-      # 브랜치 생성(원하실 경우 유지)
+      # (선택) 브랜치 생성
       - name: Checkout dev again
         uses: actions/checkout@v4
         with:
@@ -108,10 +93,11 @@ jobs:
 
       - name: Create branch with Ticket number
         run: |
-          BRANCH_NAME="${{ steps.issue-parser.outputs.issueparser_branchPrefix }}/#${{ steps.issue-parser.outputs.issueparser_parentKey }}-${{ steps.issue-parser.outputs.issueparser_branchName }}"
+          BRANCH_NAME="${{ steps.issue-parser.outputs.branch_prefix }}/#${{ steps.issue-parser.outputs.parent_key }}-${{ steps.issue-parser.outputs.branch_name }}"
           git checkout -b "$BRANCH_NAME"
           git push origin "$BRANCH_NAME"
 
+      # (선택) GitHub 이슈 제목 업데이트
       - name: Update issue title on GitHub
         uses: actions-cool/issues-helper@v3
         with:
