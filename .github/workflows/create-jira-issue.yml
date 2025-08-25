@@ -1,6 +1,7 @@
 name: Create Jira issue
 
 on:
+  workflow_dispatch:
   issues:
     types: [opened]
 
@@ -39,7 +40,7 @@ jobs:
         with:
           mode: md2jira
           input-text: |
-            ### Github Issue Link
+            ### Github Issue [TS-24] Link
             - ${{ github.event.issue.html_url }}
 
             ## 📖 전체 설명
