@@ -73,7 +73,7 @@ jobs:
         uses: atlassian/gajira-create@v3
         with:
           project: TS # ← 실제 Jira 프로젝트 키
-          issuetype: Sub-task # ← Jira에서 사용할 이슈 타입
+          issuetype: Story # ← Jira에서 사용할 이슈 타입
           summary: "${{ github.event.issue.title }}"
           description: "${{ steps.md2jira.outputs.output_text }}"
           fields: |
