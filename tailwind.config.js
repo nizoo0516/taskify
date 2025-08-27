@@ -39,40 +39,40 @@ const config: Config = {
         eng: ['var(--font-eng)', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        'text-3xl-bold': ['1.875rem', { lineHeight: '2.25rem', fontWeight: '700' }],
-        'text-3xl-semibold': ['1.875rem', { lineHeight: '2.25rem', fontWeight: '600' }],
-        
-        'text-2xl-bold': ['1.5rem', { lineHeight: '2rem', fontWeight: '700' }],
-        'text-2xl-semibold': ['1.5rem', { lineHeight: '2rem', fontWeight: '600' }],
-        'text-2xl-medium': ['1.5rem', { lineHeight: '2rem', fontWeight: '500' }],
-        'text-2xl-regular': ['1.5rem', { lineHeight: '2rem', fontWeight: '400' }],
-        
-        'text-xl-bold': ['1.25rem', { lineHeight: '1.75rem', fontWeight: '700' }],
-        'text-xl-semibold': ['1.25rem', { lineHeight: '1.75rem', fontWeight: '600' }],
-        'text-xl-medium': ['1.25rem', { lineHeight: '1.75rem', fontWeight: '500' }],
-        'text-xl-regular': ['1.25rem', { lineHeight: '1.75rem', fontWeight: '400' }],
-        
-        'text-2lg-bold': ['1.125rem', { lineHeight: '1.625rem', fontWeight: '700' }],
-        'text-2lg-semibold': ['1.125rem', { lineHeight: '1.625rem', fontWeight: '600' }],
-        'text-2lg-medium': ['1.125rem', { lineHeight: '1.625rem', fontWeight: '500' }],
-        'text-2lg-regular': ['1.125rem', { lineHeight: '1.625rem', fontWeight: '400' }],
-        
-        'text-lg-bold': ['1rem', { lineHeight: '1.5rem', fontWeight: '700' }],
-        'text-lg-semibold': ['1rem', { lineHeight: '1.5rem', fontWeight: '600' }],
-        'text-lg-medium': ['1rem', { lineHeight: '1.5rem', fontWeight: '500' }],
-        'text-lg-regular': ['1rem', { lineHeight: '1.5rem', fontWeight: '400' }],
-        
-        'text-md-bold': ['0.9375rem', { lineHeight: '1.375rem', fontWeight: '700' }],
-        'text-md-semibold': ['0.9375rem', { lineHeight: '1.375rem', fontWeight: '600' }],
-        'text-md-medium': ['0.9375rem', { lineHeight: '1.375rem', fontWeight: '500' }],
-        'text-md-regular': ['0.9375rem', { lineHeight: '1.375rem', fontWeight: '400' }],
-        
-        'text-sm-semibold': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '600' }],
-        'text-sm-medium': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '500' }],
-        
-        'text-xs-semibold': ['0.75rem', { lineHeight: '1rem', fontWeight: '600' }],
-        'text-xs-medium': ['0.75rem', { lineHeight: '1rem', fontWeight: '500' }],
-        'text-xs-regular': ['0.75rem', { lineHeight: '1rem', fontWeight: '400' }],
+        "3xl-bold": ["1.875rem", { lineHeight: "2.25rem", fontWeight: "700" }],
+        "3xl-semibold": ["1.875rem", { lineHeight: "2.25rem", fontWeight: "600" }],
+
+        "2xl-bold": ["1.5rem", { lineHeight: "2rem", fontWeight: "700" }],
+        "2xl-semibold": ["1.5rem", { lineHeight: "2rem", fontWeight: "600" }],
+        "2xl-medium": ["1.5rem", { lineHeight: "2rem", fontWeight: "500" }],
+        "2xl-regular": ["1.5rem", { lineHeight: "2rem", fontWeight: "400" }],
+
+        "xl-bold": ["1.25rem", { lineHeight: "1.75rem", fontWeight: "700" }],
+        "xl-semibold": ["1.25rem", { lineHeight: "1.75rem", fontWeight: "600" }],
+        "xl-medium": ["1.25rem", { lineHeight: "1.75rem", fontWeight: "500" }],
+        "xl-regular": ["1.25rem", { lineHeight: "1.75rem", fontWeight: "400" }],
+
+        "2lg-bold": ["1.125rem", { lineHeight: "1.625rem", fontWeight: "700" }],
+        "2lg-semibold": ["1.125rem", { lineHeight: "1.625rem", fontWeight: "600" }],
+        "2lg-medium": ["1.125rem", { lineHeight: "1.625rem", fontWeight: "500" }],
+        "2lg-regular": ["1.125rem", { lineHeight: "1.625rem", fontWeight: "400" }],
+
+        "lg-bold": ["1rem", { lineHeight: "1.5rem", fontWeight: "700" }],
+        "lg-semibold": ["1rem", { lineHeight: "1.5rem", fontWeight: "600" }],
+        "lg-medium": ["1rem", { lineHeight: "1.5rem", fontWeight: "500" }],
+        "lg-regular": ["1rem", { lineHeight: "1.5rem", fontWeight: "400" }],
+
+        "md-bold": ["0.9375rem", { lineHeight: "1.375rem", fontWeight: "700" }],
+        "md-semibold": ["0.9375rem", { lineHeight: "1.375rem", fontWeight: "600" }],
+        "md-medium": ["0.9375rem", { lineHeight: "1.375rem", fontWeight: "500" }],
+        "md-regular": ["0.9375rem", { lineHeight: "1.375rem", fontWeight: "400" }],
+
+        "sm-semibold": ["0.875rem", { lineHeight: "1.25rem", fontWeight: "600" }],
+        "sm-medium": ["0.875rem", { lineHeight: "1.25rem", fontWeight: "500" }],
+
+        "xs-semibold": ["0.75rem", { lineHeight: "1rem", fontWeight: "600" }],
+        "xs-medium": ["0.75rem", { lineHeight: "1rem", fontWeight: "500" }],
+        "xs-regular": ["0.75rem", { lineHeight: "1rem", fontWeight: "400" }],
       },
     },
   },
