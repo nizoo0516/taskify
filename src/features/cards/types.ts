@@ -6,18 +6,22 @@ export interface CardRequest {
   title: string;
   description: string;
   dueDate: string;
-  tags: string[];
+  tags?: string[];
   imageUrl?: string;
 }
 
-// GET: 카드 목록 조회, GET(id): 카드 상세조회
+// 카드 목록(응답)
 export interface Card {
   id: number;
   title: string;
   description: string;
-  tags: string[];
+  tags?: string[];
   dueDate: string;
-  assignee: Assignee | null;
+  assignee?: {
+    id: number;
+    nickname: string;
+    profileImageUrl: string;
+  };
   imageUrl?: string;
   teamId: string;
   columnId: number;
@@ -25,16 +29,12 @@ export interface Card {
   updatedAt: string;
 }
 
-// GET > assignee 정보
-export interface Assignee {
-  id: number;
-  nickname: string;
-  profileImageUrl: string;
-}
-
-// 카드 목록 조회 응답
+// GET: 카드 목록 조회(응답)
 export interface GetCardsResponse {
-  cursorId: number;
+  cursorId: number | null;
   totalCount: number;
   cards: Card[];
 }
+
+// DELETE(id): 카드 삭제
+export type DeleteCardResponse = void;
