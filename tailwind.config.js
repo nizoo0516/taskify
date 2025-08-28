@@ -1,42 +1,42 @@
-import type { Config } from 'tailwindcss'
+/** @type {import('tailwindcss').Config} */
 
-const config: Config = {
+const config = {
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       screens: {
-        'tablet': '376px',
-        'pc': '745px',
+        tablet: "376px",
+        pc: "745px",
       },
       colors: {
         brandGray: {
-          100: '#f3f4f6',
-          200: '#e5e7eb',
-          300: '#d1d5db',
-          400: '#9ca3af',
-          500: '#6b7280',
-          600: '#4b5563',
-          700: '#374151',
-          800: '#1f2937',
+          100: "#f3f4f6",
+          200: "#e5e7eb",
+          300: "#d1d5db",
+          400: "#9ca3af",
+          500: "#6b7280",
+          600: "#4b5563",
+          700: "#374151",
+          800: "#1f2937",
         },
         brandViolet: {
-          50: '#eef2ff',
-          500: '#8b5cf6',
+          50: "#eef2ff",
+          500: "#8b5cf6",
         },
-        brandRed: '#ef4444',
-        brandGreen: '#22c55e',
-        brandPurple: '#a855f7',
-        brandOrange: '#f97316',
-        brandBlue: '#3b82f6',
-        brandPink: '#ec4899',
+        brandRed: "#ef4444",
+        brandGreen: "#22c55e",
+        brandPurple: "#a855f7",
+        brandOrange: "#f97316",
+        brandBlue: "#3b82f6",
+        brandPink: "#ec4899",
       },
       fontFamily: {
-        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
-        eng: ['var(--font-eng)', 'system-ui', 'sans-serif'],
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        eng: ["var(--font-eng)", "system-ui", "sans-serif"],
       },
       fontSize: {
         "3xl-bold": ["1.875rem", { lineHeight: "2.25rem", fontWeight: "700" }],
@@ -77,6 +77,6 @@ const config: Config = {
     },
   },
   plugins: [],
-}
+};
 
-export default config
+export default config;
