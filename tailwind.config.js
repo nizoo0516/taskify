@@ -23,15 +23,15 @@ const config = {
           700: "#374151",
           800: "#1f2937",
         },
-        brandViolet: {
-          50: "#eef2ff",
+        brandBlue: {
+          50: "#2661E8",
+          100: "#E2ECFF",
           500: "#8b5cf6",
         },
         brandRed: "#ef4444",
         brandGreen: "#22c55e",
         brandPurple: "#a855f7",
         brandOrange: "#f97316",
-        brandBlue: "#3b82f6",
         brandPink: "#ec4899",
       },
       fontFamily: {
