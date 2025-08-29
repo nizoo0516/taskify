@@ -16,8 +16,16 @@ export const createComment = (data: CreateCommentRequest) =>
   });
 
 // 댓글 목록 조회
-export const getComments = (params: { cardId: number; cursorId?: number; size?: number }) => {
-  const { cardId, cursorId, size } = params;
+export const getComments = (
+  cardId: number,
+  {
+    cursorId,
+    size,
+  }: {
+    cursorId?: number;
+    size?: number;
+  },
+) => {
   // 스크롤 시 추가되게끔
   let url = `/comments?cardId=${cardId}`;
   if (cursorId) url += `&cursorId=${cursorId}`;
