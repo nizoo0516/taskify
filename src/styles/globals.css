@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --breakpoint-tablet: 376px;
-  --breakpoint-pc: 745px;
+  --breakpoint-tablet: 744px;
+  --breakpoint-pc: 1248px;
 
   --color-brand-gray-100: #fafafa;
   --color-brand-gray-200: #eeeeee;

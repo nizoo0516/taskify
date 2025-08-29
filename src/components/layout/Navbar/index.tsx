@@ -1,4 +1,4 @@
-export default function Navbar({ title = "내 대시보드" }) {
+
   return (
     <>
       <div className="fixed top-0 right-0 bg-white">
