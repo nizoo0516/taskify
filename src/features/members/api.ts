@@ -2,8 +2,10 @@ import type { GetMembersResponse, DeleteMemberResponse } from "@/features/member
 import { apiRequest } from "@/lib/apiRequest";
 
 // 대시보드 멤버 목록 조회
-export const getMembers = (dashboardId: number, params?: { page?: number; size?: number }) => {
-  const { page, size } = params ?? {};
+export const getMembers = (
+  dashboardId: number,
+  { page, size }: { page?: number; size?: number },
+) => {
   let url = `/members?dashboardId=${dashboardId}`;
   if (page) url += `&page=${page}`;
   if (size) url += `&size=${size}`;

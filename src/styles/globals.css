@@ -4,109 +4,27 @@
   --breakpoint-tablet: 376px;
   --breakpoint-pc: 745px;
 
-  --color-brand-gray-100: #f3f4f6;
-  --color-brand-gray-200: #e5e7eb;
-  --color-brand-gray-300: #d1d5db;
-  --color-brand-gray-400: #9ca3af;
-  --color-brand-gray-500: #6b7280;
-  --color-brand-gray-600: #4b5563;
-  --color-brand-gray-700: #374151;
-  --color-brand-gray-800: #1f2937;
+  --color-brand-gray-100: #fafafa;
+  --color-brand-gray-200: #eeeeee;
+  --color-brand-gray-300: #d9d9d9;
+  --color-brand-gray-400: #9fa6b2;
+  --color-brand-gray-500: #787486;
+  --color-brand-gray-600: #4b4b4b;
+  --color-brand-gray-700: #333236;
+  --color-brand-gray-800: #171717;
 
-  --color-brand-blue-50: #2661e8;
-  --color-brand-blue-100: #e2ecff;
-  --color-brand-blue-500: #8b5cf6;
+  --color-brand-blue-50: #e2ecff;
+  --color-brand-blue-100: #76a5ea;
+  --color-brand-blue-500: #2661e8;
 
-  --color-brand-red: #ef4444;
-  --color-brand-green: #22c55e;
-  --color-brand-purple: #a855f7;
-  --color-brand-orange: #f97316;
-  --color-brand-pink: #ec4899;
+  --color-brand-red: #d6173a;
+  --color-brand-green: #7ac555;
+  --color-brand-purple: #760dde;
+  --color-brand-orange: #ffa500;
+  --color-brand-pink: #e876ea;
 
   --font-sans: var(--font-sans), system-ui, sans-serif;
   --font-eng: var(--font-eng), system-ui, sans-serif;
-
-  --text-3xl-bold: 1.875rem;
-  --text-3xl-bold--line-height: 2.25rem;
-  --text-3xl-bold--font-weight: 700;
-  --text-3xl-semibold: 1.875rem;
-  --text-3xl-semibold--line-height: 2.25rem;
-  --text-3xl-semibold--font-weight: 600;
-  --text-2xl-bold: 1.5rem;
-  --text-2xl-bold--line-height: 2rem;
-  --text-2xl-bold--font-weight: 700;
-  --text-2xl-semibold: 1.5rem;
-  --text-2xl-semibold--line-height: 2rem;
-  --text-2xl-semibold--font-weight: 600;
-  --text-2xl-medium: 1.5rem;
-  --text-2xl-medium--line-height: 2rem;
-  --text-2xl-medium--font-weight: 500;
-  --text-2xl-regular: 1.5rem;
-  --text-2xl-regular--line-height: 2rem;
-  --text-2xl-regular--font-weight: 400;
-  --text-xl-bold: 1.25rem;
-  --text-xl-bold--line-height: 1.75rem;
-  --text-xl-bold--font-weight: 700;
-  --text-xl-semibold: 1.25rem;
-  --text-xl-semibold--line-height: 1.75rem;
-  --text-xl-semibold--font-weight: 600;
-  --text-xl-medium: 1.25rem;
-  --text-xl-medium--line-height: 1.75rem;
-  --text-xl-medium--font-weight: 500;
-  --text-xl-regular: 1.25rem;
-  --text-xl-regular--line-height: 1.75rem;
-  --text-xl-regular--font-weight: 400;
-  --text-2lg-bold: 1.125rem;
-  --text-2lg-bold--line-height: 1.625rem;
-  --text-2lg-bold--font-weight: 700;
-  --text-2lg-semibold: 1.125rem;
-  --text-2lg-semibold--line-height: 1.625rem;
-  --text-2lg-semibold--font-weight: 600;
-  --text-2lg-medium: 1.125rem;
-  --text-2lg-medium--line-height: 1.625rem;
-  --text-2lg-medium--font-weight: 500;
-  --text-2lg-regular: 1.125rem;
-  --text-2lg-regular--line-height: 1.625rem;
-  --text-2lg-regular--font-weight: 400;
-  --text-lg-bold: 1rem;
-  --text-lg-bold--line-height: 1.5rem;
-  --text-lg-bold--font-weight: 700;
-  --text-lg-semibold: 1rem;
-  --text-lg-semibold--line-height: 1.5rem;
-  --text-lg-semibold--font-weight: 600;
-  --text-lg-medium: 1rem;
-  --text-lg-medium--line-height: 1.5rem;
-  --text-lg-medium--font-weight: 500;
-  --text-lg-regular: 1rem;
-  --text-lg-regular--line-height: 1.5rem;
-  --text-lg-regular--font-weight: 400;
-  --text-md-bold: 0.9375rem;
-  --text-md-bold--line-height: 1.375rem;
-  --text-md-bold--font-weight: 700;
-  --text-md-semibold: 0.9375rem;
-  --text-md-semibold--line-height: 1.375rem;
-  --text-md-semibold--font-weight: 600;
-  --text-md-medium: 0.9375rem;
-  --text-md-medium--line-height: 1.375rem;
-  --text-md-medium--font-weight: 500;
-  --text-md-regular: 0.9375rem;
-  --text-md-regular--line-height: 1.375rem;
-  --text-md-regular--font-weight: 400;
-  --text-sm-semibold: 0.875rem;
-  --text-sm-semibold--line-height: 1.25rem;
-  --text-sm-semibold--font-weight: 600;
-  --text-sm-medium: 0.875rem;
-  --text-sm-medium--line-height: 1.25rem;
-  --text-sm-medium--font-weight: 500;
-  --text-xs-semibold: 0.75rem;
-  --text-xs-semibold--line-height: 1rem;
-  --text-xs-semibold--font-weight: 600;
-  --text-xs-medium: 0.75rem;
-  --text-xs-medium--line-height: 1rem;
-  --text-xs-medium--font-weight: 500;
-  --text-xs-regular: 0.75rem;
-  --text-xs-regular--line-height: 1rem;
-  --text-xs-regular--font-weight: 400;
 }
 
 /*
@@ -118,11 +36,169 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+  /* 3xl */
+  .text-3xl-bold {
+    font-size: 2rem;
+    line-height: 2.625rem;
+    font-weight: 700;
+  }
+  .text-3xl-semibold {
+    font-size: 2rem;
+    line-height: 2.625rem;
+    font-weight: 600;
+  }
+
+  /* 2xl */
+  .text-2xl-bold {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 700;
+  }
+  .text-2xl-semibold {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 600;
+  }
+  .text-2xl-medium {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 500;
+  }
+  .text-2xl-regular {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 400;
+  }
+
+  /* xl */
+  .text-xl-bold {
+    font-size: 1.25rem;
+    line-height: 2rem;
+    font-weight: 700;
+  }
+  .text-xl-semibold {
+    font-size: 1.25rem;
+    line-height: 2rem;
+    font-weight: 600;
+  }
+  .text-xl-medium {
+    font-size: 1.25rem;
+    line-height: 2rem;
+    font-weight: 500;
+  }
+  .text-xl-regular {
+    font-size: 1.25rem;
+    line-height: 2rem;
+    font-weight: 400;
+  }
+
+  /* 2lg */
+  .text-2lg-bold {
+    font-size: 1.125rem;
+    line-height: 1.625rem;
+    font-weight: 700;
+  }
+  .text-2lg-semibold {
+    font-size: 1.125rem;
+    line-height: 1.625rem;
+    font-weight: 600;
+  }
+  .text-2lg-medium {
+    font-size: 1.125rem;
+    line-height: 1.625rem;
+    font-weight: 500;
+  }
+  .text-2lg-regular {
+    font-size: 1.125rem;
+    line-height: 1.625rem;
+    font-weight: 400;
+  }
+
+  /* lg */
+  .text-lg-bold {
+    font-size: 1rem;
+    line-height: 1.625rem;
+    font-weight: 700;
+  }
+  .text-lg-semibold {
+    font-size: 1rem;
+    line-height: 1.625rem;
+    font-weight: 600;
+  }
+  .text-lg-medium {
+    font-size: 1rem;
+    line-height: 1.625rem;
+    font-weight: 500;
+  }
+  .text-lg-regular {
+    font-size: 1rem;
+    line-height: 1.625rem;
+    font-weight: 400;
+  }
+
+  /* md */
+  .text-md-bold {
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    font-weight: 700;
+  }
+  .text-md-semibold {
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+  }
+  .text-md-medium {
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+  }
+  .text-md-regular {
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    font-weight: 400;
+  }
+
+  /* sm */
+  .text-sm-semibold {
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+  }
+  .text-sm-medium {
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+  }
+
+  /* xs */
+  .text-xs-semibold {
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    font-weight: 600;
+  }
+  .text-xs-medium {
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    font-weight: 500;
+  }
+  .text-xs-regular {
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    font-weight: 400;
+  }
+
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-lg-regular-font-size, 1rem);
+    line-height: var(--text-lg-regular-line-height, 1.625rem);
+    font-weight: var(--text-lg-regular-font-weight, 400);
+    color: var(--color-brand-gray-700);
   }
 }

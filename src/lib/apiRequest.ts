@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-
 import { useAuthStore } from "@/features/auth/store";
 
 interface FetchOptions extends Omit<RequestInit, "body"> {
@@ -17,7 +15,14 @@ export async function apiRequest<Response>(
   const { withAuth, isFormData, headers, data, ...rest } = options;
 
   // 토큰
-  const token = useAuthStore.getState().accessToken;
+  let token = useAuthStore.getState().accessToken;
+  if (!token) {
+    token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+    if (token) {
+      useAuthStore.getState().setAccessToken(token);
+    }
+  }
+
   const authHeader = withAuth && token ? { Authorization: `Bearer ${token}` } : {};
 
   // fetch
@@ -48,7 +53,8 @@ export async function apiRequest<Response>(
   // 인증 오류 > 로그아웃, 홈
   if (response.status === 401) {
     useAuthStore.getState().clearToken();
-    redirect("/");
+    localStorage.removeItem("accessToken");
+    throw new Error("인증 실패: 다시 로그인하세요");
   }
 
   // 비밀번호변경 성공시
@@ -60,6 +66,9 @@ export async function apiRequest<Response>(
   // 에러
   if (!response.ok) {
     const error = await response.json().catch(() => null);
+    // 오류 확인용
+    // console.log("API 호출:", `${BASE_URL}${endpoint}`);
+    // console.log("현재 토큰:", useAuthStore.getState().accessToken);
     throw new Error(error?.message || "API 요청 실패");
   }
 

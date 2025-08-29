@@ -19,13 +19,18 @@ export const createDashboard = (data: CreateDashboardRequest) =>
   });
 
 // 대시보드 목록 조회
-export const getDashboards = (params: {
-  navigationMethod: "infiniteScroll" | "pagination";
-  cursorId?: number;
-  page?: number;
-  size?: number;
-}) => {
-  const { navigationMethod, cursorId, page, size } = params;
+export const getDashboards = (
+  navigationMethod: "infiniteScroll" | "pagination",
+  {
+    cursorId,
+    page,
+    size,
+  }: {
+    cursorId?: number;
+    page?: number;
+    size?: number;
+  },
+) => {
   let url = `/dashboards?navigationMethod=${navigationMethod}`;
   if (cursorId) url += `&cursorId=${cursorId}`;
   if (page) url += `&page=${page}`;
@@ -70,9 +75,8 @@ export const inviteToDashboard = (dashboardId: number, data: InvitationRequest) 
 // 대시보드 초대 불러오기
 export const getDashboardInvitations = (
   dashboardId: number,
-  params?: { page?: number; size?: number },
+  { page, size }: { page?: number; size?: number },
 ) => {
-  const { page, size } = params ?? {};
   let url = `/dashboards/${dashboardId}/invitations`;
   if (page) url += `?page=${page}`;
   if (size) url += page ? `&size=${size}` : `?size=${size}`;

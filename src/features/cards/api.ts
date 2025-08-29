@@ -15,11 +15,23 @@ export const createCard = (data: CardRequest) =>
   });
 
 // 카드 목록 조회
-export const getCards = ({ cursorId, limit }: { cursorId?: number; limit: number }) =>
-  apiRequest<GetCardsResponse>(`/cards?limit=${limit}${cursorId ? `&cursorId=${cursorId}` : ""}`, {
-    method: "GET",
-    withAuth: true,
-  });
+export const getCards = (
+  columnId: number,
+  {
+    size,
+    cursorId,
+  }: {
+    size?: number;
+    cursorId?: number;
+  },
+) =>
+  apiRequest<GetCardsResponse>(
+    `/cards?columnId=${columnId}&size=${size}${cursorId ? `&cursorId=${cursorId}` : ""}`,
+    {
+      method: "GET",
+      withAuth: true,
+    },
+  );
 
 // 카드 상세 조회
 export const getCard = (id: number) =>
