@@ -33,9 +33,7 @@ export default function Field<P extends A11yProps>({
       <label htmlFor={id} className="block text-[18px] font-medium text-gray-800">
         {label}
       </label>
-
       {access}
-
       {error && (
         <p id={idError} role="alert" className="text-xs text-red-600">
           {error}
