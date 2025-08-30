@@ -1,5 +1,5 @@
 import NavButton from "@/components/layout/dashboard/Navbar/NavButton";
-import HeaderUser from "@/components/layout/HeaderUser";
+import User from "@/components/layout/dashboard/Navbar/User";
 import { getMembers } from "@/features/members/api";
 import type { Member } from "@/features/members/types";
 import { useApiHandler } from "@/lib/useApiHandler";
@@ -26,7 +26,7 @@ export default function Navbar({ id = 16130, title }: { id?: number; title?: str
               ))}
             </ol>
           )}
-          <HeaderUser />
+          <User />
         </div>
       </div>
     </div>
