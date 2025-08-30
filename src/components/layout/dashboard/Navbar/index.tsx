@@ -14,12 +14,12 @@ export default function Navbar({ id = 16130, title }: { id?: number; title?: str
   const isMember = members.length > 0;
 
   return (
-    <div className="flex h-full items-center justify-between">
-      <h2 className="tablet:text-xl text-lg font-bold">{title}</h2>
+    <div className="pc:justify-between flex h-full items-center justify-end">
+      <h2 className="pc:inline-block tablet:text-xl hidden text-lg font-bold">{title}</h2>
       <div className="flex h-full flex-row items-center">
         {id && (
           <>
-            <div className="tablet:[&>*:not(:first-child)]:ml-4 tablet:mr-8 pc:mr-9 mr-4 flex h-full flex-row [&>*:not(:first-child)]:ml-3.5">
+            <div className="tablet:[&>*:not(:first-child)]:ml-4 flex h-full flex-row [&>*:not(:first-child)]:ml-3.5">
               <Link href={`/dashboard/${id}/edit`}>
                 <NavButton
                   icon="/icons/icon-settings.svg"
@@ -32,6 +32,8 @@ export default function Navbar({ id = 16130, title }: { id?: number; title?: str
             {isMember && <MemberList members={members} />}
           </>
         )}
+
+        <div className="bg-brand-gray-300 h-[calc(100%-4px)] w-[1px]"></div>
         <User />
       </div>
     </div>

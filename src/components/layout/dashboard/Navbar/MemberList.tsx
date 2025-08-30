@@ -10,11 +10,11 @@ export default function MemberList({ members }: { members: Member[] }) {
   const visible = members.slice(0, maxCount);
 
   const liBase = cn(
-    "[&>li]:h-[2.125rem] [&>li]:w-[2.125rem] [&>li]:overflow-hidden [&>li]:rounded-full [&>li]:border-3 [&>li]:border-[var(--color-brand-red)] [&>li:not(:first-child)]:-ml-2",
+    "[&>li]:h-[2.125rem] [&>li]:w-[2.125rem] [&>li]:overflow-hidden [&>li]:rounded-full [&>li]:border-3 [&>li]:border-white [&>li:not(:first-child)]:-ml-2",
   );
 
   return (
-    <ol className={cn(liBase, "flex flex-row")}>
+    <ol className={cn(liBase, "tablet:ml-8 pc:ml-9 pc:mr-8 tablet:mr-6 mr-3 ml-4 flex flex-row")}>
       {visible.map((m) => (
         <li key={m.id} className={"h-[2.125rem] w-[2.125rem]"}>
           <img

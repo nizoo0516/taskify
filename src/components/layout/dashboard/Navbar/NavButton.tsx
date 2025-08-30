@@ -11,10 +11,10 @@ export default function NavButton({ icon, label, onClick = () => {}, className }
   return (
     <MyButton
       onClick={onClick}
-      className={`text-xl-medium flex items-center justify-center px-3 ${className}`}
+      className={`flex items-center justify-center px-3 text-xl font-medium ${className}`}
     >
       <img src={icon} alt={`${label} 아이콘`} className="tablet:inline-block mr-2 hidden h-4 w-4" />
-      <span className="text-brand-gray-500">{label}</span>
+      <span className="text-brand-gray-500 pc:text-base text-sm">{label}</span>
     </MyButton>
   );
 }

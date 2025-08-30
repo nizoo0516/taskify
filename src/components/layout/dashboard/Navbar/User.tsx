@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-import UserDropdown from "@/components/layout/dashboard/Navbar/UserDropdown";
+import UserMenu from "@/components/layout/dashboard/Navbar/UserMenu";
 import { getMe } from "@/features/users/api";
 import { useApiHandler } from "@/lib/useApiHandler";
 import { useOutsideClick } from "@/lib/useOutsideClick";
@@ -21,14 +21,17 @@ export default function User() {
   };
 
   return (
-    <div ref={menuRef}>
-      <button className="relative flex flex-row" onClick={toggleMenu}>
-        <div>{userProfile}프로필</div>
-        <div>{userName}</div>
+    <div ref={menuRef} className="tablet:ml-6 pc:ml-8 relative ml-3">
+      <button className="flex cursor-pointer flex-row items-center" onClick={toggleMenu}>
+        <div className="tablet:w-[38px] tablet:h-[38px] h-[34px] w-[34px] rounded-full border-2">
+          <img src={userProfile} alt="유저 프로필 이미지" />
+        </div>
+
+        <div className="tablet:flex ml-3 hidden">{userName}</div>
       </button>
       {isMenu && (
-        <div className="absolute">
-          <UserDropdown />
+        <div className="tablet:right-[-28px] absolute top-11 right-0 w-[128px] rounded-[6px] border bg-white p-1.5">
+          <UserMenu />
         </div>
       )}
     </div>
