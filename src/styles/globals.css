@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --breakpoint-tablet: 744px;
-  --breakpoint-pc: 1248px;
+  --breakpoint-tablet: 46.5rem; /* 744px */
+  --breakpoint-pc: 78rem; /* 1248px */
 
   --color-brand-gray-100: #fafafa;
   --color-brand-gray-200: #eeeeee;
@@ -52,8 +52,8 @@
   color utility to any element that depends on these defaults.
 */
 
-@custom-variant tablet (@media (width >= 46.5rem));
-@custom-variant pc (@media (width >= 78rem));
+@custom-variant tablet (width >= 46.5rem);
+@custom-variant pc (width >= 78rem);
 
 @layer base {
   *,
