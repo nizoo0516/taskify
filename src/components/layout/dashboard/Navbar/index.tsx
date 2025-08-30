@@ -15,7 +15,7 @@ export default function Navbar({ id = 16130, title }: { id?: number; title?: str
 
   return (
     <div className="flex h-full items-center justify-between">
-      <h2 className="text-lg-bold tablet:text-xl-bold pc:text-2xl-bold">{title}</h2>
+      <h2 className="tablet:text-xl pc:text-2xl text-lg font-bold">{title}</h2>
       <div className="flex h-full flex-row items-center">
         {id && (
           <>
