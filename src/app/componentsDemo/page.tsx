@@ -8,23 +8,27 @@ export default function Home() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-blue-500">Tailwind 테스트</h1>
-      <button
-        className="px-4 py-2 mt-4 text-white rounded bg-violet-500 hover:bg-violet-600"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        버튼 테스트
-      </button>
-      {isOpen && (
-        <Modal open={isOpen}>
-          <ModalHeader title="모달제목" onClose={() => setIsOpen(false)} />
-          내용ㅇㅇㅇㅇㅇ
-          <ModalFooter>
-            <button>확인</button>
-          </ModalFooter>
-        </Modal>
-      )}
-      <div className="h-[2000px] w-80 bg-red-700"></div>
+      <h1 className="py-12 text-3xl font-bold text-center">components 페이지</h1>
+      <div className="px-12">
+        <div>
+          <h3 className="text-xl">Modal component</h3>
+          <button
+            className="px-4 py-2 mt-4 text-white rounded bg-violet-500 hover:bg-violet-600"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            모달 열기
+          </button>
+          {isOpen && (
+            <Modal open={isOpen}>
+              <ModalHeader title="모달제목" onClose={() => setIsOpen(false)} />
+              모달 내용
+              <ModalFooter>
+                <button>확인</button>
+              </ModalFooter>
+            </Modal>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
