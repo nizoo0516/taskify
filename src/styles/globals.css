@@ -52,8 +52,8 @@
   color utility to any element that depends on these defaults.
 */
 
-@custom-variant tablet (@media (width >= 744px));
-@custom-variant pc (@media (width >= 1248px));
+@custom-variant tablet (@media (width >= 46.5rem));
+@custom-variant pc (@media (width >= 78rem));
 
 @layer base {
   *,
