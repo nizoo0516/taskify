@@ -1,9 +1,9 @@
 import Link from "next/link";
 
+import MemberList from "@/components/layout/dashboard/Navbar/MemberList";
 import NavButton from "@/components/layout/dashboard/Navbar/NavButton";
 import User from "@/components/layout/dashboard/Navbar/User";
 import { getMembers } from "@/features/members/api";
-import type { Member } from "@/features/members/types";
 import { useApiHandler } from "@/lib/useApiHandler";
 
 // id는 사이드 바에서 클릭된 id와 title을 전달
@@ -15,7 +15,7 @@ export default function Navbar({ id = 16130, title }: { id?: number; title?: str
 
   return (
     <div className="flex h-full items-center justify-between">
-      <h2 className="tablet:text-xl pc:text-2xl text-lg font-bold">{title}</h2>
+      <h2 className="tablet:text-xl text-lg font-bold">{title}</h2>
       <div className="flex h-full flex-row items-center">
         {id && (
           <>
@@ -29,15 +29,7 @@ export default function Navbar({ id = 16130, title }: { id?: number; title?: str
               </Link>
               <NavButton icon="/icons/icon-box-add.svg" label="초대하기" />
             </div>
-            {isMember && (
-              <ol>
-                {members.map((m: Member) => (
-                  <li key={m.id}>
-                    <img src={m.profileImageUrl} alt="멤버 프로필" />
-                  </li>
-                ))}
-              </ol>
-            )}
+            {isMember && <MemberList members={members} />}
           </>
         )}
         <User />

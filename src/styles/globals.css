@@ -26,13 +26,13 @@
   --font-sans: var(--font-sans), system-ui, sans-serif;
   --font-eng: var(--font-eng), system-ui, sans-serif;
 
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 2rem;
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1rem; /* 16px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+  --text-3xl: 2rem; /* 32px */
 
   --text-xs--line-height: 1.125rem;
   --text-sm--line-height: 1.25rem;
@@ -52,8 +52,8 @@
   color utility to any element that depends on these defaults.
 */
 
-@custom-variant tablet (width >= 46.5rem);
-@custom-variant pc (width >= 78rem);
+@custom-variant tablet (@media(width >= 46.5rem));
+@custom-variant pc (@media(width >= 78rem));
 
 @layer base {
   *,
