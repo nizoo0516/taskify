@@ -22,8 +22,8 @@ export default function User() {
 
   return (
     <div ref={menuRef}>
-      <button className="relative" onClick={toggleMenu}>
-        <div>{userProfile}</div>
+      <button className="relative flex flex-row" onClick={toggleMenu}>
+        <div>{userProfile}프로필</div>
         <div>{userName}</div>
       </button>
       {isMenu && (

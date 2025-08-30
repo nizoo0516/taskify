@@ -25,6 +25,27 @@
 
   --font-sans: var(--font-sans), system-ui, sans-serif;
   --font-eng: var(--font-eng), system-ui, sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.125rem;
+
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.25rem;
+
+  --text-base: 1rem;
+  --text-base--line-height: 1.625rem;
+
+  --text-lg: 1rem;
+  --text-lg--line-height: 1.625rem;
+
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 2rem;
+
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 2.625rem;
 }
 
 /*
@@ -35,158 +56,8 @@
   If we ever want to remove these styles, we need to add an explicit border
   color utility to any element that depends on these defaults.
 */
+
 @layer base {
-  /* 3xl */
-  .text-3xl-bold {
-    font-size: 2rem;
-    line-height: 2.625rem;
-    font-weight: 700;
-  }
-  .text-3xl-semibold {
-    font-size: 2rem;
-    line-height: 2.625rem;
-    font-weight: 600;
-  }
-
-  /* 2xl */
-  .text-2xl-bold {
-    font-size: 1.5rem;
-    line-height: 2rem;
-    font-weight: 700;
-  }
-  .text-2xl-semibold {
-    font-size: 1.5rem;
-    line-height: 2rem;
-    font-weight: 600;
-  }
-  .text-2xl-medium {
-    font-size: 1.5rem;
-    line-height: 2rem;
-    font-weight: 500;
-  }
-  .text-2xl-regular {
-    font-size: 1.5rem;
-    line-height: 2rem;
-    font-weight: 400;
-  }
-
-  /* xl */
-  .text-xl-bold {
-    font-size: 1.25rem;
-    line-height: 2rem;
-    font-weight: 700;
-  }
-  .text-xl-semibold {
-    font-size: 1.25rem;
-    line-height: 2rem;
-    font-weight: 600;
-  }
-  .text-xl-medium {
-    font-size: 1.25rem;
-    line-height: 2rem;
-    font-weight: 500;
-  }
-  .text-xl-regular {
-    font-size: 1.25rem;
-    line-height: 2rem;
-    font-weight: 400;
-  }
-
-  /* 2lg */
-  .text-2lg-bold {
-    font-size: 1.125rem;
-    line-height: 1.625rem;
-    font-weight: 700;
-  }
-  .text-2lg-semibold {
-    font-size: 1.125rem;
-    line-height: 1.625rem;
-    font-weight: 600;
-  }
-  .text-2lg-medium {
-    font-size: 1.125rem;
-    line-height: 1.625rem;
-    font-weight: 500;
-  }
-  .text-2lg-regular {
-    font-size: 1.125rem;
-    line-height: 1.625rem;
-    font-weight: 400;
-  }
-
-  /* lg */
-  .text-lg-bold {
-    font-size: 1rem;
-    line-height: 1.625rem;
-    font-weight: 700;
-  }
-  .text-lg-semibold {
-    font-size: 1rem;
-    line-height: 1.625rem;
-    font-weight: 600;
-  }
-  .text-lg-medium {
-    font-size: 1rem;
-    line-height: 1.625rem;
-    font-weight: 500;
-  }
-  .text-lg-regular {
-    font-size: 1rem;
-    line-height: 1.625rem;
-    font-weight: 400;
-  }
-
-  /* md */
-  .text-md-bold {
-    font-size: 0.875rem;
-    line-height: 1.5rem;
-    font-weight: 700;
-  }
-  .text-md-semibold {
-    font-size: 0.875rem;
-    line-height: 1.5rem;
-    font-weight: 600;
-  }
-  .text-md-medium {
-    font-size: 0.875rem;
-    line-height: 1.5rem;
-    font-weight: 500;
-  }
-  .text-md-regular {
-    font-size: 0.875rem;
-    line-height: 1.5rem;
-    font-weight: 400;
-  }
-
-  /* sm */
-  .text-sm-semibold {
-    font-size: 0.8125rem;
-    line-height: 1.25rem;
-    font-weight: 600;
-  }
-  .text-sm-medium {
-    font-size: 0.8125rem;
-    line-height: 1.25rem;
-    font-weight: 500;
-  }
-
-  /* xs */
-  .text-xs-semibold {
-    font-size: 0.75rem;
-    line-height: 1.125rem;
-    font-weight: 600;
-  }
-  .text-xs-medium {
-    font-size: 0.75rem;
-    line-height: 1.125rem;
-    font-weight: 500;
-  }
-  .text-xs-regular {
-    font-size: 0.75rem;
-    line-height: 1.125rem;
-    font-weight: 400;
-  }
-
   *,
   ::after,
   ::before,
@@ -200,5 +71,283 @@
     line-height: var(--text-lg-regular-line-height, 1.625rem);
     font-weight: var(--text-lg-regular-font-weight, 400);
     color: var(--color-brand-gray-700);
+  }
+}
+
+@layer utilities {
+  /* 모바일 */
+  .text-xs-bold {
+    @apply text-xs font-bold;
+  }
+  .text-xs-semibold {
+    @apply text-xs font-semibold;
+  }
+  .text-xs-medium {
+    @apply text-xs font-medium;
+  }
+  .text-xs-regular {
+    @apply text-xs font-normal;
+  }
+
+  .text-sm-bold {
+    @apply text-sm font-bold;
+  }
+  .text-sm-semibold {
+    @apply text-sm font-semibold;
+  }
+  .text-sm-medium {
+    @apply text-sm font-medium;
+  }
+  .text-sm-regular {
+    @apply text-sm font-normal;
+  }
+
+  .text-base-bold {
+    @apply text-base font-bold;
+  }
+  .text-base-semibold {
+    @apply text-base font-semibold;
+  }
+  .text-base-medium {
+    @apply text-base font-medium;
+  }
+  .text-base-regular {
+    @apply text-base font-normal;
+  }
+
+  .text-lg-bold {
+    @apply text-lg font-bold;
+  }
+  .text-lg-semibold {
+    @apply text-lg font-semibold;
+  }
+  .text-lg-medium {
+    @apply text-lg font-medium;
+  }
+  .text-lg-regular {
+    @apply text-lg font-normal;
+  }
+
+  .text-xl-bold {
+    @apply text-xl font-bold;
+  }
+  .text-xl-semibold {
+    @apply text-xl font-semibold;
+  }
+  .text-xl-medium {
+    @apply text-xl font-medium;
+  }
+  .text-xl-regular {
+    @apply text-xl font-normal;
+  }
+
+  .text-2xl-bold {
+    @apply text-2xl font-bold;
+  }
+  .text-2xl-semibold {
+    @apply text-2xl font-semibold;
+  }
+  .text-2xl-medium {
+    @apply text-2xl font-medium;
+  }
+  .text-2xl-regular {
+    @apply text-2xl font-normal;
+  }
+
+  .text-3xl-bold {
+    @apply text-3xl font-bold;
+  }
+  .text-3xl-semibold {
+    @apply text-3xl font-semibold;
+  }
+  .text-3xl-medium {
+    @apply text-3xl font-medium;
+  }
+  .text-3xl-regular {
+    @apply text-3xl font-normal;
+  }
+
+  /* 테블릿 */
+  .tablet\:text-xs-bold {
+    @apply text-xs font-bold;
+  }
+  .tablet\:text-xs-semibold {
+    @apply text-xs font-semibold;
+  }
+  .tablet\:text-xs-medium {
+    @apply text-xs font-medium;
+  }
+  .tablet\:text-xs-regular {
+    @apply text-xs font-normal;
+  }
+
+  .tablet\:text-sm-bold {
+    @apply text-sm font-bold;
+  }
+  .tablet\:text-sm-semibold {
+    @apply text-sm font-semibold;
+  }
+  .tablet\:text-sm-medium {
+    @apply text-sm font-medium;
+  }
+  .tablet\:text-sm-regular {
+    @apply text-sm font-normal;
+  }
+
+  .tablet\:text-base-bold {
+    @apply text-base font-bold;
+  }
+  .tablet\:text-base-semibold {
+    @apply text-base font-semibold;
+  }
+  .tablet\:text-base-medium {
+    @apply text-base font-medium;
+  }
+  .tablet\:text-base-regular {
+    @apply text-base font-normal;
+  }
+
+  .tablet\:text-lg-bold {
+    @apply text-lg font-bold;
+  }
+  .tablet\:text-lg-semibold {
+    @apply text-lg font-semibold;
+  }
+  .tablet\:text-lg-medium {
+    @apply text-lg font-medium;
+  }
+  .tablet\:text-lg-regular {
+    @apply text-lg font-normal;
+  }
+
+  .tablet\:text-xl-bold {
+    @apply text-xl font-bold;
+  }
+  .tablet\:text-xl-semibold {
+    @apply text-xl font-semibold;
+  }
+  .tablet\:text-xl-medium {
+    @apply text-xl font-medium;
+  }
+  .tablet\:text-xl-regular {
+    @apply text-xl font-normal;
+  }
+
+  .tablet\:text-2xl-bold {
+    @apply text-2xl font-bold;
+  }
+  .tablet\:text-2xl-semibold {
+    @apply text-2xl font-semibold;
+  }
+  .tablet\:text-2xl-medium {
+    @apply text-2xl font-medium;
+  }
+  .tablet\:text-2xl-regular {
+    @apply text-2xl font-normal;
+  }
+
+  .tablet\:text-3xl-bold {
+    @apply text-3xl font-bold;
+  }
+  .tablet\:text-3xl-semibold {
+    @apply text-3xl font-semibold;
+  }
+  .tablet\:text-3xl-medium {
+    @apply text-3xl font-medium;
+  }
+  .tablet\:text-3xl-regular {
+    @apply text-3xl font-normal;
+  }
+
+  /* PC */
+  .pc\:text-xs-bold {
+    @apply text-xs font-bold;
+  }
+  .pc\:text-xs-semibold {
+    @apply text-xs font-semibold;
+  }
+  .pc\:text-xs-medium {
+    @apply text-xs font-medium;
+  }
+  .pc\:text-xs-regular {
+    @apply text-xs font-normal;
+  }
+
+  .pc\:text-sm-bold {
+    @apply text-sm font-bold;
+  }
+  .pc\:text-sm-semibold {
+    @apply text-sm font-semibold;
+  }
+  .pc\:text-sm-medium {
+    @apply text-sm font-medium;
+  }
+  .pc\:text-sm-regular {
+    @apply text-sm font-normal;
+  }
+
+  .pc\:text-base-bold {
+    @apply text-base font-bold;
+  }
+  .pc\:text-base-semibold {
+    @apply text-base font-semibold;
+  }
+  .pc\:text-base-medium {
+    @apply text-base font-medium;
+  }
+  .pc\:text-base-regular {
+    @apply text-base font-normal;
+  }
+
+  .pc\:text-lg-bold {
+    @apply text-lg font-bold;
+  }
+  .pc\:text-lg-semibold {
+    @apply text-lg font-semibold;
+  }
+  .pc\:text-lg-medium {
+    @apply text-lg font-medium;
+  }
+  .pc\:text-lg-regular {
+    @apply text-lg font-normal;
+  }
+
+  .pc\:text-xl-bold {
+    @apply text-xl font-bold;
+  }
+  .pc\:text-xl-semibold {
+    @apply text-xl font-semibold;
+  }
+  .pc\:text-xl-medium {
+    @apply text-xl font-medium;
+  }
+  .pc\:text-xl-regular {
+    @apply text-xl font-normal;
+  }
+
+  .pc\:text-2xl-bold {
+    @apply text-2xl font-bold;
+  }
+  .pc\:text-2xl-semibold {
+    @apply text-2xl font-semibold;
+  }
+  .pc\:text-2xl-medium {
+    @apply text-2xl font-medium;
+  }
+  .pc\:text-2xl-regular {
+    @apply text-2xl font-normal;
+  }
+
+  .pc\:text-3xl-bold {
+    @apply text-3xl font-bold;
+  }
+  .pc\:text-3xl-semibold {
+    @apply text-3xl font-semibold;
+  }
+  .pc\:text-3xl-medium {
+    @apply text-3xl font-medium;
+  }
+  .pc\:text-3xl-regular {
+    @apply text-3xl font-normal;
   }
 }
