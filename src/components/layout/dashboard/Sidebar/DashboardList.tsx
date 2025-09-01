@@ -1,11 +1,11 @@
 import Image from "next/image";
 
+import MyButton from "@/components/layout/Button";
 import { Dashboard } from "@/features/dashboard/types";
 import { cn } from "@/lib/utils/cn";
 
-import MyButton from "../../Button";
 export default function DashboardList({ dashboards }: { dashboards: Dashboard[] }) {
-  const hoverStyle = cn("tablet:hover:bg-brand-blue-50 rounded-[4px]");
+  const hoverBlueStyle = cn("tablet:hover:bg-brand-blue-50 rounded-[4px]");
   return (
     <>
       <ul>
@@ -15,7 +15,7 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
             <li
               key={d.id}
               className={cn(
-                hoverStyle,
+                hoverBlueStyle,
                 "tablet:justify-start tablet:mb-0 mb-6 flex justify-center",
               )}
             >

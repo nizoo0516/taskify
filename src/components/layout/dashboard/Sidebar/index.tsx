@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Dashboard } from "@/features/dashboard/types";
 
 import DashboardList from "./DashboardList";
+import Pagination from "./Pagination";
 import MyButton from "../../Button";
 
 export default function Sidebar({ dashboards }: { dashboards: Dashboard[] }) {
@@ -29,7 +30,7 @@ export default function Sidebar({ dashboards }: { dashboards: Dashboard[] }) {
             />
           </Link>
         </h1>
-        {/*클릭 시 대시보드 생성 모달*/}
+        {/*클릭 시 대시보드 생성 모달 열림*/}
         <div className="tablet:mb-4 mb-6 flex w-full justify-center">
           <MyButton
             className="tablet:justify-between tablet:w-full flex justify-center border-0"
@@ -40,10 +41,7 @@ export default function Sidebar({ dashboards }: { dashboards: Dashboard[] }) {
           </MyButton>
         </div>
         <DashboardList dashboards={dashboards} />
-        <div className="hidden">
-          <div>left</div>
-          <div>right</div>
-        </div>
+        <Pagination />
       </div>
     </>
   );
