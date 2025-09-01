@@ -7,8 +7,11 @@ import { getMembers } from "@/features/members/api";
 import { useApiHandler } from "@/lib/useApiHandler";
 
 // id는 사이드 바에서 클릭된 id와 title을 전달
-export default function Navbar({ id = 16130, title }: { id?: number; title?: string }) {
-  const { data } = useApiHandler(() => getMembers(id, {}), [id]);
+export default function Navbar({ id, title }: { id?: number; title?: string }) {
+  const { data } = useApiHandler(
+    () => (id ? getMembers(id, {}) : Promise.resolve({ members: [], totalCount: 0 })),
+    [id],
+  );
 
   const members = data?.members ?? [];
   const isMember = members.length > 0;
@@ -30,10 +33,10 @@ export default function Navbar({ id = 16130, title }: { id?: number; title?: str
               <NavButton icon="/icons/icon-box-add.svg" label="초대하기" />
             </div>
             {isMember && <MemberList members={members} />}
+            <div className="bg-brand-gray-300 h-[calc(100%-4px)] w-[1px]"></div>
           </>
         )}
 
-        <div className="bg-brand-gray-300 h-[calc(100%-4px)] w-[1px]"></div>
         <User />
       </div>
     </div>
