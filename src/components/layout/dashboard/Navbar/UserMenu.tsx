@@ -17,7 +17,7 @@ export default function UserMenu() {
   const hoverBlue = cn(
     "hover:bg-[var(--color-brand-blue-50)] hover:text-[var(--color-brand-blue-500)]",
   );
-  const buttonBase = cn("h-full w-full text-base rounded-[4px]");
+  const buttonBase = cn("h-full w-full text-base font-normal rounded-[4px]");
   const flexCenter = cn("flex items-center justify-center");
 
   return (

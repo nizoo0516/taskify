@@ -23,9 +23,11 @@ export default function User() {
   return (
     <div ref={menuRef} className="tablet:ml-6 pc:ml-8 relative ml-3">
       <button className="flex cursor-pointer flex-row items-center" onClick={toggleMenu}>
-        <div className="tablet:w-[38px] tablet:h-[38px] h-[34px] w-[34px] rounded-full border-2">
-          <img src={userProfile} alt="유저 프로필 이미지" />
-        </div>
+        <img
+          src={userProfile}
+          alt="유저 프로필 이미지"
+          className="tablet:w-[38px] tablet:h-[38px] h-[34px] w-[34px] rounded-full object-cover"
+        />
 
         <div className="tablet:flex ml-3 hidden">{userName}</div>
       </button>
