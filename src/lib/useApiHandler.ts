@@ -26,7 +26,7 @@ export function useApiHandler<T>(apiFn: () => Promise<T>, deps: DependencyList =
     return () => {
       isMounted = false;
     };
-  }, [apiFn, ...deps]);
+  }, deps);
 
   return { data, loading, error };
 }

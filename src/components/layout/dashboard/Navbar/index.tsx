@@ -33,10 +33,10 @@ export default function Navbar({ id, title }: { id?: number; title?: string }) {
               <NavButton icon="/icons/icon-box-add.svg" label="초대하기" />
             </div>
             {isMember && <MemberList members={members} />}
+            <div className="bg-brand-gray-300 h-[calc(100%-4px)] w-[1px]"></div>
           </>
         )}
 
-        <div className="bg-brand-gray-300 h-[calc(100%-4px)] w-[1px]"></div>
         <User />
       </div>
     </div>
