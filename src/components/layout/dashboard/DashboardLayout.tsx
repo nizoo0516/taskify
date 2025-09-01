@@ -20,7 +20,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex">
-      <aside className="tablet:w-40 pc:w-[18.75rem] border-brand-gray-300 h-screen w-16 flex-shrink-0 border-r bg-white px-3.5 pt-5">
+      <aside className="tablet:w-40 pc:w-[18.75rem] border-brand-gray-300 tablet:px-3.5 tablet:pt-5 h-screen w-16 flex-shrink-0 border-r bg-white py-5">
         <Sidebar dashboards={dashboards} />
       </aside>
 
