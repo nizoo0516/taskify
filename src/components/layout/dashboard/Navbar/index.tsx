@@ -7,8 +7,11 @@ import { getMembers } from "@/features/members/api";
 import { useApiHandler } from "@/lib/useApiHandler";
 
 // id는 사이드 바에서 클릭된 id와 title을 전달
-export default function Navbar({ id = 16130, title }: { id?: number; title?: string }) {
-  const { data } = useApiHandler(() => getMembers(id, {}), [id]);
+export default function Navbar({ id, title }: { id?: number; title?: string }) {
+  const { data } = useApiHandler(
+    () => (id ? getMembers(id, {}) : Promise.resolve({ members: [], totalCount: 0 })),
+    [id],
+  );
 
   const members = data?.members ?? [];
   const isMember = members.length > 0;
