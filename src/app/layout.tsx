@@ -1,25 +1,5 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "@/styles/globals.css";
-
-const pretendard = localFont({
-  src: [
-    { path: "/fonts/Pretendard-Regular.woff2", weight: "400" },
-    { path: "/fonts/Pretendard-Medium.woff2", weight: "500" },
-    { path: "/fonts/Pretendard-SemiBold.woff2", weight: "600" },
-    { path: "/fonts/Pretendard-Bold.woff2", weight: "700" },
-    { path: "/fonts/Pretendard-Black.woff2", weight: "900" },
-  ],
-  variable: "--font-sans",
-});
-
-const montserrat = localFont({
-  src: [
-    { path: "/fonts/Montserrat-SemiBold.ttf", weight: "600" },
-    { path: "/fonts/Montserrat-Bold.ttf", weight: "700" },
-  ],
-  variable: "--font-eng",
-});
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Taskify",
@@ -31,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className={`${pretendard.variable} ${montserrat.variable}`}>
+    <html lang="ko">
       <body>{children}</body>
     </html>
   );
