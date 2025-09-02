@@ -8,6 +8,7 @@ import { Dashboard } from "@/features/dashboard/types";
 import { getMembers } from "@/features/members/api";
 import { Member } from "@/features/members/types";
 import { useApiHandler } from "@/lib/useApiHandler";
+import Image from "next/image";
 
 // id는 사이드 바에서 클릭된 id와 title을 전달
 export default function Navbar({ id }: { id?: number }) {
@@ -30,10 +31,17 @@ export default function Navbar({ id }: { id?: number }) {
   const members = data?.members ?? [];
   const isMember = members.length > 0;
   const title = data?.dashboard?.title ?? "내 대시보드";
+  const createdByMe = data?.dashboard?.createdByMe ?? false;
 
   return (
     <div className="pc:justify-between flex h-full items-center justify-end">
-      <h2 className="pc:inline-block tablet:text-xl hidden text-lg font-bold">{title}</h2>
+      <h2 className="flex gap-2">
+        <div className="pc:inline-block tablet:text-xl hidden text-lg font-bold">{title}</div>
+
+        {createdByMe && (
+          <Image src={"/icons/icon-crown.svg"} alt="내가만든 대시보드" width={20} height={16} />
+        )}
+      </h2>
       <div className="flex h-full flex-row items-center">
         {id && (
           <>
