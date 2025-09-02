@@ -1,9 +1,7 @@
 "use client";
 import Image from "next/image";
-import Image from "next/image";
 import { useEffect } from "react";
 
-import closeIcon from "@/assets/icons/icon-close-big.svg";
 import { cn } from "@/lib/utils/cn";
 
 type ModalProps = {
@@ -37,10 +35,8 @@ function Modal({ open, children, size = "lg" }: ModalProps) {
 
   return (
     <div className="fixed top-0 left-0 h-screen w-screen overflow-hidden bg-black/40">
-    <div className="fixed top-0 left-0 h-screen w-screen overflow-hidden bg-black/40">
       <div
         className={cn(
-          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white",
           "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white",
           sizeClass,
         )}
@@ -57,7 +53,6 @@ type ModalHeaderProps = {
 };
 function ModalHeader({ title, onClose }: ModalHeaderProps) {
   return (
-    <div className="mb-3 flex justify-between">
     <div className="mb-3 flex justify-between">
       <h3 className="text-2xl font-bold">{title}</h3>
       {onClose && (
