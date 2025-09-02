@@ -81,8 +81,9 @@ export default function LoginPage() {
       localStorage.setItem("access_token", accessToken);
 
       router.push("/mydashboard");
-    } catch (err: any) {
-      if (err?.code === "INVALID_PW" || err?.message === "INVALID_PW") {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "";
+      if (message === "INVALID_PW") {
         window.alert("비밀번호가 일치하지 않습니다.");
       } else {
         window.alert("로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.");
@@ -93,7 +94,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="px- mx-auto flex min-h-screen w-full max-w-[520px] flex-col items-center justify-center">
+    <main className="mx-auto flex min-h-screen w-full max-w-[520px] flex-col items-center justify-center">
       {/** 임시로고 */}
       <button
         type="button"
