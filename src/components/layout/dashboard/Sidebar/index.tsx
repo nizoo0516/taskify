@@ -12,7 +12,7 @@ export default function Sidebar({ dashboards }: { dashboards: Dashboard[] }) {
     <>
       <div>
         {/* 로고 이미지 */}
-        <h1 className="h=full tablet:mb-14 mb-8 flex w-full items-center justify-center">
+        <h1 className="h=full tablet:mb-14 pc:justify-start mb-8 flex w-full items-center justify-center">
           <Link href={`/`} className="tablet:h=[50px] tablet:w-[110px]">
             <img
               src="/images/img-logo-large.svg"

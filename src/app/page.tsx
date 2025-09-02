@@ -1,5 +1,3 @@
-import TestDataButton from "@/components/testButton";
-
 export default function Home() {
   return (
     <div>
@@ -8,7 +6,6 @@ export default function Home() {
         버튼 테스트
       </button>
       <div className="bg-brandGray-100 text-3xl-bold">Tailwind 커스텀 확인</div>
-      <TestDataButton />
     </div>
   );
 }

@@ -6,9 +6,11 @@ import { cn } from "@/lib/utils/cn";
 
 export default function DashboardList({ dashboards }: { dashboards: Dashboard[] }) {
   const hoverBlueStyle = cn("tablet:hover:bg-brand-blue-50 rounded-[4px]");
+  const scrollbarStyle = cn("[&::-webkit-scrollbar]:hidden scrollbar-width:none overflow-y-scroll");
+
   return (
     <>
-      <ul>
+      <ul className={cn(scrollbarStyle, "tablet:h-full h-[300px]")}>
         {dashboards.map((d: Dashboard) => {
           const createdByMe = d.createdByMe;
           return (
