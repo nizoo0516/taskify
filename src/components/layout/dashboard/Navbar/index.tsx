@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import MemberList from "@/components/layout/dashboard/Navbar/MemberList";
@@ -8,7 +9,6 @@ import { Dashboard } from "@/features/dashboard/types";
 import { getMembers } from "@/features/members/api";
 import { Member } from "@/features/members/types";
 import { useApiHandler } from "@/lib/useApiHandler";
-import Image from "next/image";
 
 // id는 사이드 바에서 클릭된 id와 title을 전달
 export default function Navbar({ id }: { id?: number }) {
