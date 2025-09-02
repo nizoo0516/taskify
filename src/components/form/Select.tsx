@@ -1,5 +1,7 @@
 import { ComponentPropsWithRef } from "react";
 
+//import ArrowDropIcon from "@/assets/icons/icon-arrow-dropdown.svg";
+
 export type Option = { value: string; label: string; disabled?: boolean };
 
 type Native = ComponentPropsWithRef<"select">;
@@ -12,8 +14,8 @@ type SelectProps = Omit<Native, "children" | "id" | "aria-invalid" | "aria-error
 export default function Select({ options, placeholder, className = "", ...rest }: SelectProps) {
   const classes = [
     "block w-full appearance-none",
-    "h-[26px] pr-[11px]",
-    "rounded-md border bg-white",
+    "h-[48px] pl-[16px]",
+    "rounded-lg border bg-white",
     "text-[16px] text-[#333236]",
     "[&[aria-invalid='true']]:border-red-500 [&[aria-invalid='true']]:focus:border-red-500 [&[aria-invalid='true']]:focus:ring-red-500",
     className,
@@ -37,8 +39,7 @@ export default function Select({ options, placeholder, className = "", ...rest }
         aria-hidden
         className="absolute inset-y-0 right-0 flex w-[26px] items-center justify-center"
       >
-        {/* 드롭다운 아이콘 */}
-        <svg></svg>
+        {/* <ArrowDropIcon className="w-[26px] pr-[10px] text-[#333236]" /> */}
       </span>
     </div>
   );
