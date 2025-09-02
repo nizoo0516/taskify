@@ -14,7 +14,6 @@ type ModalType = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const stateOpt = [{ value: "1", label: "상태01" }];
 const managerOpt = [{ value: "1", label: "사람1" }];
 
 export default function CreateModal({ isOpen, setIsOpen }: ModalType) {
