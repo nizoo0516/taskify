@@ -8,7 +8,6 @@ export default function DashboardId() {
           title="새로운 일정 관리 Taskify"
           tags={["프로젝트", "백엔드", "상"]}
           date="2025.09.01"
-          author="B"
         />
       </div>
     </>

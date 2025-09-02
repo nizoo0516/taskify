@@ -6,12 +6,11 @@ interface CardProps {
   tags: string[];
   date: string;
   image?: string;
-  author: string;
 }
 
-export default function Card({ title, tags, date, image, author }: CardProps) {
+export default function Card({ title, tags, date, image }: CardProps) {
   return (
-    <div className="w-[314px] rounded-[6px] border border-[#D9D9D9] bg-white">
+    <div className="w-[314px] rounded-[6px] border border-[#D9D9D9] bg-white px-[20px] py-[16px]">
       {/* 이미지 영역 */}
       {image && (
         <img
@@ -22,7 +21,7 @@ export default function Card({ title, tags, date, image, author }: CardProps) {
       )}
 
       {/* 제목 */}
-      <h3 className="mb-[10px] text-sm font-medium text-gray-900">{title}</h3>
+      <h3 className="mb-[10px] text-[16px] font-medium text-[#000000]">{title}</h3>
 
       {/* 태그 영역 */}
       <div className="mb-[13px] flex flex-wrap gap-2">
@@ -34,12 +33,10 @@ export default function Card({ title, tags, date, image, author }: CardProps) {
       {/* 날짜 + 작성자 */}
       <div className="flex items-center justify-between text-xs text-gray-500">
         <div className="flex items-center gap-1">
-          <img src={calendarIcon} alt="calendar" className="h-4 w-4" />
+          <img src={calendarIcon} alt="calendar" className="h-[18px] w-[18px]" />
           <span>{date}</span>
         </div>
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100 font-bold text-green-700">
-          {author}
-        </div>
+        <div className="flex h-[24px] w-[24px] rounded-full bg-green-100 font-bold text-green-700"></div>
       </div>
     </div>
   );
