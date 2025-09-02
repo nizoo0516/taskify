@@ -14,7 +14,7 @@ export default function UserMenu() {
     router.push("/");
   };
 
-  const hoverBlue = cn(
+  const hoverBlueStyle = cn(
     "hover:bg-[var(--color-brand-blue-50)] hover:text-[var(--color-brand-blue-500)]",
   );
   const buttonBase = cn("h-full w-full text-base font-normal rounded-[4px]");
@@ -23,17 +23,17 @@ export default function UserMenu() {
   return (
     <ol className="flex flex-col items-center justify-center [&>li]:h-8 [&>li]:w-full">
       <li>
-        <button className={cn(hoverBlue, buttonBase, "cursor-pointer")} onClick={handleLogout}>
+        <button className={cn(hoverBlueStyle, buttonBase, "cursor-pointer")} onClick={handleLogout}>
           로그아웃
         </button>
       </li>
       <li>
-        <Link href={"/mypage"} className={cn(hoverBlue, buttonBase, flexCenter)}>
+        <Link href={"/mypage"} className={cn(hoverBlueStyle, buttonBase, flexCenter)}>
           내 정보
         </Link>
       </li>
       <li>
-        <Link href={"/mydashboard"} className={cn(hoverBlue, buttonBase, flexCenter)}>
+        <Link href={"/mydashboard"} className={cn(hoverBlueStyle, buttonBase, flexCenter)}>
           내 대시보드
         </Link>
       </li>

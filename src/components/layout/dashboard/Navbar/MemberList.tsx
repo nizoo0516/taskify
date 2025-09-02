@@ -9,12 +9,12 @@ export default function MemberList({ members }: { members: Member[] }) {
   const maxCount = device === "pc" ? 4 : 2;
   const visible = members.slice(0, maxCount);
 
-  const liBase = cn(
+  const liStyle = cn(
     "[&>li]:h-[34px] [&>li]:w-[34px] [&>li]:tablet:h-[38px] [&>li]:tablet:w-[38px] [&>li]:overflow-hidden [&>li]:rounded-full [&>li]:border-3 [&>li]:border-white [&>li:not(:first-child)]:-ml-2",
   );
 
   return (
-    <ol className={cn(liBase, "tablet:ml-8 pc:ml-9 pc:mr-8 tablet:mr-6 mr-3 ml-4 flex flex-row")}>
+    <ol className={cn(liStyle, "tablet:ml-8 pc:ml-9 pc:mr-8 tablet:mr-6 mr-3 ml-4 flex flex-row")}>
       {visible.map((m) => (
         <li key={m.id} className="">
           <img src={m.profileImageUrl} alt="멤버 프로필" className="h-full w-full object-cover" />
