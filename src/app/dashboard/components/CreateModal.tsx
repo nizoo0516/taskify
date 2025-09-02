@@ -22,7 +22,7 @@ export default function CreateModal({ isOpen, setIsOpen }: ModalType) {
     <div>
       {isOpen && (
         <Modal open={isOpen} size="lg">
-          <ModalHeader title="할 일 수정" />
+          <ModalHeader title="할 일 생성" />
           <ModalContext>
             <div className="mb-8">
               <div>
