@@ -1,24 +1,15 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 
 import Navbar from "@/components/layout/dashboard/Navbar";
 import Sidebar from "@/components/layout/dashboard/Sidebar";
-import { usePagination } from "@/features/dashboard/store";
 import { cn } from "@/lib/utils/cn";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { id } = useParams();
   const dashboardId = id ? Number(id) : null;
-
-  const { dashboards, page, fetchPagination } = usePagination();
-
-  useEffect(() => {
-    fetchPagination(15);
-  }, [page, fetchPagination]);
-
-  const currentDashboard = dashboards.find((dashboard) => dashboard.id === dashboardId);
 
   const scrollbarStyle = cn("[&::-webkit-scrollbar]:hidden scrollbar-width:none overflow-y-scroll");
 
@@ -30,12 +21,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           "tablet:w-40 pc:w-[18.75rem] border-brand-gray-300 tablet:px-3.5 tablet:pt-5 w-16 flex-shrink-0 border-r bg-white py-5",
         )}
       >
-        <Sidebar dashboards={dashboards} />
+        <Sidebar />
       </aside>
 
       <div className="flex flex-1 flex-col overflow-y-auto">
         <div className="border-brand-gray-300 tablet:px-10 tablet:py-4 tablet:h-[4.375rem] h-[3.75rem] border-b px-3 py-3.5 align-middle">
-          <Navbar id={dashboardId ?? undefined} title={currentDashboard?.title ?? "내 대시보드"} />
+          <Navbar id={dashboardId ?? undefined} />
         </div>
 
         <main className="flex-1">{children}</main>

@@ -1,27 +1,38 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
-import { Dashboard } from "@/features/dashboard/types";
+import { getDashboards } from "@/features/dashboard/api";
+import { useApiHandler } from "@/lib/useApiHandler";
 
 import DashboardList from "./DashboardList";
 import Pagination from "./Pagination";
 import MyButton from "../../Button";
 
-export default function Sidebar({ dashboards }: { dashboards: Dashboard[] }) {
+export default function Sidebar() {
+  const [page, setPage] = useState<number>(1);
+  const { data } = useApiHandler(() => getDashboards("pagination", { page, size: 15 }), [page]);
+
+  const dashboards = data?.dashboards ?? [];
+  const totalCount = data?.totalCount ?? 0;
+  const totalPages = Math.ceil(totalCount / 15);
+
   return (
     <>
       <div>
         {/* 로고 이미지 */}
         <h1 className="h=full tablet:mb-14 pc:justify-start mb-8 flex w-full items-center justify-center">
           <Link href={`/`} className="tablet:h=[50px] tablet:w-[110px]">
-            <img
+            <Image
               src="/images/img-logo-large.svg"
               alt="로고"
               width={110}
               height={35}
               className="tablet:block hidden"
             />
-            <img
+            <Image
               src="/images/img-logo-small.svg"
               alt="로고"
               width={24}
@@ -41,7 +52,7 @@ export default function Sidebar({ dashboards }: { dashboards: Dashboard[] }) {
           </MyButton>
         </div>
         <DashboardList dashboards={dashboards} />
-        <Pagination />
+        <Pagination page={page} setPage={setPage} totalPages={totalPages} />
       </div>
     </>
   );

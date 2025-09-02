@@ -1,4 +1,4 @@
-import calendarIcon from "@/assets/icons/icon-calender.svg";
+// import calendarIcon from "@/assets/icons/icon-calender.svg";
 import Chip from "@/components/chip/Chip";
 
 interface CardProps {
@@ -33,7 +33,7 @@ export default function Card({ title, tags, date, image }: CardProps) {
       {/* 날짜 + 작성자 */}
       <div className="flex items-center justify-between text-xs text-gray-500">
         <div className="flex items-center gap-1">
-          <img src={calendarIcon} alt="calendar" className="h-[18px] w-[18px]" />
+          {/* <img src={calendarIcon} alt="calendar" className="h-[18px] w-[18px]" /> */}
           <span>{date}</span>
         </div>
         <div className="flex h-[24px] w-[24px] rounded-full bg-green-100 font-bold text-green-700"></div>

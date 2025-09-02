@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import MyButton from "@/components/layout/Button";
 import { Dashboard } from "@/features/dashboard/types";
@@ -7,6 +10,12 @@ import { cn } from "@/lib/utils/cn";
 export default function DashboardList({ dashboards }: { dashboards: Dashboard[] }) {
   const hoverBlueStyle = cn("tablet:hover:bg-brand-blue-50 rounded-[4px]");
   const scrollbarStyle = cn("[&::-webkit-scrollbar]:hidden scrollbar-width:none overflow-y-scroll");
+
+  const router = useRouter();
+
+  const handelDashboardClick = (id: number) => {
+    router.push(`/dashboard/${id}`);
+  };
 
   return (
     <>
@@ -23,7 +32,7 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
             >
               <MyButton
                 className="tablet:w-full tablet:px-2.5 tablet:py-2 tablet:justify-start flex items-center justify-center gap-4 border-0 bg-transparent"
-                onClick={() => {}}
+                onClick={() => handelDashboardClick(d.id)}
               >
                 <div
                   style={{ backgroundColor: d.color }}

@@ -1,4 +1,4 @@
-import settingsIcon from "@/assets/icons/icon-settings.svg";
+// import settingsIcon from "@/assets/icons/icon-settings.svg";
 import Card from "@/components/card/Card";
 import Chip from "@/components/chip/Chip";
 
@@ -30,7 +30,7 @@ export default function Column({ status, count, cards, onAddCard }: ColumnProps)
         </div>
         {/* 설정 버튼 */}
         <button type="button">
-          <img src={settingsIcon} alt="설정" className="h-[24px] w-[24px]" />
+          {/* <img src={settingsIcon} alt="설정" className="h-[24px] w-[24px]" /> */}
         </button>
       </div>
 
