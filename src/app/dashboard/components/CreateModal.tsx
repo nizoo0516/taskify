@@ -2,7 +2,7 @@
 
 import Chip from "@/components/chip/Chip";
 import Field from "@/components/form/Field";
-import ImgUpload from "@/components/form/ImgUpload";
+// import ImgUpload from "@/components/form/ImgUpload";
 import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
 import Textarea from "@/components/form/Textarea";
@@ -43,9 +43,9 @@ export default function CreateModal({ isOpen, setIsOpen }: ModalType) {
             <Field id="tag" label="태그">
               <Input />
             </Field>
-            <Field id="image" label="이미지">
+            {/* <Field id="image" label="이미지">
               <ImgUpload />
-            </Field>
+            </Field> */}
           </ModalContext>
           <ModalFooter>
             <Button
