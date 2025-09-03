@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -95,15 +96,14 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-[520px] flex-col items-center justify-center">
-      {/** 임시로고 */}
-      <button
-        type="button"
-        onClick={() => router.push("/")}
-        className="mb-3 flex items-center gap-2"
+      <Link
+        href="/"
+        className="mb-[12px] flex flex-col items-center gap-[5px]"
         aria-label="홈으로 이동"
       >
-        <span className="text-4xl font-extrabold text-blue-600">Taskify</span>
-      </button>
+        <Image src="/images/img-logo-small.svg" alt="Taskify 로고" width={200} height={190} />
+        <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={200} height={55} />
+      </Link>
       <p className="mb-[30px] text-center text-xl text-[#333236]">오늘도 만나서 반가워요!</p>
 
       <form ref={formRef} onSubmit={onSubmit} className="w-full space-y-8">
@@ -124,19 +124,21 @@ export default function LoginPage() {
               value={values.password}
               onChange={onchange("password")}
               onBlur={validatePwOnBlur}
-              className="pr-[13px]"
             />
             <button
               type="button"
               onClick={() => setShowPw((s) => !s)}
+              aria-pressesd={showPw}
+              aria-controls="password"
               aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
-              className="absolute inset-y-0 right-0 flex w-[24px] items-center justify-center text-gray-500"
+              className="absolute top-1/2 right-3 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-gray-500"
             >
-              {showPw ? (
-                <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden></svg>
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden></svg>
-              )}
+              <Image
+                src={showPw ? "/icons/icon-eye-close.svg" : "/icons/icon-eye-open.svg"}
+                alt="눈 아이콘"
+                width={24}
+                height={24}
+              />
             </button>
           </div>
         </Field>
