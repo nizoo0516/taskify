@@ -1,6 +1,8 @@
 "use client";
 
-import PlusIcon from "./icon-plus.svg";
+import Image from "next/image";
+
+import plusIcon from "./icon-plus.svg";
 
 type ChipProps = {
   variant: "status" | "category" | "color" | "badge" | "add";
@@ -88,7 +90,7 @@ export default function Chip({
     /** + 버튼 칩 (카드 추가 버튼) */
     case "add": {
       const plusSizeClasses = size === "sm" ? "h-5 w-5" : "h-[22px] w-[22px]";
-      const plusIconSize = size === "sm" ? "w-[14.5px] h-[14.5px]" : "w-4 h-4";
+      const plusIconSize = size === "sm" ? 14.5 : 16;
 
       return (
         <button
@@ -97,7 +99,13 @@ export default function Chip({
           onClick={onClick}
           className={`inline-flex items-center justify-center rounded bg-[#E2ECFF] ${plusSizeClasses} ${className}`}
         >
-          <PlusIcon aria-hidden className={plusIconSize} />
+          <Image
+            src={plusIcon}
+            alt="추가"
+            width={plusIconSize}
+            height={plusIconSize}
+            aria-hidden="true"
+          />
           <span className="sr-only">추가</span>
         </button>
       );

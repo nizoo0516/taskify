@@ -1,4 +1,5 @@
-import calendarIcon from "/public/icons/icon-calender.svg";
+import Image from "next/image";
+
 import Chip from "@/components/chip/Chip";
 
 interface CardProps {
@@ -13,7 +14,13 @@ export default function Card({ title, tags, date, image }: CardProps) {
     <div className="w-[314px] rounded-md border border-[#D9D9D9] bg-white px-5 py-4">
       {/* 이미지 영역 */}
       {image && (
-        <img src={image} alt={title} className="mb-[13px] h-40 w-full rounded-md object-cover" />
+        <Image
+          src={image}
+          alt={title}
+          width={274}
+          height={160}
+          className="mb-[13px] rounded-md object-cover"
+        />
       )}
 
       {/* 제목 */}
@@ -29,7 +36,7 @@ export default function Card({ title, tags, date, image }: CardProps) {
       {/* 날짜 + 작성자 */}
       <div className="flex items-center justify-between text-xs text-gray-500">
         <div className="flex items-center gap-1">
-          <img src={calendarIcon} alt="calendar" className="h-[18px] w-[18px]" />
+          <Image src="/icons/icon-calender.svg" alt="calendar" width={18} height={18} />
           <span>{date}</span>
         </div>
         <div className="flex h-6 w-6 rounded-full bg-green-100 font-bold text-green-700"></div>
