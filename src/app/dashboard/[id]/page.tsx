@@ -1,6 +1,13 @@
+"use client";
+import { useState } from "react";
+
 import Card from "@/components/card/Card";
 
+import CreateModal from "../components/ModifyModal";
+
 export default function DashboardId() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
       <div className="">
@@ -10,6 +17,10 @@ export default function DashboardId() {
           date="2025.09.01"
         />
       </div>
+      <button className="mt-8 w-72 bg-red-200" onClick={() => setIsOpen(true)}>
+        +
+      </button>
+      <CreateModal isOpen={isOpen} setIsOpen={setIsOpen} />
     </>
   );
 }
