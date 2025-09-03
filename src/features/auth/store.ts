@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 // 토큰 저장
 interface AuthState {
@@ -8,16 +7,17 @@ interface AuthState {
   clearToken: () => void;
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      accessToken: null,
-      setAccessToken: (token) => set({ accessToken: token }),
-      clearToken: () => set({ accessToken: null }),
-    }),
-    { name: "accessToken" },
-  ),
-);
+export const useAuthStore = create<AuthState>((set) => ({
+  accessToken: typeof window !== "undefined" ? localStorage.getItem("accessToken") : null,
+  setAccessToken: (token) => {
+    localStorage.setItem("accessToken", token);
+    set({ accessToken: token });
+  },
+  clearToken: () => {
+    localStorage.removeItem("accessToken");
+    set({ accessToken: null });
+  },
+}));
 
 // 로그인 여부
 export const useIsLoggedIn = () => useAuthStore((s) => !!s.accessToken);
