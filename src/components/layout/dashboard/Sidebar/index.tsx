@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 
 import { getDashboards } from "@/features/dashboard/api";
@@ -10,6 +9,7 @@ import { useApiHandler } from "@/lib/useApiHandler";
 import DashboardList from "./DashboardList";
 import Pagination from "./Pagination";
 import MyButton from "../../Button";
+import Logo from "../../Logo";
 
 export default function Sidebar() {
   const [page, setPage] = useState<number>(1);
@@ -23,24 +23,9 @@ export default function Sidebar() {
     <>
       <div>
         {/* 로고 이미지 */}
-        <h1 className="h=full tablet:mb-14 pc:justify-start mb-8 flex w-full items-center justify-center">
-          <Link href={`/`} className="tablet:h=[50px] tablet:w-[110px]">
-            <Image
-              src="/images/img-logo-large.svg"
-              alt="로고"
-              width={110}
-              height={35}
-              className="tablet:block hidden"
-            />
-            <Image
-              src="/images/img-logo-small.svg"
-              alt="로고"
-              width={24}
-              height={27}
-              className="tablet:hidden"
-            />
-          </Link>
-        </h1>
+        <div className="h=full tablet:mb-14 pc:justify-start mb-8 flex w-full items-center justify-center">
+          <Logo />
+        </div>
         {/*클릭 시 대시보드 생성 모달 열림*/}
         <div className="tablet:mb-4 mb-6 flex w-full justify-center">
           <MyButton
