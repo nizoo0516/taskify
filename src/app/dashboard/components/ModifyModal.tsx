@@ -18,8 +18,8 @@ type ModalType = {
 
 const stateOpt = [
   { value: "1", label: "To Do", chip: <Chip variant="status" label="To Do" /> },
-  { value: "1", label: "On Progress", chip: <Chip variant="status" label="On Progress" /> },
-  { value: "1", label: "Done", chip: <Chip variant="status" label="Done" /> },
+  { value: "2", label: "On Progress", chip: <Chip variant="status" label="On Progress" /> },
+  { value: "3", label: "Done", chip: <Chip variant="status" label="Done" /> },
 ];
 const managerOpt = [{ value: "1", label: "사람1" }];
 

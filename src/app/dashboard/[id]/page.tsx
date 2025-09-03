@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import Card from "@/components/card/Card";
 
-import CreateModal from "../components/CreateModal";
+import CreateModal from "../components/ModifyModal";
 
 export default function DashboardId() {
   const [isOpen, setIsOpen] = useState(false);
