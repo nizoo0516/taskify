@@ -19,7 +19,7 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
 
   return (
     <>
-      <ul className={cn(scrollbarStyle, "tablet:h-full h-[300px] text-[#787486]")}>
+      <ul className={cn(scrollbarStyle, "tablet:h-full text-brand-gray-500 h-[300px]")}>
         {dashboards.map((d: Dashboard) => {
           const createdByMe = d.createdByMe;
           return (

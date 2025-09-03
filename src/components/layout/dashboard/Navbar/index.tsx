@@ -39,7 +39,13 @@ export default function Navbar({ id }: { id?: number }) {
         <div className="pc:inline-block tablet:text-xl hidden text-lg font-bold">{title}</div>
 
         {createdByMe && (
-          <Image src={"/icons/icon-crown.svg"} alt="내가만든 대시보드" width={20} height={16} />
+          <Image
+            src={"/icons/icon-crown.svg"}
+            alt="내가만든 대시보드"
+            width={20}
+            height={16}
+            className="pc:inline-block hidden"
+          />
         )}
       </h2>
       <div className="flex h-full flex-row items-center">
