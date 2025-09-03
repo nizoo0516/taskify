@@ -8,7 +8,7 @@ export const asInput = "h-[50px] px-4";
 
 export const asPassword = asInput;
 
-export const asTextarea = "min-h-[96px] px-4 pt-[15px]";
+export const asTextarea = "min-h-[40px] px-4 pt-[15px]";
 
 // 원래 화살표 숨김
 export const asSelect = "h-[50px] px-4 appearance-none";

@@ -1,20 +1,26 @@
 "use client";
 
-import Image from "next/image";
-
+import Chip from "@/components/chip/Chip";
+import Field from "@/components/form/Field";
+import ImgUpload from "@/components/form/ImgUpload";
 import Input from "@/components/form/Input";
-import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/layout/Button";
 import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
+
+import { DatePicker } from "../../../../components/ui/dataPicker";
 
 type ModalType = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const stateOpt = [{ value: "1", label: "상태01" }];
+const stateOpt = [
+  { value: "1", label: "To Do", chip: <Chip variant="status" label="To Do" /> },
+  { value: "1", label: "On Progress", chip: <Chip variant="status" label="On Progress" /> },
+  { value: "1", label: "Done", chip: <Chip variant="status" label="Done" /> },
+];
 const managerOpt = [{ value: "1", label: "사람1" }];
 
 export default function ModifyModal({ isOpen, setIsOpen }: ModalType) {
@@ -25,41 +31,28 @@ export default function ModifyModal({ isOpen, setIsOpen }: ModalType) {
           <ModalHeader title="할 일 수정" />
           <ModalContext>
             <div className="mb-8 grid grid-cols-2 gap-8">
-              <div>
-                <Label essential>상태</Label>
-                <Select options={stateOpt} placeholder="선택하기" />
-              </div>
-              <div>
-                <Label essential>담당자</Label>
+              <Field id="manager" label="상태">
+                <Select options={stateOpt} placeholder="선택하기" labelNone={true} />
+              </Field>
+              <Field id="manager" label="담당자">
                 <Select options={managerOpt} placeholder="선택하기" />
-              </div>
+              </Field>
             </div>
-            <div className="mb-8">
-              <Label essential>제목</Label>
+            <Field id="title" label="제목">
               <Input />
-            </div>
-            <div className="mb-8">
-              <Label essential>설명</Label>
+            </Field>
+            <Field id="description" label="설명">
               <Textarea className="resize-none" />
-            </div>
-            <div className="mb-8">
-              <Label>마감일</Label>
+            </Field>
+            <Field id="endDate" label="마감일">
+              <DatePicker />
+            </Field>
+            <Field id="tag" label="태그">
               <Input />
-            </div>
-            <div className="mb-8">
-              <Label>태그</Label>
-              <Input />
-            </div>
-            <div>
-              <Label>이미지 </Label>
-              <Image
-                src={`https://placehold.co/200x120?text=No+Image`}
-                alt="프로필 이미지"
-                height={76}
-                width={76}
-                unoptimized
-              />
-            </div>
+            </Field>
+            <Field id="image" label="이미지">
+              <ImgUpload />
+            </Field>
           </ModalContext>
           <ModalFooter>
             <Button
