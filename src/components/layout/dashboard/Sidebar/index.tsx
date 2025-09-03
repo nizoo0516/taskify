@@ -32,8 +32,10 @@ export default function Sidebar() {
             className="tablet:justify-between tablet:w-full flex justify-center border-0"
             onClick={() => {}}
           >
-            <div className="tablet:flex hidden">Dash Boards</div>
-            <Image src={"/icons/icon-box-add.svg"} alt="대시보드 추가" width={14} height={14} />
+            <div className="tablet:flex hidden text-xs font-semibold text-[#787486]">
+              Dash Boards
+            </div>
+            <Image src={"/icons/icon-box-add.svg"} alt="대시보드 추가" width={20} height={20} />
           </MyButton>
         </div>
         <DashboardList dashboards={dashboards} />

@@ -19,7 +19,7 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
 
   return (
     <>
-      <ul className={cn(scrollbarStyle, "tablet:h-full h-[300px]")}>
+      <ul className={cn(scrollbarStyle, "tablet:h-full h-[300px] text-[#787486]")}>
         {dashboards.map((d: Dashboard) => {
           const createdByMe = d.createdByMe;
           return (
@@ -27,7 +27,7 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
               key={d.id}
               className={cn(
                 hoverBlueStyle,
-                "tablet:justify-start tablet:mb-0 mb-6 flex justify-center",
+                "tablet:justify-start tablet:mb-0 mb-6 flex h-[50px] justify-center",
               )}
             >
               <MyButton
@@ -38,7 +38,7 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
                   style={{ backgroundColor: d.color }}
                   className="h-2 w-2 shrink-0 rounded-full"
                 ></div>
-                <div className="tablet:flex hidden w-full min-w-0 items-center justify-start gap-1">
+                <div className="tablet:flex hidden w-full min-w-0 items-center justify-start gap-[5px]">
                   <div className="pc:text-2lg tablet:text-lg tablet:inline-block hidden truncate font-medium">
                     {d.title}
                   </div>
