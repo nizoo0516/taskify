@@ -119,6 +119,8 @@ export default function LoginPage() {
         <Field id="password" label="비밀번호" error={errors.password}>
           <div className="relative">
             <Input
+              aria-invalid={!!errors.password}
+              aria-errormessage="password-error"
               type={showPw ? "text" : "password"}
               placeholder="비밀번호를 입력해 주세요"
               value={values.password}
