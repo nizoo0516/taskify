@@ -39,7 +39,7 @@ export default function Card({ title, tags, date, image }: CardProps) {
           <Image src="/icons/icon-calender.svg" alt="calendar" width={18} height={18} />
           <span>{date}</span>
         </div>
-        <div className="flex h-6 w-6 rounded-full bg-green-100 font-bold text-green-700"></div>
+        <div className="flex h-6 w-6 rounded-full bg-[#A3C4A2] font-bold"></div>
       </div>
     </div>
   );

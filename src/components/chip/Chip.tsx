@@ -93,10 +93,7 @@ export default function Chip({
       const plusIconSize = size === "sm" ? 14.5 : 16;
 
       return (
-        <button
-          type="button"
-          aria-label="add"
-          onClick={onClick}
+        <div
           className={`inline-flex items-center justify-center rounded bg-[#E2ECFF] ${plusSizeClasses} ${className}`}
         >
           <Image
@@ -107,7 +104,7 @@ export default function Chip({
             aria-hidden="true"
           />
           <span className="sr-only">추가</span>
-        </button>
+        </div>
       );
     }
 

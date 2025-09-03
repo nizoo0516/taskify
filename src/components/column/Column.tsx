@@ -1,5 +1,6 @@
 import Card from "@/components/card/Card";
 import Chip from "@/components/chip/Chip";
+import MyButton from "@/components/layout/Button";
 
 interface CardData {
   title: string;
@@ -20,7 +21,7 @@ export default function Column({ status, count, cards, onAddCard }: ColumnProps)
   return (
     <div className="w-[354px] border-r border-r-[#D9D9D9] bg-[#FAFAFA] p-5">
       {/* 컬럼 헤더 */}
-      <div className="mb-[25px] flex items-center justify-between">
+      <div className="mb-[21px] flex items-center justify-between">
         <div className="flex items-center gap-[12px]">
           {/* 컬럼 이름 */}
           <span className="flex items-center gap-2">
@@ -37,8 +38,14 @@ export default function Column({ status, count, cards, onAddCard }: ColumnProps)
       </div>
 
       {/* 카드 추가 버튼 */}
-      <div className="mb-4 flex h-10 items-center justify-center rounded-md border border-[#D9D9D9] bg-[#FFFFFF] py-2">
-        <Chip variant="add" onClick={onAddCard} />
+      <div className="mb-4">
+        <MyButton
+          onClick={onAddCard ?? (() => {})}
+          color="buttonBasic"
+          className="flex h-10 w-full items-center justify-center"
+        >
+          <Chip variant="add" />
+        </MyButton>
       </div>
 
       {/* 카드 리스트 */}
