@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 
+import checkIcon from "./icon-check.svg";
 import plusIcon from "./icon-plus.svg";
 
 type ChipProps = {
@@ -68,7 +69,9 @@ export default function Chip({
           className={`relative flex items-center justify-center rounded-full ${colorSizeClasses} ${className}`}
           style={{ backgroundColor: color }}
         >
-          {selected && <img src="./icon-check.svg" alt="선택됨" className={checkIconSize} />}
+          {selected && (
+            <Image src={checkIcon} alt="선택됨" width={24} height={24} className={checkIconSize} />
+          )}
         </button>
       );
     }
