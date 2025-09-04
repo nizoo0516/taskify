@@ -1,23 +1,35 @@
-import ExtraFeatures from "@/components/home/ExtraFeatures";
-import Features from "@/components/home/Features";
-import Hero from "@/components/home/Hero";
-import Footer from "@/components/layout/home/Footer";
-import Header from "@/components/layout/home/Header";
-// import TestLogin from "@/components/layout/home/TestLogin";
+"use client";
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen w-full flex-col justify-center bg-black text-white">
-      <Header />
-      <main className="flex flex-1 justify-center">
-        {/* <TestLogin /> */}
-        <div className="pc:w-[1200px] tablet:w-[664px] w-[343px]">
-          <Hero />
-          <Features />
-          <ExtraFeatures />
-        </div>
-      </main>
-      <Footer />
-    </div>
-  );
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import Home from "@/components/home/Home";
+import { useIsLoggedIn } from "@/features/auth/store";
+
+import Loading from "./Loading";
+
+export default function Page() {
+  const router = useRouter();
+  const isLoggedIn = useIsLoggedIn();
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (hydrated && isLoggedIn) {
+      router.replace("/mydashboard");
+    }
+  }, [hydrated, isLoggedIn, router]);
+
+  if (!hydrated) {
+    return <Loading />;
+  }
+
+  if (isLoggedIn) {
+    return <Loading />;
+  }
+
+  return <Home />;
 }
