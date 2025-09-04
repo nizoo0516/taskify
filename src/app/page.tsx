@@ -9,7 +9,9 @@ export default function LoginButton() {
       <main className="flex-1">
         <TestLogin />
       </main>
-      <Footer />
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 }

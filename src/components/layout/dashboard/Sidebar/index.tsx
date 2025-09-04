@@ -7,9 +7,9 @@ import { getDashboards } from "@/features/dashboard/api";
 import { useApiHandler } from "@/lib/useApiHandler";
 
 import DashboardList from "./DashboardList";
-import Pagination from "./Pagination";
 import MyButton from "../../Button";
 import Logo from "../../Logo";
+import Pagination from "../../Pagination";
 
 export default function Sidebar() {
   const [page, setPage] = useState<number>(1);
