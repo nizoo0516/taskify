@@ -248,6 +248,8 @@ export default function SignupPage() {
           로그인하기
         </Link>
       </div>
+
+      {dupModal}
     </main>
   );
 }
