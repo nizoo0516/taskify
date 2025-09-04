@@ -14,7 +14,7 @@ export default function Footer() {
 
   return (
     <>
-      <div className="tablet:h-[100px] tablet:flex-row pc:px-[140px] tablet:px-10 flex flex-col items-center justify-between border-t border-t-[rgba(23,23,23,0.6)] pt-8">
+      <div className="tablet:flex-row pc:px-[140px] tablet:px-10 flex flex-col items-center justify-between border-t border-t-[rgba(23,23,23,0.6)] pt-8">
         <p>©codeit - 2023</p>
         <div className="flex gap-8">
           <Link href="#">Privacy Policy</Link>

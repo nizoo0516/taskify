@@ -3,40 +3,40 @@
 import Chip from "@/components/chip/Chip";
 import Column from "@/components/column/Column";
 import MyButton from "@/components/layout/Button";
-import Navbar from "@/components/layout/dashboard/Navbar";
-import Sidebar from "@/components/layout/dashboard/Sidebar";
-import { Dashboard } from "@/features/dashboard/types";
+// import Navbar from "@/components/layout/dashboard/Navbar";
+// import Sidebar from "@/components/layout/dashboard/Sidebar";
+// import { Dashboard } from "@/features/dashboard/types";
 
 export default function DashboardId() {
-  const dashboards: Dashboard[] = [
-    {
-      id: 1,
-      title: "비브리지",
-      color: "#7AC555",
-      createdAt: "2025-09-03T00:00:00Z", // 더미 날짜
-      updatedAt: "2025-09-03T00:00:00Z",
-      createdByMe: true,
-      userId: 1,
-    },
-    {
-      id: 2,
-      title: "코드잇",
-      color: "#760DDE",
-      createdAt: "2025-09-03T00:00:00Z",
-      updatedAt: "2025-09-03T00:00:00Z",
-      createdByMe: true,
-      userId: 2,
-    },
-    {
-      id: 3,
-      title: "3분기 계획",
-      color: "#FFA500",
-      createdAt: "2025-09-03T00:00:00Z",
-      updatedAt: "2025-09-03T00:00:00Z",
-      createdByMe: false,
-      userId: 2,
-    },
-  ];
+  // const dashboards: Dashboard[] = [
+  //   {
+  //     id: 1,
+  //     title: "비브리지",
+  //     color: "#7AC555",
+  //     createdAt: "2025-09-03T00:00:00Z", // 더미 날짜
+  //     updatedAt: "2025-09-03T00:00:00Z",
+  //     createdByMe: true,
+  //     userId: 1,
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "코드잇",
+  //     color: "#760DDE",
+  //     createdAt: "2025-09-03T00:00:00Z",
+  //     updatedAt: "2025-09-03T00:00:00Z",
+  //     createdByMe: true,
+  //     userId: 2,
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "3분기 계획",
+  //     color: "#FFA500",
+  //     createdAt: "2025-09-03T00:00:00Z",
+  //     updatedAt: "2025-09-03T00:00:00Z",
+  //     createdByMe: false,
+  //     userId: 2,
+  //   },
+  // ];
 
   const cards = [
     {
@@ -65,16 +65,16 @@ export default function DashboardId() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* 사이드바 */}
-      <aside className="w-[300px] bg-[#FFFFFF] px-3 py-5">
+      {/* <aside className="w-[300px] bg-[#FFFFFF] px-3 py-5">
         <Sidebar dashboards={dashboards} />
-      </aside>
+      </aside> */}
 
       {/* 메인 영역 */}
       <div className="flex flex-1 flex-col">
         {/* 네비게이션 바 */}
-        <header className="h-[70px] items-center border-b border-[#D9D9D9] bg-white px-10">
+        {/* <header className="h-[70px] items-center border-b border-[#D9D9D9] bg-white px-10">
           <Navbar id={1} title="비브리지" />
-        </header>
+        </header> */}
 
         {/* 컬럼 영역 */}
         <main className="flex flex-1">

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { useIsLoggedIn } from "@/features/auth/store";
 import { cn } from "@/lib/utils/cn";
@@ -12,7 +13,11 @@ type LogoProps = {
 
 export default function Logo({ isHome = false }: LogoProps) {
   const isLoggedIn = useIsLoggedIn();
-  const linkHref = isLoggedIn ? "/mydashboard" : "/";
+  const [href, setHref] = useState("/");
+
+  useEffect(() => {
+    setHref(isLoggedIn ? "/mydashboard" : "/");
+  }, [isLoggedIn]);
 
   const logoConfig = isHome
     ? {
@@ -30,7 +35,7 @@ export default function Logo({ isHome = false }: LogoProps) {
     <>
       {/* Image를 디바이스로 관리해서 src를 변경되게 하는게 나은가 아님 이렇게 따로 관리하는게 나은가 */}
       <h1 className={cn("tablet:h-[46px] h-[30px] w-[30px]", logoConfig.wrapperClass)}>
-        <Link href={linkHref}>
+        <Link href={href}>
           <div className="relative h-full w-full">
             <Image
               src={logoConfig.src}
