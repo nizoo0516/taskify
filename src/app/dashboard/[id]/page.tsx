@@ -1,11 +1,8 @@
 "use client";
-import { useState } from "react";
 
 import Chip from "@/components/chip/Chip";
 import Column from "@/components/column/Column";
 import MyButton from "@/components/layout/Button";
-
-import CreateModal from "../components/CreateModal";
 
 export default function DashboardId() {
   const cards = [
