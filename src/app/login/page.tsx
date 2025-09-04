@@ -101,8 +101,7 @@ export default function LoginPage() {
         className="mb-[12px] flex flex-col items-center gap-[5px]"
         aria-label="홈으로 이동"
       >
-        <Image src="/images/img-logo-small.svg" alt="Taskify 로고" width={200} height={190} />
-        <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={200} height={55} />
+        <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={300} height={60} />
       </Link>
       <p className="mb-[30px] text-center text-xl text-[#333236]">오늘도 만나서 반가워요!</p>
 
