@@ -99,6 +99,7 @@ export default function SignupPage() {
     const okNickname = values.nickname.length > 0 && values.nickname.length <= MAX_NICK;
     const okPw = values.password.length >= MIN_PW;
     const okConfirm = values.confirm === values.password;
+    return okEmail && okNickname && okPw && okConfirm;
   }, [values]);
 
   const canSubmit = activeButton && values.agree && !submitting;
