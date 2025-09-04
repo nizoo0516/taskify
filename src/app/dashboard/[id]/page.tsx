@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 
 import Chip from "@/components/chip/Chip";
 import Column from "@/components/column/Column";
@@ -7,7 +8,11 @@ import Navbar from "@/components/layout/dashboard/Navbar";
 import Sidebar from "@/components/layout/dashboard/Sidebar";
 import { Dashboard } from "@/features/dashboard/types";
 
+import CreateModal from "../components/CreateModal";
+
 export default function DashboardId() {
+  const [isOpen, setIsOpen] = useState(false);
+
   const dashboards: Dashboard[] = [
     {
       id: 1,
@@ -82,7 +87,7 @@ export default function DashboardId() {
             status="To Do"
             count={cards.length}
             cards={cards}
-            onAddCard={() => alert("카드 추가")}
+            onAddCard={() => setIsOpen(true)}
           />
           <Column
             status="On Progress"
@@ -105,6 +110,7 @@ export default function DashboardId() {
             <span className="mr-3 text-lg font-bold">새로운 컬럼 추가하기</span>
             <Chip variant="add" />
           </MyButton>
+          <CreateModal isOpen={isOpen} setIsOpen={setIsOpen} />
         </main>
       </div>
     </div>
