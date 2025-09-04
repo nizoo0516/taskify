@@ -1,11 +1,17 @@
-export default function Home() {
+import Footer from "@/components/layout/home/Footer";
+import Header from "@/components/layout/home/Header";
+import TestLogin from "@/components/layout/home/TestLogin";
+
+export default function LoginButton() {
   return (
-    <div>
-      <h1 className="">Tailwind 테스트</h1>
-      <button className="mt-4 rounded bg-violet-500 px-4 py-2 text-white hover:bg-violet-600">
-        버튼 테스트
-      </button>
-      <div className="bg-brandGray-100 text-2xl-">Tailwind 커스텀 확인</div>
+    <div className="flex min-h-screen w-full flex-col bg-black text-white">
+      <Header />
+      <main className="flex-1">
+        <TestLogin />
+      </main>
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 }

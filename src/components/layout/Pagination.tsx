@@ -1,12 +1,14 @@
 "use client";
 
-import { usePagination } from "@/features/dashboard/store";
-
 import PaginationButton from "./PaginationButton";
 
-export default function Pagination() {
-  const { page, totalPages, setPage } = usePagination();
+type dataProps = {
+  page: number;
+  setPage: (page: number) => void;
+  totalPages: number;
+};
 
+export default function Pagination({ page, setPage, totalPages }: dataProps) {
   if (totalPages <= 1) return null;
 
   return (
