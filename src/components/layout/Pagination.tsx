@@ -9,8 +9,6 @@ type dataProps = {
 };
 
 export default function Pagination({ page, setPage, totalPages }: dataProps) {
-  if (totalPages <= 1) return null;
-
   return (
     <div className="tablet:flex mt-4 hidden">
       <PaginationButton
