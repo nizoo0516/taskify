@@ -6,16 +6,23 @@ import Chip from "@/components/chip/Chip";
 import Input from "@/components/form/Input";
 import Label from "@/components/form/Label";
 import MyButton from "@/components/layout/Button";
+import Pagination from "@/components/layout/Pagination";
 
 export default function DashboardIdEdit() {
   const colors = ["#7AC555", "#760DDE", "#FFA500", "#E876EA", "#76A5EA"];
   const [selectedColor, setSelectedColor] = useState("#7AC555");
 
+  const [memberPage, setMemberPage] = useState(1);
+  const totalMemberPages = 2;
+
+  const [invitePage, setInvitePage] = useState(1);
+  const totalInvitePages = 2;
+
   const members = [
-    { id: 1, name: "정만철" },
-    { id: 2, name: "김태순" },
-    { id: 3, name: "최주협" },
-    { id: 4, name: "윤지현" },
+    { id: 1, name: "정만철", avatar: "/images/img-profile-sample.svg" },
+    { id: 2, name: "김태순", avatar: "/images/img-profile-sample.svg" },
+    { id: 3, name: "최주협", avatar: "/images/img-profile-sample.svg" },
+    { id: 4, name: "윤지현", avatar: "/images/img-profile-sample.svg" },
   ];
   const invites = [
     { id: 1, email: "codeitA@codeit.com" },
@@ -30,13 +37,14 @@ export default function DashboardIdEdit() {
       {/* 전체 컨테이너 */}
       <div className="flex w-full max-w-155 flex-col gap-[15px]">
         {/* 돌아가기 버튼 */}
-        <button className="mb-5 text-left text-base font-medium text-[#333236]">
-          &lt; 돌아가기
+        <button className="mb-1 flex text-left text-base font-medium text-[#333236]">
+          <img src="/icons/icon-arrow-left.svg" alt="돌아가기" className="mr-2"></img>
+          돌아가기
         </button>
 
         {/* 대시보드 이름 + 색상 */}
         <section className="rounded-lg bg-white px-7 py-8 shadow-sm">
-          <h2 className="mb-[23px] text-2xl font-bold">비브리지</h2>
+          <h2 className="mb-6 text-2xl font-bold">비브리지</h2>
           <div className="flex flex-col gap-4">
             <div>
               <Label className="text-2lg font-medium">대시보드 이름</Label>
@@ -67,9 +75,20 @@ export default function DashboardIdEdit() {
 
         {/* 구성원 리스트 */}
         <section className="rounded-lg bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-6 flex items-center justify-between">
             <h3 className="text-2xl font-bold">구성원</h3>
-            <span className="text-sm text-[#333236]">1 페이지 중 1</span>
+            <div className="flex items-center gap-[15px]">
+              <span className="text-sm text-[#333236]">
+                {totalMemberPages} 페이지 중 {memberPage}
+              </span>
+              <div className="mt-[-14px]">
+                <Pagination
+                  page={memberPage}
+                  setPage={setMemberPage}
+                  totalPages={totalMemberPages}
+                />
+              </div>
+            </div>
           </div>
           {/* 라벨 */}
           <div>
@@ -83,7 +102,14 @@ export default function DashboardIdEdit() {
                   idx !== members.length - 1 ? "border-b border-gray-200" : ""
                 }`}
               >
-                <span className="text-sm">{m.name}</span>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={m.avatar}
+                    alt={m.name}
+                    className="h-[38px] w-[38px] rounded-full object-cover"
+                  />
+                  <span className="text-sm">{m.name}</span>
+                </div>
                 <MyButton
                   onClick={() => alert(`${m.name} 삭제`)}
                   color="buttonBasic"
@@ -98,15 +124,27 @@ export default function DashboardIdEdit() {
 
         {/* 초대 내역 */}
         <section className="rounded-lg bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-6 flex items-center justify-between">
             <h3 className="text-2xl font-bold">초대 내역</h3>
-            <MyButton
-              onClick={() => alert("초대하기")}
-              color="buttonBlue"
-              className="h-8 w-[105px] rounded-md text-sm text-white"
-            >
-              초대하기
-            </MyButton>
+            <div className="flex items-center gap-[15px]">
+              <span className="text-sm text-[#333236]">
+                {totalInvitePages} 페이지 중 {invitePage}
+              </span>
+              <div className="mt-[-14px]">
+                <Pagination
+                  page={invitePage}
+                  setPage={setInvitePage}
+                  totalPages={totalInvitePages}
+                />
+              </div>
+              <MyButton
+                onClick={() => alert("초대하기")}
+                color="buttonBlue"
+                className="h-8 w-[105px] rounded-md text-sm text-white"
+              >
+                초대하기
+              </MyButton>
+            </div>
           </div>
           {/* 라벨 */}
           <div>
