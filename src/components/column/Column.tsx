@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 import Card from "@/components/card/Card";
 import Chip from "@/components/chip/Chip";
 import MyButton from "@/components/layout/Button";
@@ -19,7 +21,18 @@ interface ColumnProps {
 
 export default function Column({ status, count, cards, onAddCard }: ColumnProps) {
   return (
-    <div className="w-[354px] border-r border-r-[#D9D9D9] bg-[#FAFAFA] p-5">
+    <div
+      className={clsx(
+        // 기본 (mobile)
+        "border-b border-[#D9D9D9] bg-[#FAFAFA] p-5",
+
+        // tablet
+        "tablet:w-full",
+
+        // pc
+        "pc:w-[354px] pc:border-r pc:border-b-0",
+      )}
+    >
       {/* 컬럼 헤더 */}
       <div className="mb-[21px] flex items-center justify-between">
         <div className="flex items-center gap-[12px]">

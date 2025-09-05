@@ -30,7 +30,7 @@ export default function DashboardId() {
   ];
 
   return (
-    <main className="flex flex-1 bg-[#FAFAFA]">
+    <main className="pc:flex-row flex flex-1 flex-col bg-[#FAFAFA]">
       <Column
         status="To Do"
         count={cards.length}
@@ -53,7 +53,7 @@ export default function DashboardId() {
       {/* 새로운 컬럼 추가 버튼 */}
       <MyButton
         onClick={() => alert("새 컬럼 추가")}
-        className="mt-17 ml-5 flex h-[70px] w-[354px] items-center justify-center border border-[#D9D9D9] bg-white"
+        className="tablet:w-full pc:mt-17 pc:w-[354px] mt-5 flex h-[70px] items-center justify-center border border-[#D9D9D9] bg-white"
       >
         <span className="mr-3 text-lg font-bold">새로운 컬럼 추가하기</span>
         <Chip variant="add" />

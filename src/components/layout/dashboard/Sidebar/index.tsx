@@ -23,7 +23,7 @@ export default function Sidebar() {
     <>
       <div>
         {/* 로고 이미지 */}
-        <div className="h=full tablet:mb-14 pc:justify-start mb-8 flex w-full items-center justify-center">
+        <div className="tablet:mb-14 pc:justify-start mb-8 flex h-full w-full items-center justify-center">
           <Logo />
         </div>
         {/*클릭 시 대시보드 생성 모달 열림*/}
