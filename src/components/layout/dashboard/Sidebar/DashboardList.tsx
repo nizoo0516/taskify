@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import MyButton from "@/components/layout/Button";
 import { Dashboard } from "@/features/dashboard/types";
@@ -12,8 +13,10 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
   const scrollbarStyle = cn("[&::-webkit-scrollbar]:hidden scrollbar-width:none overflow-y-scroll");
 
   const router = useRouter();
+  const [activeId, setActiveId] = useState<number | null>(null);
 
   const handelDashboardClick = (id: number) => {
+    setActiveId(id);
     router.push(`/dashboard/${id}`);
   };
 
@@ -27,7 +30,7 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
               key={d.id}
               className={cn(
                 hoverBlueStyle,
-                "tablet:justify-start tablet:mb-0 mb-6 flex h-[50px] justify-center",
+                "tablet:justify-start tablet:mb-0 tablet:h-[43px] pc:h-[50px] mb-6 flex justify-center",
               )}
             >
               <MyButton
@@ -36,7 +39,10 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
               >
                 <div
                   style={{ backgroundColor: d.color }}
-                  className="h-2 w-2 shrink-0 rounded-full"
+                  className={cn(
+                    "h-2 w-2 shrink-0 rounded-full",
+                    activeId === d.id && "tablet:h-2 tablet:w-2 h-3 w-3",
+                  )}
                 ></div>
                 <div className="tablet:flex hidden w-full min-w-0 items-center justify-start gap-[5px]">
                   <div className="pc:text-2lg tablet:text-lg tablet:inline-block hidden truncate font-medium">

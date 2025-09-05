@@ -34,7 +34,7 @@ export default function Navbar({ id }: { id?: number }) {
   const createdByMe = data?.dashboard?.createdByMe ?? false;
 
   return (
-    <div className="pc:justify-between flex h-full items-center justify-end">
+    <div className="pc:justify-between pc:max-w-[calc(100vw-380px)] tablet:max-w-[calc(100vw-240px)] flex h-full max-w-[calc(100vw-92px)] items-center justify-end">
       <h2 className="flex gap-2">
         <div className="pc:inline-block tablet:text-xl hidden text-lg font-bold">{title}</div>
 
