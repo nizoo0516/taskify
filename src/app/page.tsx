@@ -1,17 +1,35 @@
-import Footer from "@/components/layout/home/Footer";
-import Header from "@/components/layout/home/Header";
-import TestLogin from "@/components/layout/home/TestLogin";
+"use client";
 
-export default function LoginButton() {
-  return (
-    <div className="flex min-h-screen w-full flex-col bg-black text-white">
-      <Header />
-      <main className="flex-1">
-        <TestLogin />
-      </main>
-      <div>
-        <Footer />
-      </div>
-    </div>
-  );
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import Home from "@/components/home/Home";
+import { useIsLoggedIn } from "@/features/auth/store";
+
+import Loading from "./Loading";
+
+export default function Page() {
+  const router = useRouter();
+  const isLoggedIn = useIsLoggedIn();
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (hydrated && isLoggedIn) {
+      router.replace("/mydashboard");
+    }
+  }, [hydrated, isLoggedIn, router]);
+
+  if (!hydrated) {
+    return <Loading />;
+  }
+
+  if (isLoggedIn) {
+    return <Loading />;
+  }
+
+  return <Home />;
 }
