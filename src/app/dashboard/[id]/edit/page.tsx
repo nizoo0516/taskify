@@ -33,9 +33,9 @@ export default function DashboardIdEdit() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] px-6 py-8">
+    <div className="min-h-screen bg-[#FAFAFA] p-5">
       {/* 전체 컨테이너 */}
-      <div className="mx-auto flex w-full max-w-155 flex-col gap-[15px]">
+      <div className="flex w-full max-w-155 flex-col gap-[15px]">
         {/* 돌아가기 버튼 */}
         <button className="mb-1 flex text-left text-base font-medium text-[#333236]">
           <img src="/icons/icon-arrow-left.svg" alt="돌아가기" className="mr-2"></img>
