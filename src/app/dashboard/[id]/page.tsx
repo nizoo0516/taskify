@@ -50,14 +50,16 @@ export default function DashboardId() {
         onAddCard={() => alert("카드 추가")}
       />
 
-      {/* 새로운 컬럼 추가 버튼 */}
-      <MyButton
-        onClick={() => alert("새 컬럼 추가")}
-        className="tablet:w-full pc:mt-17 pc:w-[354px] mt-5 flex h-[70px] items-center justify-center border border-[#D9D9D9] bg-white"
-      >
-        <span className="mr-3 text-lg font-bold">새로운 컬럼 추가하기</span>
-        <Chip variant="add" />
-      </MyButton>
+      <div className="pc:pt-17 pc:w-[394px] mx-5 py-5">
+        {/* 새로운 컬럼 추가 버튼 */}
+        <MyButton
+          onClick={() => alert("새 컬럼 추가")}
+          className="flex h-[70px] w-full items-center justify-center border border-[#D9D9D9] bg-white"
+        >
+          <span className="mr-3 text-lg font-bold">새로운 컬럼 추가하기</span>
+          <Chip variant="add" />
+        </MyButton>
+      </div>
     </main>
   );
 }
