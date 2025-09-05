@@ -24,12 +24,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <Sidebar />
       </aside>
 
-      <div className="flex flex-1 flex-col">
-        <div className="border-brand-gray-300 tablet:px-10 tablet:py-4 tablet:h-[70px] h-[60px] w-full border-b px-3 py-3.5 align-middle">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <div className="border-brand-gray-300 tablet:px-10 tablet:py-4 tablet:h-[70px] h-[60px] border-b px-3 py-3.5 align-middle">
           <Navbar id={dashboardId ?? undefined} />
         </div>
 
-        <main className="flex-1">{children}</main>
+        <main className="w-full overflow-x-auto">
+          <div className="inline-flex gap-4">{children}</div>
+        </main>
       </div>
     </div>
   );
