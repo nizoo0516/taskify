@@ -50,6 +50,7 @@ export default function DashboardIdEdit() {
           className="tablet:text-base text-brand-gray-700 mb-1 flex text-left text-sm font-medium"
         >
           <img src="/icons/icon-arrow-left.svg" alt="돌아가기" className="mr-2" />
+          돌아가기
         </Link>
 
         {/* 대시보드 이름 + 색상 */}
