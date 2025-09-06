@@ -30,11 +30,17 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
               key={d.id}
               className={cn(
                 hoverBlueStyle,
-                "tablet:justify-start tablet:mb-0 tablet:h-[43px] pc:h-[50px] mb-6 flex justify-center",
+                activeId === d.id && "tablet:bg-brand-blue-50",
+                "mb-6 flex justify-center",
+                "tablet:justify-start tablet:mb-0 tablet:h-[43px]",
+                "pc:h-[50px]",
               )}
             >
               <MyButton
-                className="tablet:w-full tablet:px-2.5 tablet:py-2 tablet:justify-start flex items-center justify-center gap-4 border-0 bg-transparent"
+                className={cn(
+                  "flex items-center justify-center gap-4 border-0 bg-transparent",
+                  "tablet:w-full tablet:px-2.5 tablet:py-2 tablet:justify-start",
+                )}
                 onClick={() => handelDashboardClick(d.id)}
               >
                 <div
@@ -45,7 +51,13 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
                   )}
                 ></div>
                 <div className="tablet:flex hidden w-full min-w-0 items-center justify-start gap-[5px]">
-                  <div className="pc:text-2lg tablet:text-lg tablet:inline-block hidden truncate font-medium">
+                  <div
+                    className={cn(
+                      "hidden truncate font-medium",
+                      "tablet:text-lg tablet:inline-block",
+                      "pc:text-2lg",
+                    )}
+                  >
                     {d.title}
                   </div>
                   {createdByMe && (
