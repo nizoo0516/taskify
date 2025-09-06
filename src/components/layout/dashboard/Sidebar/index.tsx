@@ -48,7 +48,14 @@ export default function Sidebar() {
           </MyButton>
         </div>
         <DashboardList dashboards={dashboards} />
-        {isPage && <Pagination page={page} setPage={setPage} totalPages={totalPages} />}
+        {isPage && (
+          <Pagination
+            page={page}
+            setPage={setPage}
+            totalPages={totalPages}
+            className={"tablet:flex hidden"}
+          />
+        )}
       </div>
     </>
   );
