@@ -15,7 +15,7 @@ export default function Card({ title, tags, date, image }: CardProps) {
     <div
       className={clsx(
         // 기본 (mobile)
-        "flex w-full flex-col gap-4 rounded-md border border-[#D9D9D9] bg-white p-5",
+        "border-brand-gray-300 flex w-full flex-col gap-4 rounded-md border bg-white p-5",
 
         // tablet
         "tablet:w-full tablet:h-[112px] tablet:flex-row tablet:items-start tablet:gap-4 tablet:px-5",
@@ -47,7 +47,7 @@ export default function Card({ title, tags, date, image }: CardProps) {
 
       <div className="tablet:gap-4 pc:gap-2 flex w-full flex-1 flex-col items-start gap-2">
         {/* 제목 */}
-        <h3 className="text-base font-medium text-[#000000]">{title}</h3>
+        <h3 className="text-base font-medium text-black">{title}</h3>
 
         <div
           className={clsx(
