@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 import MyButton from "@/components/layout/Button";
 import { Dashboard } from "@/features/dashboard/types";
@@ -13,10 +12,10 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
   const scrollbarStyle = cn("[&::-webkit-scrollbar]:hidden scrollbar-width:none overflow-y-scroll");
 
   const router = useRouter();
-  const [activeId, setActiveId] = useState<number | null>(null);
+  const { id } = useParams();
+  const currentId = id ? Number(id) : null;
 
   const handelDashboardClick = (id: number) => {
-    setActiveId(id);
     router.push(`/dashboard/${id}`);
   };
 
@@ -25,12 +24,14 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
       <ul className={cn(scrollbarStyle, "tablet:h-full text-brand-gray-500 h-[300px]")}>
         {dashboards.map((d: Dashboard) => {
           const createdByMe = d.createdByMe;
+          const activeId = currentId === d.id;
+
           return (
             <li
               key={d.id}
               className={cn(
                 hoverBlueStyle,
-                activeId === d.id && "tablet:bg-brand-blue-50",
+                activeId && "tablet:bg-brand-blue-50",
                 "mb-6 flex justify-center",
                 "tablet:justify-start tablet:mb-0 tablet:h-[43px]",
                 "pc:h-[50px]",
@@ -47,7 +48,7 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
                   style={{ backgroundColor: d.color }}
                   className={cn(
                     "h-2 w-2 shrink-0 rounded-full",
-                    activeId === d.id && "tablet:h-2 tablet:w-2 h-3 w-3",
+                    activeId && "tablet:h-2 tablet:w-2 h-3 w-3",
                   )}
                 ></div>
                 <div className="tablet:flex hidden w-full min-w-0 items-center justify-start gap-[5px]">
