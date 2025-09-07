@@ -16,7 +16,9 @@ export default function Logo({ isHome = false }: LogoProps) {
   const [href, setHref] = useState("/");
 
   useEffect(() => {
-    setHref(isLoggedIn ? "/mydashboard" : "/");
+    if (isLoggedIn) {
+      setHref("/mydashboard");
+    }
   }, [isLoggedIn]);
 
   const logoConfig = isHome
