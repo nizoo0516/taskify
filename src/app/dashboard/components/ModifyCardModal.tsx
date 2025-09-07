@@ -8,7 +8,7 @@ import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/layout/Button";
-import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
+import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
 
 type ModalType = {
   isOpen: boolean;

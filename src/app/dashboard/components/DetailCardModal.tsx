@@ -6,7 +6,8 @@ import Chip from "@/components/chip/Chip";
 import Field from "@/components/form/Field";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/layout/Button";
-import { Modal, ModalHeader, ModalContext } from "@/components/Modal";
+import KebabModal from "@/components/modal/KebabModal";
+import { Modal, ModalHeader, ModalContext } from "@/components/modal/Modal";
 
 type ModalType = {
   isOpen: boolean;
@@ -14,7 +15,7 @@ type ModalType = {
 };
 
 export default function BoardsModal({ isOpen, setIsOpen }: ModalType) {
-  const [isCebabOpen, setIsCebabOpen] = useState(false);
+  const [isKebabOpen, setIsKebabOpen] = useState(false);
   return (
     <div>
       {isOpen && (
@@ -22,7 +23,7 @@ export default function BoardsModal({ isOpen, setIsOpen }: ModalType) {
           <ModalHeader title="새로운 새로운 일정 관리 Taskify" onClose={() => setIsOpen(false)}>
             <Button
               onClick={() => {
-                setIsCebabOpen(!isCebabOpen);
+                setIsKebabOpen(!isKebabOpen);
               }}
               className="mr-6 ml-auto border-0"
             >
@@ -76,15 +77,15 @@ export default function BoardsModal({ isOpen, setIsOpen }: ModalType) {
               </Field>
             </div>
           </ModalContext>
-          {isCebabOpen && (
-            <div className="absolute top-16 right-24 flex flex-col rounded-md border border-[#D9D9D9] bg-white px-1.5 py-[7px]">
-              <Button onClick={() => {}} className="h-8 w-20">
+          {isKebabOpen && (
+            <KebabModal className="top-16 right-24 bg-white">
+              <Button onClick={() => {}} className="h-8 w-20" color="buttonWhite">
                 수정하기
               </Button>
-              <Button onClick={() => {}} className="h-8 w-20">
+              <Button onClick={() => {}} className="h-8 w-20" color="buttonWhite">
                 삭제하기
               </Button>
-            </div>
+            </KebabModal>
           )}
         </Modal>
       )}

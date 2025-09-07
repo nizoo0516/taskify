@@ -1,8 +1,14 @@
+"use client";
 import clsx from "clsx";
+import { useState } from "react";
 
+import DeleteColumnModal from "@/app/dashboard/components/DeleteColumnModal";
+import ManageColumnModal from "@/app/dashboard/components/ManageColumnModal";
 import Card from "@/components/card/Card";
 import Chip from "@/components/chip/Chip";
 import MyButton from "@/components/layout/Button";
+import Button from "@/components/layout/Button";
+import KebabModal from "@/components/modal/KebabModal";
 
 interface CardData {
   title: string;
@@ -12,14 +18,31 @@ interface CardData {
   author?: string;
 }
 
+type Column = { title: string; id: number };
+
 interface ColumnProps {
   status: string;
   count: number;
   cards: CardData[];
   onAddCard?: () => void;
+  kebabIndex: boolean;
+  isKebabOpen?: () => void;
+  columnId: number;
+  setColumns: React.Dispatch<React.SetStateAction<Column[]>>;
 }
 
-export default function Column({ status, count, cards, onAddCard }: ColumnProps) {
+export default function Column({
+  status,
+  count,
+  cards,
+  onAddCard,
+  kebabIndex,
+  isKebabOpen,
+  columnId,
+  setColumns,
+}: ColumnProps) {
+  const [modal, setModal] = useState<null | "manage" | "delete">(null);
+
   return (
     <div
       className={clsx(
@@ -34,7 +57,7 @@ export default function Column({ status, count, cards, onAddCard }: ColumnProps)
       )}
     >
       {/* 컬럼 헤더 */}
-      <div className="mb-[21px] flex items-center justify-between">
+      <div className="relative mb-[21px] flex items-center justify-between">
         <div className="flex items-center gap-[12px]">
           {/* 컬럼 이름 */}
           <span className="flex items-center gap-2">
@@ -45,9 +68,19 @@ export default function Column({ status, count, cards, onAddCard }: ColumnProps)
           <Chip variant="badge" label={count.toString()} />
         </div>
         {/* 설정 버튼 */}
-        <button type="button">
+        <button type="button" onClick={isKebabOpen}>
           <img src="/icons/icon-settings.svg" alt="설정" className="h-6 w-6" />
         </button>
+        {kebabIndex && (
+          <KebabModal className="top-8 right-0">
+            <Button onClick={() => setModal("manage")} className="h-8 w-20" color="buttonWhite">
+              수정하기
+            </Button>
+            <Button onClick={() => setModal("delete")} className="h-8 w-20" color="buttonWhite">
+              삭제하기
+            </Button>
+          </KebabModal>
+        )}
       </div>
 
       {/* 카드 추가 버튼 */}
@@ -67,6 +100,23 @@ export default function Column({ status, count, cards, onAddCard }: ColumnProps)
           <Card key={index} {...card} />
         ))}
       </div>
+      {/* 수정하기, 삭제하기 모달 관리  */}
+      {modal === "manage" && (
+        <ManageColumnModal
+          isOpen
+          setIsOpen={() => setModal(null)}
+          columnId={columnId}
+          setColumns={setColumns}
+        />
+      )}
+      {modal === "delete" && (
+        <DeleteColumnModal
+          isOpen
+          setIsOpen={() => setModal(null)}
+          columnId={columnId}
+          setColumns={setColumns}
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,7 @@
 "use client";
+import { useState } from "react";
+import { CardRequest } from "@/features/cards/api";
+
 import DatePicker from "@/components/form/DatePicker";
 import Field from "@/components/form/Field";
 import ImgUpload from "@/components/form/ImgUpload";
@@ -7,7 +10,8 @@ import Select from "@/components/form/Select";
 import TagInput from "@/components/form/TagInput";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/layout/Button";
-import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
+import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
+import { create } from "domain";
 
 type ModalType = {
   isOpen: boolean;
@@ -20,6 +24,36 @@ const managerOpt = [
 ];
 
 export default function CreateModal({ isOpen, setIsOpen }: ModalType) {
+  // input 값
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [dueDate, setDueDate] = useState<Date | null>(new Date());
+  const [tag, setTag] = useState([]);
+  const [image, setImage] = useState("");
+
+  // 공백값 체크(필수 표시 붙은것만!)
+  const isDisabled = title.trim() === "" || description.trim() === "";
+
+  const assigneeUserId = 6166;
+  const dashboardId = 16162;
+  const columnId = 54522;
+
+  const handleCreate = async () => {
+    if (isDisabled) return;
+    try {
+      const createNewCard = await createCard({
+        assigneeUserId: assigneeUserId,
+        dashboardId: dashboardId,
+        columnId: columnId,
+        title: title.trim(),
+        description: description.trim(),
+        dueDate: "2025-09-05 10:34",
+      });
+    } catch {
+      alert("오류");
+    }
+  };
+
   return (
     <div>
       {isOpen && (
@@ -30,12 +64,16 @@ export default function CreateModal({ isOpen, setIsOpen }: ModalType) {
               <Select options={managerOpt} placeholder="선택하기" />
             </Field>
             <Field id="title" label="제목">
-              <Input />
+              <Input value={title} onChange={(e) => setTitle(e.currentTarget.value)} />
             </Field>
             <Field id="description" label="설명">
-              <Textarea className="resize-none" />
+              <Textarea
+                className="resize-none"
+                value={description}
+                onChange={(e) => setDescription(e.currentTarget.value)}
+              />
             </Field>
-            <Field id="endDate" label="마감일">
+            <Field id="dueDate" label="마감일">
               <DatePicker />
             </Field>
             <Field id="tag" label="태그">
@@ -57,7 +95,7 @@ export default function CreateModal({ isOpen, setIsOpen }: ModalType) {
             <Button
               className="text-brand-gray-100 h-[54px] w-64"
               onClick={() => {}}
-              color="buttonBlue"
+              color={isDisabled ? "buttonGrey" : "buttonBlue"}
             >
               생성
             </Button>

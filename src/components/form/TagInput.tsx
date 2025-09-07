@@ -35,7 +35,7 @@ export default function TagInput() {
               <button
                 onClick={() => {
                   removeTag(i);
-                }}
+                }} 
               >
                 x
               </button>

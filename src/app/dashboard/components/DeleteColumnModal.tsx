@@ -1,20 +1,24 @@
 "use client";
 
 import Button from "@/components/layout/Button";
-import { Modal, ModalContext, ModalFooter } from "@/components/Modal";
+import { Modal, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { deleteColumn } from "@/features/columns/api";
+
+type Column = { title: string; id: number };
+
 type ModalType = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  columnId: number;
+  setColumns: React.Dispatch<React.SetStateAction<Column[]>>;
 };
 
-const COLUMN_ID = 54526;
-
-export default function CreateColumnModal({ isOpen, setIsOpen }: ModalType) {
+export default function CreateColumnModal({ isOpen, setIsOpen, columnId, setColumns }: ModalType) {
   const handleDelete = async () => {
     alert("컬럼의 모든 카드가 삭제됩니다");
     try {
-      await deleteColumn(COLUMN_ID);
+      await deleteColumn(columnId);
+      setColumns((prev) => prev.filter((col) => col.id !== columnId));
       setIsOpen(false);
     } catch (e) {
       alert((e as Error).message || "컬럼 삭제 오류");
