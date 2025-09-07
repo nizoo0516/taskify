@@ -50,7 +50,7 @@ export default function DashboardId() {
         onAddCard={() => alert("카드 추가")}
       />
 
-      <div className="pc:pt-17 pc:w-[354px] mx-5 py-5">
+      <div className="pc:pt-17 pc:w-[354px] mx-5 flex-shrink-0 py-5">
         {/* 새로운 컬럼 추가 버튼 */}
         <MyButton
           onClick={() => alert("새 컬럼 추가")}

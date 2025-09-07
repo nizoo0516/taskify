@@ -30,7 +30,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </div>
 
         <main className="w-full overflow-x-auto">
-          <div className="inline-flex gap-4">{children}</div>
+          <div className="flex-1">{children}</div>
         </main>
       </div>
     </div>
