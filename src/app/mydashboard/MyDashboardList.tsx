@@ -4,10 +4,10 @@ import Image from "next/image";
 import { useState } from "react";
 
 import Chip from "@/components/chip/Chip";
+import CreateDashboardModal from "@/components/CreateDashboardModal";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/layout/Button";
 import Pagination from "@/components/layout/Pagination";
-import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
 import { Dashboard, Invitation } from "@/features/dashboard/types";
 
 interface InvitationResponse{
@@ -134,10 +134,8 @@ export default function MyDashboardList() {
   const currentItems = dashboardList.slice(startIndex, startIndex + itemsPerPage);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newDashboardName, setNewDashboardName] = useState("");
 
-  const colors = ["#7AC555", "#760DDE", "#FFA500", "#E876EA", "#76A5EA"];
-  const [selectedColor, setSelectedColor] = useState("#7AC555");
+  const [selectedColor] = useState("#7AC555");
 
   const handleAcceptInvite = (inviteId: number) => {
     const invite = invitations.find(inv => inv.id === inviteId);
@@ -270,29 +268,21 @@ export default function MyDashboardList() {
         </div>
       </div>
 
-
-
       {/*모달*/}
-      {isModalOpen && (
-        <Modal open={isModalOpen} size="lg" className="w-[584px] h-[344px]">
-          <ModalHeader title="새로운 대시보드" />
-          <ModalContext>
-            <span>대시보드 이름</span>
-            <input type="text" className="w-full border border-gray-300 rounded p-2" placeholder="대시보드 이름을 입력해주세요." value={newDashboardName} onChange={(e) => setNewDashboardName(e.target.value)} />
-            <div className="mt-4 mb-4 flex items-center gap-2">
-              {colors.map((c) => (
-                <Chip key={c} variant="color" color={c} selected={c === selectedColor} onClick={() => setSelectedColor(c)}/>
-              ))}
-            </div>
-          </ModalContext>
-          <ModalFooter>
-            <MyButton color="buttonBasic" className="w-[256px] h-[54px]" onClick={() => setIsModalOpen(false)}>취소</MyButton>
-            <MyButton color="buttonBlue" className="w-[256px] h-[54px] text-white" onClick={() => {alert("생성!"); setIsModalOpen(false);}}>생성</MyButton>
-          </ModalFooter>
-        </Modal>
-      )}
-
-      
+      <CreateDashboardModal open={isModalOpen} onClose={() => setIsModalOpen(false)} 
+      onCreate={(name, color) => {
+        const newDashboard: Dashboard = {
+          id: dashboardList.length + 1,
+          title: name,
+          color,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          createdByMe: true,
+          userId: 999, //예시 userID
+        };
+        setDashboardList(prev => [...prev, newDashboard]);
+      }}>
+      </CreateDashboardModal>
 
     </div>
 
