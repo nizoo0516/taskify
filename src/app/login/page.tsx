@@ -8,29 +8,33 @@ import { useRef, useState } from "react";
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/layout/Button";
+import { useAuthStore } from "@/features/auth/store";
+import { baseProfile } from "@/features/users/baseProfile";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL!;
+async function loginAPI(email: string, password: string) {
+  const res = await fetch(`${API_BASE}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  if (res.status === 201) return res.json();
+
+  let msg = "로그인에 실패했습니다.";
+  const body: unknown = await res.json().catch(() => null);
+  const m = (body as { message?: unknown })?.message;
+  if (typeof m === "string") msg = m;
+
+  throw new Error(msg);
+}
 
 type Errors = { email?: string; password?: string };
 const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
-// 우선 mockdata로 로그인 동작 구현, 추후 api 연동 시 보완
-const MOCK_DELAY = 400;
-
-async function mockLogin(email: string, password: string) {
-  await new Promise((r) => setTimeout(r, MOCK_DELAY));
-
-  if (password !== "test1234") {
-    const err = new Error("INVALID_PW");
-    throw err;
-  }
-
-  const payload = { sub: email, iat: Date.now() };
-  const accessToken = `mock.${btoa(JSON.stringify(payload))}`;
-  return { accessToken };
-}
-
 export default function LoginPage() {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
+  const setAccessToken = useAuthStore((s) => s.setAccessToken);
 
   const [values, setValues] = useState({
     email: "",
@@ -75,20 +79,25 @@ export default function LoginPage() {
     if (!canSubmit) return;
 
     try {
+      // 로그인 성공
       setSubmitting(true);
 
-      const { accessToken } = await mockLogin(values.email, values.password);
+      const { accessToken } = await loginAPI(values.email, values.password);
+      setAccessToken(accessToken);
+      // localStorage에 토큰 저장
+      localStorage.setItem("accessToken", accessToken);
 
-      localStorage.setItem("access_token", accessToken);
-
+      try {
+        await baseProfile();
+      } catch (e) {
+        console.warn("프로필 기본 이미지 적용 실패:", e);
+      }
       router.push("/mydashboard");
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "";
-      if (message === "INVALID_PW") {
-        window.alert("비밀번호가 일치하지 않습니다.");
-      } else {
-        window.alert("로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.");
-      }
+      // 로그인 실패
+      const message =
+        err instanceof Error ? err.message : "로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+      window.alert(message);
     } finally {
       setSubmitting(false);
     }
@@ -129,7 +138,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setShowPw((s) => !s)}
-              aria-pressesd={showPw}
+              aria-pressed={showPw}
               aria-controls="password"
               aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
               className="absolute top-1/2 right-3 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-gray-500"
