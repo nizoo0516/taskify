@@ -8,7 +8,9 @@ import { Dashboard } from "@/features/dashboard/types";
 import { cn } from "@/lib/utils/cn";
 
 export default function DashboardList({ dashboards }: { dashboards: Dashboard[] }) {
-  const hoverBlueStyle = cn("tablet:hover:bg-brand-blue-50 rounded-[4px]");
+  const hoverBlueStyle = cn(
+    "tablet:hover:bg-brand-blue-50 rounded-[4px] hover:text-brand-blue-500",
+  );
   const scrollbarStyle = cn("[&::-webkit-scrollbar]:hidden scrollbar-width:none overflow-y-scroll");
 
   const router = useRouter();
