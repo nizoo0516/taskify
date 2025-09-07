@@ -3,14 +3,14 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
-import { getDashboards } from "@/features/dashboard/api";
-import { useApiHandler } from "@/lib/useApiHandler";
 import { useDevice } from "@/lib/useDevice";
 
 import AddDashboard from "./AddDashboard";
 import DashboardList from "./DashboardList";
+import DashboardSkeleton from "./DashboardSkeleton";
 import Logo from "../../Logo";
 import Pagination from "../../Pagination";
+import { useDashboards } from "../Navbar/useDashboard";
 
 export default function Sidebar() {
   const device = useDevice();
@@ -27,12 +27,7 @@ export default function Sidebar() {
     prevPage.current = page;
   }, [page]);
 
-  const { data } = useApiHandler(() => {
-    if (device === "mobile") {
-      return getDashboards("infiniteScroll", { size: 20 });
-    }
-    return getDashboards("pagination", { page, size: 15 });
-  }, [page, device]);
+  const { data, isLoading } = useDashboards(page, device);
 
   const dashboards = data?.dashboards ?? [];
   const totalCount = data?.totalCount ?? 0;
@@ -62,7 +57,7 @@ export default function Sidebar() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="col-start-1 row-start-1"
             >
-              <DashboardList dashboards={dashboards} />
+              {isLoading ? <DashboardSkeleton /> : <DashboardList dashboards={dashboards} />}
             </motion.div>
           </AnimatePresence>
         </div>

@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from "react";
 
-import { useIsLoggedIn } from "@/features/auth/store";
+import { isLoggedIn } from "@/features/auth/actions";
 
 export function useAuthGuard() {
-  const isLoggedIn = useIsLoggedIn();
-  const [hydrated, setHydrated] = useState(false);
+  const loggedIn = async () => await isLoggedIn();
+  const [hydrated, setHydrated] = useState<boolean>(false);
 
   useEffect(() => {
     setHydrated(true);
   }, []);
 
-  return { isLoggedIn, hydrated };
+  return { loggedIn, hydrated };
 }

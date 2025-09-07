@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 
 import "@/styles/globals.css";
+import { Suspense } from "react";
+
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Taskify",
@@ -13,7 +16,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <Suspense fallback={null}>
+          <Providers>{children}</Providers>
+        </Suspense>
+      </body>
     </html>
   );
 }
