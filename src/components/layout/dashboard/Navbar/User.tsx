@@ -5,6 +5,7 @@ import UserMenu from "@/components/layout/dashboard/Navbar/UserMenu";
 import { getMe } from "@/features/users/api";
 import { useApiHandler } from "@/lib/useApiHandler";
 import { useOutsideClick } from "@/lib/useOutsideClick";
+import { cn } from "@/lib/utils/cn";
 
 export default function User() {
   const { data } = useApiHandler(() => getMe(), []);
@@ -32,7 +33,12 @@ export default function User() {
         <div className="tablet:flex ml-3 hidden">{userName}</div>
       </button>
       {isMenu && (
-        <div className="tablet:right-[-28px] absolute top-11 right-0 w-[128px] rounded-[6px] border bg-white p-1.5">
+        <div
+          className={cn(
+            "tablet:right-[-28px] absolute top-11 right-0 w-[128px] rounded-[6px] border bg-white p-1.5",
+            "dark:bg-dark-800 dark:border-dark-600",
+          )}
+        >
           <UserMenu />
         </div>
       )}

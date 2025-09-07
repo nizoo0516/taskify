@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils/cn";
 export default function DashboardList({ dashboards }: { dashboards: Dashboard[] }) {
   const hoverBlueStyle = cn(
     "tablet:hover:bg-brand-blue-50 rounded-[4px] hover:text-brand-blue-500",
+    "dark:hover:bg-dark-700 dark:hover:text-brand-blue-100",
   );
   const scrollbarStyle = cn("[&::-webkit-scrollbar]:hidden scrollbar-width:none overflow-y-scroll");
 
@@ -23,7 +24,13 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
 
   return (
     <>
-      <ul className={cn(scrollbarStyle, "tablet:h-full text-brand-gray-500 h-[300px]")}>
+      <ul
+        className={cn(
+          scrollbarStyle,
+          "tablet:h-full text-brand-gray-500 h-[300px]",
+          "dark:text-dark-200",
+        )}
+      >
         {dashboards.map((d: Dashboard) => {
           const createdByMe = d.createdByMe;
           const activeId = currentId === d.id;
@@ -33,7 +40,8 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
               key={d.id}
               className={cn(
                 hoverBlueStyle,
-                activeId && "tablet:bg-brand-blue-50",
+                activeId &&
+                  cn("tablet:bg-brand-blue-50", "dark:bg-dark-700 dark:text-brand-blue-100"),
                 "mb-6 flex justify-center",
                 "tablet:justify-start tablet:mb-0 tablet:h-[43px]",
                 "pc:h-[50px]",
