@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -18,6 +18,7 @@ export type CreateData = {
 };
 
 export default function Sidebar() {
+  const router = useRouter(); // dash보드 페이지에서 id 값 가지고 오려고 추가
   const device = useDevice();
   const [page, setPage] = useState<number>(1);
   const [direction, setDirection] = useState<"prev" | "next">("next");
@@ -46,11 +47,11 @@ export default function Sidebar() {
   const isPage = totalPages > 1;
   const isPrev = direction === "prev";
 
-  const handleCreate = async (data: CreateData) => {
-    await createDashboard(data);
+  const handleCreate = async (form: CreateData) => {
+    const created = await createDashboard(form); // dash보드 페이지에서 id 값 가지고 오려고 변경
     await refetch();
-    const newId = String(created.id ?? created.dashboard?.id);
-    if (newId) router.push(`/dashboard/${newId}`);
+
+    router.push(`/dashboard/${created.id}`); // dash보드 페이지에서 id 값 가지고 오려고 추가
   };
 
   return (

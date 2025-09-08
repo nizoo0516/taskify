@@ -1,5 +1,5 @@
 "use client";
-
+import { useParams } from "next/navigation";
 import { useState } from "react";
 
 import Field from "@/components/form/Field";
@@ -16,18 +16,21 @@ type ModalType = {
   setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>;
 };
 
-const dashboardId = 16211;
-
 export default function CreateColumnModal({ isOpen, setIsOpen, setColumns }: ModalType) {
   const [newColumn, setNewColumn] = useState("");
   const isDisabled = newColumn.trim() === "";
 
+  // useParams로 dashbordId값 받아옴
+  const { id } = useParams();
+  const dashboardId = Number(id);
+
   const handleCreate = async () => {
     if (isDisabled) return;
+    console.log(dashboardId);
     try {
       const craeteNewCol = await createColumn({
         title: newColumn.trim(),
-        dashboardId: dashboardId,
+        dashboardId,
       });
       setColumns((prev) => [...prev, { title: craeteNewCol.title, id: craeteNewCol.id }]);
       setIsOpen(false);

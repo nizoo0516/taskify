@@ -1,4 +1,8 @@
 "use client";
+import { useParams } from "next/navigation";
+import { useApiHandler } from "@/lib/useApiHandler";
+import { getMembers } from "@/features/members/api";
+import type { Member } from "@/features/members/types";
 import { useState } from "react";
 
 import DatePicker from "@/components/form/DatePicker";
@@ -39,9 +43,17 @@ export default function CreateModal({ isOpen, setIsOpen, setColumns, isActiveCol
   // 공백값 체크(필수 표시 붙은것만!)
   const isDisabled = title.trim() === "" || description.trim() === "";
 
-  const assigneeUserId = 6204;
-  const dashboardId = 16211;
+  // useParams로 dashbordId값 받아옴
+  const { id } = useParams();
+  const dashboardId = Number(id);
+  // members api 호출해서 아이디값 받아오기
+  const { data } = useApiHandler<{ members: Member[] }>(
+    () => getMembers(dashboardId, {}),
+    [dashboardId],
+  );
+  const assigneeUserId = data?.members[0]?.userId;
   const columnId = 54736;
+
   const handleCreate = async () => {
     if (isDisabled) return;
     // 이미지 업로드 부분
