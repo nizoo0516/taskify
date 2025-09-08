@@ -11,6 +11,7 @@ export default [
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  ...nextPlugin,
   {
     plugins: {
       react,
