@@ -7,9 +7,9 @@ import ManageColumnModal from "@/app/dashboard/components/columModal/ManageColum
 import type { ColumnProps } from "@/app/dashboard/types";
 import Card from "@/components/card/Card";
 import Chip from "@/components/chip/Chip";
+import KebabModal from "@/components/KebabModal";
 import MyButton from "@/components/layout/Button";
 import Button from "@/components/layout/Button";
-import KebabModal from "@/components/modal/KebabModal";
 
 export default function Column({
   status,

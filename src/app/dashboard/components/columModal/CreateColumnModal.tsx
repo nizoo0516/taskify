@@ -5,7 +5,7 @@ import { useState } from "react";
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
 import Button from "@/components/layout/Button";
-import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
+import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
 import { createColumn } from "@/features/columns/api";
 
 import type { ColumnData } from "../../types";

@@ -9,7 +9,7 @@ import Select from "@/components/form/Select";
 import TagInput from "@/components/form/TagInput";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/layout/Button";
-import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
+import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
 import { createCard } from "@/features/cards/api";
 import { getColumns, uploadCardImage } from "@/features/columns/api";
 
@@ -41,8 +41,7 @@ export default function CreateModal({ isOpen, setIsOpen, setColumns, isActiveCol
 
   const assigneeUserId = 6166;
   const dashboardId = 16162;
-  const columnId = 54517;
-
+  const columnId = 54515;
   const handleCreate = async () => {
     if (isDisabled) return;
     // 이미지 업로드 부분

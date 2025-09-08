@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-import { Modal, ModalHeader, ModalFooter } from "@/components/modal/Modal";
+import { Modal, ModalHeader, ModalFooter } from "@/components/Modal";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);

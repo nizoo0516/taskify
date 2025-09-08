@@ -1,14 +1,14 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils/cn";
 
 import Chip from "@/components/chip/Chip";
 import Field from "@/components/form/Field";
+import KebabModal from "@/components/KebabModal";
 import Button from "@/components/layout/Button";
-import KebabModal from "@/components/modal/KebabModal";
-import { Modal, ModalHeader, ModalContext } from "@/components/modal/Modal";
+import { Modal, ModalHeader, ModalContext } from "@/components/Modal";
 import { getCard, deleteCard } from "@/features/cards/api";
+import { cn } from "@/lib/utils/cn";
 
 import Comment from "./Comment";
 import ModifyCardModal from "./ModifyCardModal";

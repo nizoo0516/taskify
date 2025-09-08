@@ -6,7 +6,7 @@ import { useState } from "react";
 import Chip from "@/components/chip/Chip";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/layout/Button";
-import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
+import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
 
 interface Dashboard {
   id: string;

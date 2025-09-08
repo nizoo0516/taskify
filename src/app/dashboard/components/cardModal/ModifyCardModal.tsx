@@ -10,7 +10,7 @@ import Select from "@/components/form/Select";
 import TagInput from "@/components/form/TagInput";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/layout/Button";
-import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
+import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
 import { updateCard } from "@/features/cards/api";
 import { uploadCardImage } from "@/features/columns/api";
 
