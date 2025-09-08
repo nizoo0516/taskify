@@ -12,6 +12,11 @@ import DashboardList from "./DashboardList";
 import Logo from "../../Logo";
 import Pagination from "../../Pagination";
 
+export type CreateData = {
+  title: string;
+  color: string;
+};
+
 export default function Sidebar() {
   const device = useDevice();
   const [page, setPage] = useState<number>(1);
@@ -41,8 +46,8 @@ export default function Sidebar() {
   const isPage = totalPages > 1;
   const isPrev = direction === "prev";
 
-  const handleCreate = async (title: string, color: string) => {
-    await createDashboard({ title, color });
+  const handleCreate = async (data: CreateData) => {
+    await createDashboard(data);
     await refetch();
   };
 
@@ -55,7 +60,7 @@ export default function Sidebar() {
         </div>
 
         {/*클릭 시 대시보드 생성 모달 열림*/}
-        <AddDashboard />
+        <AddDashboard handleCreate={handleCreate} />
 
         <div className="grid">
           <AnimatePresence mode="wait" initial={false}>

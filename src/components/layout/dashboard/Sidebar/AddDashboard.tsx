@@ -5,9 +5,14 @@ import { useState } from "react";
 import NewDashboardModal from "@/components/CreateDashboardModal";
 import { cn } from "@/lib/utils/cn";
 
+import { CreateData } from ".";
 import MyButton from "../../Button";
 
-export default function AddDashboard({ handleCreate }: { handleCreate: () => void }) {
+export default function AddDashboard({
+  handleCreate,
+}: {
+  handleCreate: (data: CreateData) => Promise<void>;
+}) {
   const addIconSrc = "/icons/icon-box-add.svg";
 
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +48,7 @@ export default function AddDashboard({ handleCreate }: { handleCreate: () => voi
         {isOpen && (
           <NewDashboardModal
             open={isOpen}
-            onCreate={handleCreate}
+            onCreate={(name, selectedColor) => handleCreate({ title: name, color: selectedColor })}
             onClose={() => setIsOpen(false)}
           />
         )}
