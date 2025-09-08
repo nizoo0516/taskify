@@ -27,13 +27,17 @@ export default function CreateColumnModal({ isOpen, setIsOpen, setColumns }: Mod
   const handleCreate = async () => {
     if (isDisabled) return;
     console.log(dashboardId);
+
     try {
-      const craeteNewCol = await createColumn({
+      const res = await createColumn({
         title: newColumn.trim(),
         dashboardId,
       });
-      setColumns((prev) => [...prev, { title: craeteNewCol.title, id: craeteNewCol.id }]);
+      const col: ColumnData = (res as { data?: ColumnData }).data ?? (res as ColumnData);
+
+      setColumns((prev) => [...prev, { id: col.id, title: col.title }]);
       setIsOpen(false);
+      console.log(col);
     } catch (e) {
       alert((e as Error).message || "컬럼 생성 오류");
     }
