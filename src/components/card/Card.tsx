@@ -8,9 +8,13 @@ interface CardProps {
   tags: string[];
   date: string;
   image?: string;
+  author?: {
+    profileImageUrl: string;
+    nickname: string;
+  };
 }
 
-export default function Card({ title, tags, date, image }: CardProps) {
+export default function Card({ title, tags, date, image, author }: CardProps) {
   return (
     <div
       className={clsx(
@@ -74,11 +78,14 @@ export default function Card({ title, tags, date, image }: CardProps) {
               <Image src="/icons/icon-calender.svg" alt="calendar" width={18} height={18} />
               <span>{date}</span>
             </div>
-            <img
-              src="/images/img-profile-sample.svg"
-              alt="작성자"
-              className="h-6 w-6 rounded-full object-cover"
-            />
+
+            {author && (
+              <img
+                src={author.profileImageUrl}
+                alt={author.nickname}
+                className="h-6 w-6 rounded-full object-cover"
+              />
+            )}
           </div>
         </div>
       </div>

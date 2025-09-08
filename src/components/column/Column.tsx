@@ -9,7 +9,10 @@ interface CardData {
   tags: string[];
   date: string;
   image?: string;
-  author?: string;
+  author?: {
+    profileImageUrl: string;
+    nickname: string;
+  };
 }
 
 interface ColumnProps {

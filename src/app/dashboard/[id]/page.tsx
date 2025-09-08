@@ -11,21 +11,30 @@ export default function DashboardId() {
       tags: ["프로젝트", "백엔드", "상"],
       date: "2022.12.31",
       image: "/images/img-card-pink.svg",
-      author: "B",
+      author: {
+        profileImageUrl: "/images/img-profile-sample.svg",
+        nickname: "B",
+      },
     },
     {
       title: "새로운 일정 관리 Taskify",
       tags: ["프로젝트", "백엔드", "상"],
       date: "2022.12.31",
       image: "/images/img-card-blue.svg",
-      author: "B",
+      author: {
+        profileImageUrl: "/images/img-profile-sample.svg",
+        nickname: "B",
+      },
     },
     {
       title: "새로운 일정 관리 Taskify",
       tags: ["프로젝트", "백엔드", "상"],
       date: "2022.12.31",
       image: "/images/img-card-lime.svg",
-      author: "B",
+      author: {
+        profileImageUrl: "/images/img-profile-sample.svg",
+        nickname: "B",
+      },
     },
   ];
 
