@@ -64,8 +64,8 @@ export default function Card({ title, tags, dueDate, imageUrl }: CardData) {
         >
           {/* 태그 영역 */}
           <div className="flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <Chip key={tag} variant="category" label={tag} />
+            {tags.map((tag, index) => (
+              <Chip key={index} variant="category" label={tag} />
             ))}
           </div>
 
