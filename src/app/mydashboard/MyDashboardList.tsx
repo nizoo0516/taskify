@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
 
 import Chip from "@/components/chip/Chip";
 import CreateDashboardModal from "@/components/CreateDashboardModal";
@@ -10,176 +11,169 @@ import MyButton from "@/components/layout/Button";
 import Pagination from "@/components/layout/Pagination";
 import { Dashboard, Invitation } from "@/features/dashboard/types";
 
-interface InvitationResponse{
-  cursorId: number;
-  invitations: Invitation[];
-}
-
-const dashboards: Dashboard[] = [
-  {id: 1, title: "제니", color: "#7AC555", createdAt: "2025-09-03T00:00:00Z", updatedAt: "2025-09-03T00:00:00Z", createdByMe: true, userId: 1},
-  {id: 2, title: "로제", color: "#7AC555", createdAt: "2025-09-03T00:00:00Z", updatedAt: "2025-09-03T00:00:00Z", createdByMe: true, userId: 2},
-  {id: 3, title: "채원", color: "#7AC555", createdAt: "2025-09-03T00:00:00Z", updatedAt: "2025-09-03T00:00:00Z", createdByMe: true, userId: 3},
-  {id: 4, title: "영서", color: "#7AC555", createdAt: "2025-09-03T00:00:00Z", updatedAt: "2025-09-03T00:00:00Z", createdByMe: true, userId: 4},
-  {id: 5, title: "리사", color: "#7AC555", createdAt: "2025-09-03T00:00:00Z", updatedAt: "2025-09-03T00:00:00Z", createdByMe: true, userId: 5},
-  {id: 6, title: "애니", color: "#7AC555", createdAt: "2025-09-03T00:00:00Z", updatedAt: "2025-09-03T00:00:00Z", createdByMe: true, userId: 6},
-  {id: 7, title: "나띠", color: "#7AC555", createdAt: "2025-09-03T00:00:00Z", updatedAt: "2025-09-03T00:00:00Z", createdByMe: true, userId: 7}
-];
-
-const mockResponse: InvitationResponse = {
-  cursorId: 0,
-  invitations: [
-    {
-      id: 1,
-      inviter: {nickname: "Mark", email: "mark@nct.com", id: 100},
-      teamId: "team-1",
-      dashboard: { title: "프로덕트 디자인", id: 201 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 2,
-      inviter: {nickname: "Felix", email: "felix@skz.com", id: 101},
-      teamId: "team-2",
-      dashboard: { title: "새로운 기획 문서", id: 202 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 3,
-      inviter: {nickname: "Hayoung", email: "hayoung@fromis9.com", id: 102},
-      teamId: "team-3",
-      dashboard: { title: "유닛A", id: 203 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 4,
-      inviter: {nickname: "Mark", email: "mark@nct.com", id: 103},
-      teamId: "team-1",
-      dashboard: { title: "프로덕트 디자인", id: 204 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 5,
-      inviter: {nickname: "Felix", email: "felix@skz.com", id: 104},
-      teamId: "team-2",
-      dashboard: { title: "새로운 기획 문서", id: 205 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 6,
-      inviter: {nickname: "Hayoung", email: "hayoung@fromis9.com", id: 105},
-      teamId: "team-3",
-      dashboard: { title: "유닛A", id: 206 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 7,
-      inviter: {nickname: "Mark", email: "mark@nct.com", id: 106},
-      teamId: "team-1",
-      dashboard: { title: "프로덕트 디자인", id: 207 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 8,
-      inviter: {nickname: "Felix", email: "felix@skz.com", id: 107},
-      teamId: "team-2",
-      dashboard: { title: "새로운 기획 문서", id: 208 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 9,
-      inviter: {nickname: "Hayoung", email: "hayoung@fromis9.com", id: 108},
-      teamId: "team-3",
-      dashboard: { title: "유닛A", id: 209 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-  ]
-}
-
 export default function MyDashboardList() {
   
   const [currentPage, setCurrentPage] = useState(1);
-
-  const [dashboardList, setDashboardList] = useState<Dashboard[]>(dashboards);
-  const [invitations, setInvitations] = useState<Invitation[]>(mockResponse.invitations);
-
   const itemsPerPage = 5;
-  const totalPages = Math.ceil(dashboardList.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = dashboardList.slice(startIndex, startIndex + itemsPerPage);
+
+  const [dashboardList, setDashboardList] = useState<Dashboard[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [selectedColor] = useState("#7AC555");
-
-  const handleAcceptInvite = (inviteId: number) => {
-    const invite = invitations.find(inv => inv.id === inviteId);
-    if(!invite) return;
-
-    //내 대시보드 끝에 추가
-    setDashboardList(
-      prev => [...prev, {
-        id: invite.dashboard.id,
-        title: invite.dashboard.title,
-        color: selectedColor, 
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        createdByMe: false,
-        userId: invite.inviter.id,
-      },]
-    );
-    
-    //초대 목록에서 제거
-    setInvitations(prev => prev.filter(inv => inv.id !== inviteId));
-  };
-
-  const handleRejectInvite = (inviteId: number) => {
-    setInvitations(prev => prev.filter(inv => inv.id !== inviteId));
-  }
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
 
   const [searchKeyword, setSearchKeyword] = useState("");
-  const filteredInvitations = invitations.filter(invite => 
+  const filteredInvitations = invitations.filter((invite) => 
     invite.dashboard.title.toLowerCase().includes(searchKeyword.toLowerCase())
   );
+
+  const teamId = "17-2";
+
+  const router = useRouter();
+
+  const fetchDashboards = useCallback(async (page: number) => {
+    setLoading(true);
+    try{
+      const token = localStorage.getItem("accessToken");
+      if (!token) return;
+
+      const res = await fetch(
+        `https://sp-taskify-api.vercel.app/${teamId}/dashboards?navigationMethod=pagination&page=${page}&size=${itemsPerPage}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("대시보드 불러오기 실패");
+
+      const data: { dashboards: Dashboard[]; totalCount: number } = await res.json();
+      
+      const sortedDashboards = (data.dashboards ?? []).sort(
+        (a: Dashboard, b: Dashboard) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      setDashboardList(sortedDashboards);
+      setTotalPages(Math.ceil((data.totalCount ?? 0) / itemsPerPage));
+    } catch (error){
+      console.error(error);
+    } finally{
+      setLoading(false);
+    }
+  }, [teamId, itemsPerPage]);
+
+  const fetchInvitations = useCallback(async () => {
+    try{
+      const token = localStorage.getItem("accessToken");
+      if(!token) throw new Error("토큰 없음");
+
+      const res = await fetch(`https://sp-taskify-api.vercel.app/${teamId}/invitations`,{
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if(!res.ok) throw new Error("초대 목록 불러오기 실패!");
+
+      const data = await res.json();
+      console.log("초대 API 응답:", data);
+
+      setInvitations(data.invitations ?? []);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchDashboards(currentPage);
+    fetchInvitations();
+  }, [currentPage, fetchDashboards, fetchInvitations]);
+
+  //초대 수락/거절
+  const handleAcceptInvite = async (inviteId: number) => {
+    const invite = invitations.find((inv) => inv.id === inviteId);
+    if(!invite) return;
+
+    try{
+      const token = localStorage.getItem("accessToken");
+      if(!token) throw new Error("토큰 없음");
+
+      const res = await fetch(`https://sp-taskify-api.vercel.app/${teamId}/dashboards`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: invite.dashboard.title,
+            color: "#7AC555",
+          }),
+        }
+      );
+
+      if (!res.ok) throw new Error("대시보드 생성 실패");
+
+      const data = await res.json();
+      console.log("생성된 대시보드: ", data);
+
+      setDashboardList((prev) => [...prev, data]);
+      setInvitations((prev) => prev.filter((inv) => inv.id !== inviteId));
+      await fetchDashboards(1); //fetchDashboards 안에서 최신순 정렬 포함
+      setCurrentPage(1);
+    } catch(error){
+      console.error(error);
+      alert("초대 수락 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleRejectInvite = async (inviteId: number) => {
+    try{
+      const token = localStorage.getItem("accessToken");
+      if (!token) throw new Error("토큰 없음");
+
+      const res = await fetch(
+        `https://sp-taskify-api.vercel.app/${teamId}/invitations/${inviteId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("초대 거절 실패");
+
+      setInvitations((prev) => prev.filter((inv) => inv.id !== inviteId));
+    } catch (error){
+      console.error(error);
+      alert("초대 거절 중 오류가 발생했습니다.");
+    }
+  };
+
+  if (loading) return <div>로딩중...</div>;
 
   return (
     
     <div className="bg-[#fafafa] py-[40px]">
 
       {/* 내 대시보드*/}
-      <div className="w-[95%] mx-auto max-w-[1022px] min-h-[204px] pc:mx-0 pc:ml-[40px]">
+      <div className="w-[95%] mx-auto max-w-[1022px] min-h-[204px] pc:mx-0 pc:ml-[40px] overflow-hidden">
         <div className="grid grid-cols-1 tablet:grid-cols-2 pc:grid-cols-3 gap-4 min-h-[156px]">
           <MyButton className="h-[70px] p-4 text-center font-semibold" color="buttonBasic" onClick={() => setIsModalOpen(true)}>
             새로운 대시보드 &nbsp; <Chip variant="add" size="sm"/> 
           </MyButton>
 
-          {currentItems.map((dashboard) => (
-            <MyButton key={dashboard.id} className="h-[70px] p-4 text-left font-semibold" color="buttonBasic" onClick={() => alert('대시보드 이동!')}>
+          {dashboardList.map((dashboard) => (
+            <MyButton key={dashboard.id} className="h-[70px] p-4 text-left font-semibold" color="buttonBasic" onClick={() => router.push(`/dashboard/${dashboard.id}`)}>
               <div className="flex items-center gap-2">
                 <div style={{backgroundColor: dashboard.color}} className="h-2 w-2 shrink-0 rounded-full" />
                 <div>{dashboard.title}</div>
@@ -191,14 +185,16 @@ export default function MyDashboardList() {
             </MyButton>
           ))}
         </div>
+
         <div className="float-right flex">
           <div className="mt-4 mr-4">{totalPages} 페이지 중 {currentPage}</div> 
           <Pagination page={currentPage} setPage={setCurrentPage} totalPages={totalPages}/>
         </div>
+
       </div>
 
-      {/* 초대 받은 대시보드*/}  
-      <div className="w-[95%] mx-auto max-w-[1022px] max-h-[650px] pc:mx-0 pc:ml-[40px] bg-white rounded-lg overflow-scroll">
+      {/*초대 받은 대시보드 (before)*/}
+      <div className="w-[95%] mx-auto max-w-[1022px] max-h-[650px] pc:mx-0 pc:ml-[40px] bg-white rounded-lg overflow-scroll mt-[30px]">
         <h2 className="text-2xl font-bold py-[32px] px-[28px]">초대 받은 대시보드</h2>
         <div className="px-[28px] pb-[16px]">
           <Input placeholder="검색" value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)}
@@ -214,30 +210,34 @@ export default function MyDashboardList() {
                 <th className="py-2 w-1/3 px-[28px]">수락 여부</th>
               </tr>
             </thead>
-            <tbody>
-              {filteredInvitations.length === 0 ? (
-                <tr>
-                  <td colSpan={3} className="py-6 text-center text-gray-400">
-                    검색 결과가 없습니다. 
-                    <Image src="/images/img-no-dashboard.svg" alt="없음" width={100} height={100} className="mx-auto mt-4 block" />
-                  </td>
-                </tr>
-              ) : (
-                filteredInvitations.map((invite) => (
-                  <tr key={invite.id} className="border-b last:border-0">
-                    <td className="py-[23px] w-1/3 px-[28px]">{invite.dashboard.title}</td>
-                    <td className="py-[23px] w-1/3 px-[28px]">{invite.inviter.nickname}</td>
-                    <td className="py-[23px] w-1/3 px-[28px]">
-                      <div className="flex gap-2">
-                        <MyButton className="py-[4px] px-[29.5px] text-white" color="buttonBlue" onClick={() => handleAcceptInvite(invite.id)}>수락</MyButton>
-                        <MyButton className="py-[4px] px-[29.5px] text-[#4276EC]" color="buttonBasic" onClick={() => handleRejectInvite(invite.id)}>거절</MyButton>
-                      </div>
+          </table>
+          <div className="max-h-[400px] overflow-y-auto">
+            <table className="w-full text-sm text-left border-collapse">
+              <tbody>
+                {filteredInvitations.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} className="py-6 text-center text-gray-400">
+                      검색 결과가 없습니다. 
+                      <Image src="/images/img-no-dashboard.svg" alt="없음" width={100} height={100} className="mx-auto mt-4 block" />
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  filteredInvitations.map((invite) => (
+                    <tr key={invite.id} className="border-b last:border-0">
+                      <td className="py-[23px] w-1/3 px-[28px]">{invite.dashboard.title}</td>
+                      <td className="py-[23px] w-1/3 px-[28px]">{invite.inviter.nickname}</td>
+                      <td className="py-[23px] w-1/3 px-[28px]">
+                        <div className="flex gap-2">
+                          <MyButton className="py-[4px] px-[29.5px] text-white" color="buttonBlue" onClick={() => handleAcceptInvite(invite.id)}>수락</MyButton>
+                          <MyButton className="py-[4px] px-[29.5px] text-[#4276EC]" color="buttonBasic" onClick={() => handleRejectInvite(invite.id)}>거절</MyButton>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* 모바일 전용 */}
@@ -270,17 +270,36 @@ export default function MyDashboardList() {
 
       {/*모달*/}
       <CreateDashboardModal open={isModalOpen} onClose={() => setIsModalOpen(false)} 
-      onCreate={(name, color) => {
-        const newDashboard: Dashboard = {
-          id: dashboardList.length + 1,
-          title: name,
-          color,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          createdByMe: true,
-          userId: 999, //예시 userID
-        };
-        setDashboardList(prev => [...prev, newDashboard]);
+      onCreate={async (name, color) => {
+        try{
+          const token = localStorage.getItem("accessToken");
+          if (!token) throw new Error("토큰이 없습니다");
+
+          const res = await fetch(`https://sp-taskify-api.vercel.app/${teamId}/dashboards`,{
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              title: name, 
+              color,
+            }),
+          });
+
+          if(!res.ok) throw new Error("대시보드 생성 실패");
+
+          const data = await res.json();
+          console.log("생성된 대시보드:", data);
+
+          setDashboardList((prev) => [...prev, data]);
+
+          setIsModalOpen(false);
+        } catch(error){
+          console.error(error);
+          alert("대시보드 생성 중 오류가 발생했습니다.");
+        }
+      
       }}>
       </CreateDashboardModal>
 
