@@ -8,21 +8,53 @@ import { useMemo, useRef, useState } from "react";
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/layout/Button";
+import { Modal, ModalContext, ModalFooter } from "@/components/Modal";
 
 type Errors = { email?: string; nickname?: string; password?: string; confirm?: string };
+type Keys = "email" | "nickname" | "password" | "confirm";
 const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 const MAX_NICK = 10;
 const MIN_PW = 8;
 
-// 우선 mockdata로 로그인 동작 구현, 추후 api 연동 시 보완
-const MOCK_TAKEN = new Set(["test@example.com", "taskify@sample.com"]);
-async function mockSignupAPI(email: string) {
-  await new Promise((r) => setTimeout(r, 350));
-  if (MOCK_TAKEN.has(email.trim().toLowerCase())) {
-    const e = new Error("EMAIL_TAKEN");
-    throw e;
+const API_BASE = process.env.NEXT_PUBLIC_API_URL!;
+
+type CreatedUser = {
+  id: number;
+  email: string;
+  nickname: string;
+  profileImageUrl?: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+function hasMsg(x: unknown): x is { message: string } {
+  if (!x || typeof x !== "object") return false;
+  const m = (x as { message?: unknown }).message;
+  return typeof m === "string";
+}
+
+async function signupAPI(payload: {
+  email: string;
+  nickname: string;
+  password: string;
+}): Promise<CreatedUser> {
+  const res = await fetch(`${API_BASE}/users`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (res.status === 201) {
+    return (await res.json()) as CreatedUser;
   }
-  return { ok: true };
+
+  let msg = "회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+  const body: unknown = await res.json().catch(() => null);
+  if (hasMsg(body)) msg = body.message;
+
+  const err = new Error(msg) as Error & { status?: number };
+  err.status = res.status;
+  throw err;
 }
 
 export default function SignupPage() {
@@ -39,16 +71,19 @@ export default function SignupPage() {
   const [errors, setErrors] = useState<Errors>({});
   const [showPw, setShowPw] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  // 중복 이메일 모달 상태
   const [dupModal, setDupModal] = useState(false);
 
-  const onchange =
-    (k: "email" | "nickname" | "password" | "confirm" | "agree") =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      // 이전 상태(s)를 받아서 복사 후 [k] 자리에 덮어씀
-      setValues((s) => ({ ...s, [k]: e.target.value }));
-      setErrors((s) => ({ ...s, [k]: undefined }));
-      if (k !== "agree") setErrors((s) => ({ ...s, [k]: undefined }));
-    };
+  const onChange = (k: Keys) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value;
+    // 이전 상태(s)를 받아서 복사 후 [k] 자리에 덮어씀
+    setValues((s) => ({ ...s, [k]: v }));
+    setErrors((s) => ({ ...s, [k]: undefined }));
+  };
+
+  const onAgreeChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    setValues((s) => ({ ...s, agree: e.target.checked }));
+  };
 
   // 블러 시 이메일 검사
   const onBlurEmail = () => {
@@ -98,7 +133,7 @@ export default function SignupPage() {
     const okEmail = trueEmail(values.email);
     const okNickname = values.nickname.length > 0 && values.nickname.length <= MAX_NICK;
     const okPw = values.password.length >= MIN_PW;
-    const okConfirm = values.confirm === values.password;
+    const okConfirm = values.confirm.length > 0 && values.confirm === values.password;
     return okEmail && okNickname && okPw && okConfirm;
   }, [values]);
 
@@ -110,18 +145,32 @@ export default function SignupPage() {
     onBlurNickname();
     onBlurPw();
     onBlurConfirm();
+
     if (!activeButton || !values.agree) return;
 
     try {
       setSubmitting(true);
-      await mockSignupAPI(values.email);
-      alert("가입이 완료되었습니다");
+
+      await signupAPI({
+        email: values.email,
+        nickname: values.nickname,
+        password: values.password,
+      });
+
+      alert("가입이 완료되었습니다!");
       router.push("/login");
     } catch (err) {
-      if (err instanceof Error && err.message === "EMAIL_TAKEN") {
+      const status =
+        typeof err === "object" && err !== null && "status" in err
+          ? (err as { status?: unknown }).status
+          : undefined;
+      const message = err instanceof Error ? err.message : "회원가입에 실패했습니다.";
+
+      // 409: 이미 사용중인 이메일 → 모달
+      if (status === 409 || message.includes("이미 사용중인")) {
         setDupModal(true);
       } else {
-        alert("회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+        alert(message); // 400 등 다른 메시지 그대로 표시 (예: 이메일 형식으로 작성해주세요.)
       }
     } finally {
       setSubmitting(false);
@@ -145,7 +194,7 @@ export default function SignupPage() {
             type="email"
             placeholder="이메일을 입력해 주세요."
             value={values.email}
-            onChange={onchange("email")}
+            onChange={onChange("email")}
             onBlur={onBlurEmail}
           />
         </Field>
@@ -154,7 +203,7 @@ export default function SignupPage() {
             type="text"
             placeholder="닉네임을 입력해 주세요"
             value={values.nickname}
-            onChange={onchange("nickname")}
+            onChange={onChange("nickname")}
             onBlur={onBlurNickname}
           />
         </Field>
@@ -166,7 +215,7 @@ export default function SignupPage() {
               type={showPw ? "text" : "password"}
               placeholder="비밀번호를 입력해 주세요"
               value={values.password}
-              onChange={onchange("password")}
+              onChange={onChange("password")}
               onBlur={onBlurPw}
               rightIcon={
                 <button
@@ -174,7 +223,7 @@ export default function SignupPage() {
                   onClick={() => setShowPw((s) => !s)}
                   aria-controls="password"
                   aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
-                  className="absolute top-1/2 right-3 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-gray-500"
+                  className="absolute top-1/2 right-0.5 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-gray-500"
                 >
                   <Image
                     src={showPw ? "/icons/icon-eye-close.svg" : "/icons/icon-eye-open.svg"}
@@ -195,16 +244,15 @@ export default function SignupPage() {
               type={showPw ? "text" : "password"}
               placeholder="비밀번호를 한번 더 입력해 주세요"
               value={values.confirm}
-              onChange={onchange("confirm")}
+              onChange={onChange("confirm")}
               onBlur={onBlurConfirm}
               rightIcon={
                 <button
                   type="button"
                   onClick={() => setShowPw((s) => !s)}
-                  aria-pressesd={showPw}
                   aria-controls="password"
                   aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
-                  className="absolute top-1/2 right-3 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-gray-500"
+                  className="absolute top-1/2 right-0.5 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-gray-500"
                 >
                   <Image
                     src={showPw ? "/icons/icon-eye-close.svg" : "/icons/icon-eye-open.svg"}
@@ -222,7 +270,7 @@ export default function SignupPage() {
           <input
             type="checkbox"
             checked={values.agree}
-            onChange={onchange("agree")}
+            onChange={onAgreeChange}
             className="h-4 w-4 accent-blue-600"
           />
           이용약관에 동의합니다.
@@ -233,12 +281,13 @@ export default function SignupPage() {
             if (!canSubmit) return;
             formRef.current?.requestSubmit();
           }}
-          color={canSubmit ? "buttonGrey" : "buttonBlue"}
-          className={`h-[50px] w-full ${canSubmit ? "pointer-events-none" : ""} text-white`}
+          color={canSubmit ? "buttonBlue" : "buttonGrey"}
+          className={`h-[50px] w-full ${!canSubmit ? "pointer-events-none" : ""} text-white`}
         >
           {submitting ? "가입 중" : "가입하기"}
         </MyButton>
       </form>
+
       <div className="mt-[24px] text-center text-[16px] text-[#333236]">
         이미 회원이신가요?
         <Link
@@ -249,7 +298,22 @@ export default function SignupPage() {
         </Link>
       </div>
 
-      {dupModal}
+      {dupModal && (
+        <Modal open={true} isOpenModal={setDupModal} size="sm">
+          <ModalContext>
+            <p className="text-center text-[#333236]">이미 사용중인 이메일입니다</p>
+          </ModalContext>
+          <ModalFooter>
+            <MyButton
+              onClick={() => setDupModal(false)}
+              color="buttonBlue"
+              className={`h-[50px] w-full text-white`}
+            >
+              확인
+            </MyButton>
+          </ModalFooter>
+        </Modal>
+      )}
     </main>
   );
 }
