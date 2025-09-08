@@ -49,6 +49,8 @@ export default function Sidebar() {
   const handleCreate = async (data: CreateData) => {
     await createDashboard(data);
     await refetch();
+    const newId = String(created.id ?? created.dashboard?.id);
+    if (newId) router.push(`/dashboard/${newId}`);
   };
 
   return (
