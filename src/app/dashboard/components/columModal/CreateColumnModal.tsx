@@ -16,7 +16,7 @@ type ModalType = {
   setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>;
 };
 
-const DASHBOARD_ID = 16162;
+const dashboardId = 16211;
 
 export default function CreateColumnModal({ isOpen, setIsOpen, setColumns }: ModalType) {
   const [newColumn, setNewColumn] = useState("");
@@ -27,11 +27,10 @@ export default function CreateColumnModal({ isOpen, setIsOpen, setColumns }: Mod
     try {
       const craeteNewCol = await createColumn({
         title: newColumn.trim(),
-        dashboardId: DASHBOARD_ID,
+        dashboardId: dashboardId,
       });
       setColumns((prev) => [...prev, { title: craeteNewCol.title, id: craeteNewCol.id }]);
       setIsOpen(false);
-      console.log("컬럼생성 모달 컬럼", craeteNewCol);
     } catch (e) {
       alert((e as Error).message || "컬럼 생성 오류");
     }

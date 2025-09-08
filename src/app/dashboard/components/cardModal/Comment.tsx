@@ -13,8 +13,8 @@ export default function Comment() {
   const [commentId, setCommentId] = useState<number | null>(null);
 
   const cardId = 14055;
-  const columnId = 54517;
-  const dashboardId = 16162;
+  const columnId = 54736;
+  const dashboardId = 16211;
 
   const handleCreate = async () => {
     try {

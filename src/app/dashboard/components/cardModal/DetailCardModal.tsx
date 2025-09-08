@@ -83,23 +83,43 @@ export default function BoardsModal({ isOpen, setIsOpen }: ModalType) {
               </div>
               <div>
                 <p className="p-2.5">{card?.description}</p>
-                <Image
-                  src={card?.imageUrl}
-                  alt="이미지"
-                  width={274}
-                  height={160}
-                  className={cn(
-                    "rounded-md object-cover",
-                    // 기본 (mobile)
-                    "h-auto w-full object-cover",
+                {card?.imageUrl && card.imageUrl.trim() ? (
+                  <Image
+                    src={card?.imageUrl}
+                    alt="이미지"
+                    width={274}
+                    height={160}
+                    className={cn(
+                      "rounded-md object-cover",
+                      // 기본 (mobile)
+                      "h-auto w-full object-cover",
 
-                    // tablet
-                    "tablet:h-auto tablet:w-[120px]",
+                      // tablet
+                      "tablet:h-auto tablet:w-[120px]",
 
-                    // pc
-                    "pc:h-[160px] pc:w-[274px]",
-                  )}
-                />
+                      // pc
+                      "pc:h-[160px] pc:w-[274px]",
+                    )}
+                  />
+                ) : (
+                  <Image
+                    src="/images/img-card-pink.svg"
+                    alt="기본 이미지"
+                    width={274}
+                    height={160}
+                    className={cn(
+                      "rounded-md object-cover",
+                      // 기본 (mobile)
+                      "h-auto w-full object-cover",
+
+                      // tablet
+                      "tablet:h-auto tablet:w-[120px]",
+
+                      // pc
+                      "pc:h-[160px] pc:w-[274px]",
+                    )}
+                  />
+                )}
               </div>
               <Comment />
             </div>

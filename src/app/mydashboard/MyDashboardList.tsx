@@ -4,38 +4,13 @@ import Image from "next/image";
 import { useState } from "react";
 
 import Chip from "@/components/chip/Chip";
+import CreateDashboardModal from "@/components/CreateDashboardModal";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/layout/Button";
-import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
+import Pagination from "@/components/layout/Pagination";
+import { Dashboard, Invitation } from "@/features/dashboard/types";
 
-interface Dashboard {
-  id: string;
-  title: string;
-}
-
-interface Invitation {
-  id: number;
-  inviter: {
-    nickname: string;
-    email: string;
-    id: number;
-  };
-  teamId: string;
-  dashboard: {
-    title: string;
-    id: number;
-  };
-  invitee: {
-    nickname: string;
-    email: string;
-    id: number;
-  };
-  inviteAccepted: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface InvitationResponse {
+interface InvitationResponse{
   cursorId: number;
   invitations: Invitation[];
 }
@@ -158,10 +133,8 @@ export default function MyDashboardList() {
   const currentItems = dashboardList.slice(startIndex, startIndex + itemsPerPage);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newDashboardName, setNewDashboardName] = useState("");
 
-  const colors = ["#7AC555", "#760DDE", "#FFA500", "#E876EA", "#76A5EA"];
-  const [selectedColor, setSelectedColor] = useState("#7AC555");
+  const [selectedColor] = useState("#7AC555");
 
   const handleAcceptInvite = (inviteId: number) => {
     const invite = invitations.find((inv) => inv.id === inviteId);
@@ -289,49 +262,85 @@ export default function MyDashboardList() {
           </tbody>
         </table>
       </div>
+        <div className="hidden pc:block tablet:block">
+          <table className="w-full text-sm text-left border-collapse">
+            <thead className="text-gray-500 border-b">
+              <tr>
+                <th className="py-2 w-1/3 px-[28px]">이름</th>
+                <th className="py-2 w-1/3 px-[28px]">초대자</th>
+                <th className="py-2 w-1/3 px-[28px]">수락 여부</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredInvitations.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="py-6 text-center text-gray-400">
+                    검색 결과가 없습니다. 
+                    <Image src="/images/img-no-dashboard.svg" alt="없음" width={100} height={100} className="mx-auto mt-4 block" />
+                  </td>
+                </tr>
+              ) : (
+                filteredInvitations.map((invite) => (
+                  <tr key={invite.id} className="border-b last:border-0">
+                    <td className="py-[23px] w-1/3 px-[28px]">{invite.dashboard.title}</td>
+                    <td className="py-[23px] w-1/3 px-[28px]">{invite.inviter.nickname}</td>
+                    <td className="py-[23px] w-1/3 px-[28px]">
+                      <div className="flex gap-2">
+                        <MyButton className="py-[4px] px-[29.5px] text-white" color="buttonBlue" onClick={() => handleAcceptInvite(invite.id)}>수락</MyButton>
+                        <MyButton className="py-[4px] px-[29.5px] text-[#4276EC]" color="buttonBasic" onClick={() => handleRejectInvite(invite.id)}>거절</MyButton>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* 모바일 전용 */}
+        <div className="block pc:hidden tablet:hidden px-[20px] pb-[20px] space-y-4">
+          {filteredInvitations.length === 0 ? (
+            <div className="text-center text-gray-400">
+              검색 결과가 없습니다.
+              <Image src="/images/img-no-dashboard.svg" alt="없음" width={100} height={100} className="mx-auto mt-4 block" />
+            </div>
+          ) : (
+            filteredInvitations.map((invite) => (
+              <div key={invite.id} className="border border-gray-200 rounded-lg p-4 shadow-sm">
+                <div className="mb-2">
+                  <div className="text-gray-500 text-sm">이름</div>
+                  <div className="text-base font-semibold">{invite.dashboard.title}</div>
+                </div>
+                <div className="mb-4">
+                  <div className="text-gray-500 text-sm">초대자</div>
+                  <div className="text-base font-medium">{invite.inviter.nickname}</div>
+                </div>
+                <div className="flex gap-2">
+                  <MyButton className="w-full py-[4px] text-white" color="buttonBlue" onClick={() => handleAcceptInvite(invite.id)}>수락</MyButton>
+                  <MyButton className="w-full py-[4px] text-[#4276EC]" color="buttonBasic" onClick={() => handleRejectInvite(invite.id)}>거절</MyButton>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
 
       {/*모달*/}
-      {isModalOpen && (
-        <Modal open={isModalOpen} size="lg" className="h-[344px] w-[584px]">
-          <ModalHeader title="새로운 대시보드" />
-          <ModalContext>
-            <span>대시보드 이름</span>
-            <input
-              type="text"
-              className="w-full rounded border border-gray-300 p-2"
-              placeholder="대시보드 이름을 입력해주세요."
-              value={newDashboardName}
-              onChange={(e) => setNewDashboardName(e.target.value)}
-            />
-            <Chip
-              variant="color"
-              color="#FF0000"
-              size="md"
-              selected={true}
-              onClick={() => console.log("색상 클릭!")}
-            />
-          </ModalContext>
-          <ModalFooter>
-            <MyButton
-              color="buttonBasic"
-              className="h-[54px] w-[256px]"
-              onClick={() => setIsModalOpen(false)}
-            >
-              취소
-            </MyButton>
-            <MyButton
-              color="buttonBlue"
-              className="h-[54px] w-[256px] text-white"
-              onClick={() => {
-                alert("생성!");
-                setIsModalOpen(false);
-              }}
-            >
-              생성
-            </MyButton>
-          </ModalFooter>
-        </Modal>
-      )}
+      <CreateDashboardModal open={isModalOpen} onClose={() => setIsModalOpen(false)} 
+      onCreate={(name, color) => {
+        const newDashboard: Dashboard = {
+          id: dashboardList.length + 1,
+          title: name,
+          color,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          createdByMe: true,
+          userId: 999, //예시 userID
+        };
+        setDashboardList(prev => [...prev, newDashboard]);
+      }}>
+      </CreateDashboardModal>
+
     </div>
   );
 }

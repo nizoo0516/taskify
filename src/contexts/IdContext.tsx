@@ -9,7 +9,7 @@ type IdsContextValue = {
 
 const IdsContext = createContext<IdsContextValue | null>(null);
 
-export function IdsProvider({
+export function IdContext({
   value,
   children,
 }: {
@@ -23,6 +23,6 @@ export function IdsProvider({
 
 export function useIds() {
   const ctx = useContext(IdsContext);
-  if (!ctx) throw new Error("useIds must be used within IdsProvider");
+  if (!ctx) throw new Error("아이디 사용 불가");
   return ctx;
 }

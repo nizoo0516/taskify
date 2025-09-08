@@ -39,9 +39,9 @@ export default function CreateModal({ isOpen, setIsOpen, setColumns, isActiveCol
   // 공백값 체크(필수 표시 붙은것만!)
   const isDisabled = title.trim() === "" || description.trim() === "";
 
-  const assigneeUserId = 6166;
-  const dashboardId = 16162;
-  const columnId = 54515;
+  const assigneeUserId = 6204;
+  const dashboardId = 16211;
+  const columnId = 54736;
   const handleCreate = async () => {
     if (isDisabled) return;
     // 이미지 업로드 부분
@@ -101,10 +101,8 @@ export default function CreateModal({ isOpen, setIsOpen, setColumns, isActiveCol
       });
 
       setIsOpen(false);
-      console.log("카드 생성 완료", createdCard, "컬럼 아이디", resolvedId);
     } catch (e) {
       alert((e as Error).message || "카드 생성 오류");
-      console.log("어떤컬럼이길래 오류?", resolvedId);
     }
   };
 

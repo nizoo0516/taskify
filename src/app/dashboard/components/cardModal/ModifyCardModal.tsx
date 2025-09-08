@@ -38,9 +38,9 @@ export default function ModifyModal({ isOpen, setIsOpen }: ModalType) {
   const isDisabled = title.trim() === "" || description.trim() === "";
 
   const cardId = 14060;
-  const assigneeUserId = 6166;
-  const dashboardId = 16162;
-  const columnId = 54517;
+  const assigneeUserId = 6204;
+  const dashboardId = 16211;
+  const columnId = 54736;
 
   const handleUpdate = async () => {
     if (isDisabled) return;
