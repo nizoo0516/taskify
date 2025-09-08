@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
-import { getDashboards } from "@/features/dashboard/api";
+import { createDashboard, getDashboards } from "@/features/dashboard/api";
 import { useApiHandler } from "@/lib/useApiHandler";
 import { useDevice } from "@/lib/useDevice";
 
@@ -27,7 +27,7 @@ export default function Sidebar() {
     prevPage.current = page;
   }, [page]);
 
-  const { data } = useApiHandler(() => {
+  const { data, refetch } = useApiHandler(() => {
     if (device === "mobile") {
       return getDashboards("infiniteScroll", { size: 20 });
     }
@@ -40,6 +40,11 @@ export default function Sidebar() {
 
   const isPage = totalPages > 1;
   const isPrev = direction === "prev";
+
+  const handleCreate = async (title: string, color: string) => {
+    await createDashboard({ title, color });
+    await refetch();
+  };
 
   return (
     <>

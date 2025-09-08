@@ -1,16 +1,25 @@
+"use client";
+
+import { useState } from "react";
+
+import NewDashboardModal from "@/components/CreateDashboardModal";
 import { cn } from "@/lib/utils/cn";
 
 import MyButton from "../../Button";
 
-export default function AddDashboard() {
+export default function AddDashboard({ handleCreate }: { handleCreate: () => void }) {
   const addIconSrc = "/icons/icon-box-add.svg";
+
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       <div className="tablet:mb-4 mb-6 flex w-full justify-center">
         <MyButton
           className="tablet:justify-between tablet:w-full flex justify-center border-0 bg-transparent"
-          onClick={() => {}}
+          onClick={() => {
+            setIsOpen(true);
+          }}
         >
           <div
             className={cn(
@@ -31,6 +40,13 @@ export default function AddDashboard() {
             }}
           />
         </MyButton>
+        {isOpen && (
+          <NewDashboardModal
+            open={isOpen}
+            onCreate={handleCreate}
+            onClose={() => setIsOpen(false)}
+          />
+        )}
       </div>
     </>
   );
