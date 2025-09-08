@@ -12,12 +12,6 @@ import { Modal, ModalContext, ModalFooter } from "@/components/Modal";
 
 type Errors = { email?: string; nickname?: string; password?: string; confirm?: string };
 type Keys = "email" | "nickname" | "password" | "confirm";
-const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
-const MAX_NICK = 10;
-const MIN_PW = 8;
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL!;
-
 type CreatedUser = {
   id: number;
   email: string;
@@ -26,6 +20,11 @@ type CreatedUser = {
   createdAt: string;
   updatedAt: string;
 };
+const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+const MAX_NICK = 10;
+const MIN_PW = 8;
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL!;
 
 function hasMsg(x: unknown): x is { message: string } {
   if (!x || typeof x !== "object") return false;
@@ -33,6 +32,7 @@ function hasMsg(x: unknown): x is { message: string } {
   return typeof m === "string";
 }
 
+// payload 객체를 받아 비동기 작업 결과로 CreatedUser 객체를 내놓음
 async function signupAPI(payload: {
   email: string;
   nickname: string;
@@ -179,11 +179,7 @@ export default function SignupPage() {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-[520px] flex-col items-center justify-center">
-      <Link
-        href="/"
-        className="mb-[12px] flex flex-col items-center gap-[5px]"
-        aria-label="홈으로 이동"
-      >
+      <Link href="/" className="mb-3 flex flex-col items-center gap-[5px]" aria-label="홈으로 이동">
         <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={300} height={60} />
       </Link>
       <p className="mb-[30px] text-center text-xl text-[#333236]">첫 방문을 환영합니다!</p>
@@ -288,7 +284,7 @@ export default function SignupPage() {
         </MyButton>
       </form>
 
-      <div className="mt-[24px] text-center text-[16px] text-[#333236]">
+      <div className="mt-6 text-center text-[16px] text-[#333236]">
         이미 회원이신가요?
         <Link
           href="/login"
