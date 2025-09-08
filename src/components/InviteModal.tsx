@@ -6,7 +6,7 @@ import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Moda
 import { inviteToDashboard } from "@/features/dashboard/api";
 
 type InviteModalProps = {
-  open: boolean;
+  isOpen: boolean;
   onClose: () => void;
   dashboardId: number;
   onInvited?: () => void;
