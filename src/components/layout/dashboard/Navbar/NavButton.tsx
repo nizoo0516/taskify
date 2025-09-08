@@ -40,6 +40,7 @@ export default function NavButton({
           `flex items-center justify-center bg-transparent px-3 text-xl font-medium ${className}`,
           "hover:bg-brand-gray-200",
           "dark:hover:bg-dark-700 dark:border-dark-600",
+          isInvite && "tablet:ml-4 ml-3.5",
         )}
       >
         <span

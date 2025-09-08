@@ -51,7 +51,7 @@ export default function Navbar({ id }: { id?: number }) {
       <div className="flex h-full flex-row items-center">
         {id && createdByMe && (
           <>
-            <div className="tablet:[&>*:not(:first-child)]:ml-4 flex h-full flex-row [&>*:not(:first-child)]:ml-3.5">
+            <div className="flex h-full flex-row">
               <Link href={`/dashboard/${id}/edit`}>
                 <NavButton
                   src="/icons/icon-settings.svg"

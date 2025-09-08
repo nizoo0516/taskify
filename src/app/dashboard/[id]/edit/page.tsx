@@ -9,12 +9,12 @@ import Input from "@/components/form/Input";
 import Label from "@/components/form/Label";
 import MyButton from "@/components/layout/Button";
 import Pagination from "@/components/layout/Pagination";
-
-import InviteModal from "../../components/InviteModal";
+import InviteModal from "@/components/InviteModal";
 
 export default function DashboardIdEdit() {
   const { id } = useParams<{ id: string }>();
   const dashboardId = id;
+  const numId = Number(id);
   const [inviteOpen, setInviteOpen] = useState(false);
 
   const colors = ["#7AC555", "#760DDE", "#FFA500", "#E876EA", "#76A5EA"];
@@ -205,7 +205,13 @@ export default function DashboardIdEdit() {
           대시보드 삭제하기
         </MyButton>
 
-        <InviteModal isOpen={inviteOpen} onClose={() => setInviteOpen(false)} />
+        {inviteOpen && dashboardId !== undefined && (
+          <InviteModal
+            isOpen={inviteOpen}
+            onClose={() => setInviteOpen(false)}
+            dashboardId={numId!}
+          />
+        )}
       </div>
     </div>
   );
