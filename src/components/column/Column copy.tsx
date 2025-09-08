@@ -2,17 +2,38 @@
 import clsx from "clsx";
 import { useState } from "react";
 
-import DeleteColumnModal from "@/app/dashboard/components/columModal/DeleteColumnModal";
+import DeleteColumnModal from "@/app/dashboard/components/DeleteColumnModal";
 import ManageColumnModal from "@/app/dashboard/components/columModal/ManageColumnModal";
-import type { ColumnProps } from "@/app/dashboard/types";
 import Card from "@/components/card/Card";
 import Chip from "@/components/chip/Chip";
 import MyButton from "@/components/layout/Button";
 import Button from "@/components/layout/Button";
 import KebabModal from "@/components/modal/KebabModal";
 
+interface CardData {
+  title: string;
+  tags: string[];
+  date: string;
+  image?: string;
+  author?: string;
+}
+
+type Column = { title: string; id: number };
+
+interface ColumnProps {
+  status: string;
+  count: number;
+  cards: CardData[];
+  onAddCard?: () => void;
+  kebabIndex: boolean;
+  isKebabOpen?: () => void;
+  columnId: number;
+  setColumns: React.Dispatch<React.SetStateAction<Column[]>>;
+}
+
 export default function Column({
   status,
+  count,
   cards,
   onAddCard,
   kebabIndex,
@@ -34,7 +55,6 @@ export default function Column({
         // pc
         "pc:w-[354px] pc:border-r pc:border-b-0",
       )}
-      onClick={() => console.log("컬럼클릭시 id 숫자", columnId)}
     >
       {/* 컬럼 헤더 */}
       <div className="relative mb-[21px] flex items-center justify-between">
@@ -45,7 +65,7 @@ export default function Column({
             <h2 className="text-2lg font-bold text-[#000000]">{status}</h2>
           </span>
           {/* 숫자 칩 */}
-          <Chip variant="badge" label={cards.length.toString()} />
+          <Chip variant="badge" label={count.toString()} />
         </div>
         {/* 설정 버튼 */}
         <button type="button" onClick={isKebabOpen}>
@@ -81,7 +101,7 @@ export default function Column({
         ))}
       </div>
       {/* 수정하기, 삭제하기 모달 관리  */}
-      {modal === "manage" && columnId !== null && (
+      {modal === "manage" && (
         <ManageColumnModal
           isOpen
           setIsOpen={() => setModal(null)}
@@ -89,7 +109,7 @@ export default function Column({
           setColumns={setColumns}
         />
       )}
-      {modal === "delete" && columnId !== null && (
+      {modal === "delete" && (
         <DeleteColumnModal
           isOpen
           setIsOpen={() => setModal(null)}

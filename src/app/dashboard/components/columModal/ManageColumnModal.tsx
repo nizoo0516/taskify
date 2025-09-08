@@ -7,13 +7,13 @@ import Button from "@/components/layout/Button";
 import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { updateColumn } from "@/features/columns/api";
 
-type Column = { title: string; id: number };
+import type { ColumnData } from "../../types";
 
 type ModalType = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   columnId: number;
-  setColumns: React.Dispatch<React.SetStateAction<Column[]>>;
+  setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>;
 };
 
 export default function CreateColumnModal({ isOpen, setIsOpen, columnId, setColumns }: ModalType) {

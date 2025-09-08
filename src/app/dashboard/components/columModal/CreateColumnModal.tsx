@@ -8,12 +8,12 @@ import Button from "@/components/layout/Button";
 import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { createColumn } from "@/features/columns/api";
 
-type Columns = { title: string; id: number };
+import type { ColumnData } from "../../types";
 
 type ModalType = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setColumns: React.Dispatch<React.SetStateAction<Columns[]>>;
+  setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>;
 };
 
 const DASHBOARD_ID = 16162;
@@ -31,7 +31,7 @@ export default function CreateColumnModal({ isOpen, setIsOpen, setColumns }: Mod
       });
       setColumns((prev) => [...prev, { title: craeteNewCol.title, id: craeteNewCol.id }]);
       setIsOpen(false);
-      console.log("created column:", craeteNewCol);
+      console.log("컬럼생성 모달 컬럼", craeteNewCol);
     } catch (e) {
       alert((e as Error).message || "컬럼 생성 오류");
     }

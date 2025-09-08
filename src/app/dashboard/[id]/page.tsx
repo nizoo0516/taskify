@@ -6,57 +6,51 @@ import Chip from "@/components/chip/Chip";
 import Column from "@/components/column/Column";
 import MyButton from "@/components/layout/Button";
 
-import CreateCardModal from "../components/CreateCardModal";
-import CreateColumnModal from "../components/CreateColumnModal";
+import CreateCardModal from "../components/cardModal/CreateCardModal";
+import CreateColumnModal from "../components/columModal/CreateColumnModal";
+import type { ColumnData } from "../types";
 
 export default function DashboardId() {
   // 모달 오픈
-  const [isCardOpen, setIsCardOpen] = useState(false);
-  const [isColumnOpen, setIsColumnOpen] = useState(false);
-  const [columnIndex, setColumnIndex] = useState<number | null>(null);
-
-  const [cards, setCards] = useState([
+  const [modal, setModal] = useState<null | "card" | "column">(null);
+  // 컬럼 설정 부분의 수정, 삭제 선택하는 캐밥 모달 부분
+  const [isKebabOpen, setIsKebabOpen] = useState<number | null>(null);
+  // 선택한 모달 번호 확인
+  const [isActiveCol, setActiveCol] = useState<number | null>(null);
+  // title과 id는 컬럼 생성 모달에서, 카드는 카드생성 모달에서 들고옴
+  const [columns, setColumns] = useState<ColumnData[]>([
     {
-      title: "새로운 일정 관리 Taskify",
-      tags: ["프로젝트", "백엔드", "상"],
-      date: "2022.12.31",
-      image: "/images/img-card-pink.svg",
-      author: "B",
+      title: "To Do",
+      id: 0,
+      cards: [
+        {
+          title: "새로운 일정 관리 Taskify",
+          description: "설명글",
+          dueDate: "2022.12.31",
+          tags: ["프로젝트", "백엔드", "상"],
+          imageUrl: "/images/img-card-pink.svg",
+          author: "B",
+        },
+      ],
     },
-    {
-      title: "새로운 일정 관리 Taskify",
-      tags: ["프로젝트", "백엔드", "상"],
-      date: "2022.12.31",
-      image: "/images/img-card-blue.svg",
-      author: "B",
-    },
-    {
-      title: "새로운 일정 관리 Taskify",
-      tags: ["프로젝트", "백엔드", "상"],
-      date: "2022.12.31",
-      image: "/images/img-card-lime.svg",
-      author: "B",
-    },
-  ]);
-  // 기본적으로 보여지는 컬럼
-  const [columns, setColumns] = useState([
-    { title: "To Do", id: 0 },
-    { title: "On Progress", id: 1 },
-    { title: "On Done", id: 2 },
+    { title: "On Progress", id: 1, cards: [] },
+    { title: "On Done", id: 2, cards: [] },
   ]);
 
   return (
     <main className="pc:flex-row bg-brand-gray-100 flex flex-1 flex-col">
       {columns.map((item, i) => (
         <Column
+          key={i}
           status={item.title}
-          count={cards.length}
-          cards={cards}
-          onAddCard={() => setIsCardOpen(true)}
-          key={item.id}
-          kebabIndex={columnIndex === i}
+          cards={item.cards ?? []}
+          onAddCard={() => {
+            setActiveCol(item.id);
+            setModal("card");
+          }}
+          kebabIndex={isKebabOpen === i}
           // 클릭한 index만 열기
-          isKebabOpen={() => setColumnIndex((prev) => (prev === i ? null : i))}
+          isKebabOpen={() => setIsKebabOpen((prev) => (prev === i ? null : i))}
           columnId={item.id}
           setColumns={setColumns}
         />
@@ -66,7 +60,7 @@ export default function DashboardId() {
         {/* 새로운 컬럼 추가 버튼 */}
         <MyButton
           onClick={() => {
-            setIsColumnOpen(true);
+            setModal("column");
           }}
           className="border-brand-gray-300 flex h-[70px] w-full items-center justify-center border bg-white"
         >
@@ -74,13 +68,16 @@ export default function DashboardId() {
           <Chip variant="add" />
         </MyButton>
       </div>
-      {isCardOpen && <CreateCardModal isOpen={isCardOpen} setIsOpen={setIsCardOpen} />}
-      {isColumnOpen && (
-        <CreateColumnModal
-          isOpen={isColumnOpen}
-          setIsOpen={setIsColumnOpen}
+      {modal === "card" && isActiveCol !== null && (
+        <CreateCardModal
+          isOpen
+          setIsOpen={() => setModal(null)}
           setColumns={setColumns}
+          isActiveCol={isActiveCol}
         />
+      )}
+      {modal === "column" && (
+        <CreateColumnModal isOpen setIsOpen={() => setModal(null)} setColumns={setColumns} />
       )}
     </main>
   );
