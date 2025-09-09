@@ -23,7 +23,7 @@ export default function User() {
   };
 
   return (
-    <div ref={menuRef} className="tablet:ml-6 pc:ml-8 relative ml-3">
+    <div ref={menuRef} className="tablet:ml-6 pc:ml-8 relative z-10 ml-3">
       <button className="flex flex-row items-center" onClick={toggleMenu}>
         <img
           src={userProfile}

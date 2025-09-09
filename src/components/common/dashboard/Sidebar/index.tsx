@@ -11,6 +11,8 @@ import AddDashboard from "./AddDashboard";
 import DashboardList from "./DashboardList";
 import Logo from "../../Logo";
 import Pagination from "../../Pagination";
+import { useQuery } from "@tanstack/react-query";
+import { GetDashboardsResponse } from "@/features/dashboard/types";
 
 export type CreateData = {
   title: string;
@@ -24,6 +26,7 @@ export default function Sidebar() {
   const [direction, setDirection] = useState<"prev" | "next">("next");
   const prevPage = useRef(page);
 
+  // 페이지 버튼 방향 감지
   useEffect(() => {
     if (page > prevPage.current) {
       setDirection("next");
@@ -33,12 +36,13 @@ export default function Sidebar() {
     prevPage.current = page;
   }, [page]);
 
-  const { data, refetch } = useApiHandler(() => {
-    if (device === "mobile") {
-      return getDashboards("infiniteScroll", { size: 20 });
-    }
-    return getDashboards("pagination", { page, size: 15 });
-  }, [page, device]);
+  const { data, refetch } = useQuery<GetDashboardsResponse>({
+    queryKey: ["dashboards", page, device],
+    queryFn: () =>
+      device === "mobile"
+        ? getDashboards("infiniteScroll", { size: 20 })
+        : getDashboards("pagination", { page, size: 15 }),
+  });
 
   const dashboards = data?.dashboards ?? [];
   const totalCount = data?.totalCount ?? 0;
@@ -52,6 +56,8 @@ export default function Sidebar() {
     await refetch();
 
     router.push(`/dashboard/${created.id}`); // dash보드 페이지에서 id 값 가지고 오려고 추가
+
+    router.refresh();
   };
 
   return (

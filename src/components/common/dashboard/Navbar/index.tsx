@@ -8,25 +8,22 @@ import { getDashboardById } from "@/features/dashboard/api";
 import { Dashboard } from "@/features/dashboard/types";
 import { getMembers } from "@/features/members/api";
 import { Member } from "@/features/members/types";
-import { useApiHandler } from "@/lib/useApiHandler";
+import { useQuery } from "@tanstack/react-query";
 
 // id는 사이드 바에서 클릭된 id와 title을 전달
 export default function Navbar({ id }: { id?: number }) {
-  const { data } = useApiHandler<{
+  const { data } = useQuery<{
     members: Member[];
     dashboard: Dashboard | null;
-  }>(
-    () =>
-      id
-        ? Promise.all([getMembers(id, {}), getDashboardById(id)]).then(
-            ([membersRes, dashboard]) => ({
-              members: membersRes.members,
-              dashboard,
-            }),
-          )
-        : Promise.resolve({ members: [], dashboard: null }),
-    [id],
-  );
+  }>({
+    queryKey: ["dashboard", id],
+    queryFn: async () => {
+      if (!id) return { members: [], dashboard: null };
+      const [membersRes, dashboard] = await Promise.all([getMembers(id, {}), getDashboardById(id)]);
+      return { members: membersRes.members, dashboard };
+    },
+    enabled: !!id,
+  });
 
   const members = data?.members ?? [];
   const isMember = members.length > 0;
