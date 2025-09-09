@@ -9,53 +9,14 @@ import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/layout/Button";
 import { Modal, ModalContext, ModalFooter } from "@/components/Modal";
+import { signup } from "@/features/users/api";
 
 type Errors = { email?: string; nickname?: string; password?: string; confirm?: string };
 type Keys = "email" | "nickname" | "password" | "confirm";
-type CreatedUser = {
-  id: number;
-  email: string;
-  nickname: string;
-  profileImageUrl?: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
+
 const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 const MAX_NICK = 10;
 const MIN_PW = 8;
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL!;
-
-function hasMsg(x: unknown): x is { message: string } {
-  if (!x || typeof x !== "object") return false;
-  const m = (x as { message?: unknown }).message;
-  return typeof m === "string";
-}
-
-// payload 객체를 받아 비동기 작업 결과로 CreatedUser 객체를 내놓음
-async function signupAPI(payload: {
-  email: string;
-  nickname: string;
-  password: string;
-}): Promise<CreatedUser> {
-  const res = await fetch(`${API_BASE}/users`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  if (res.status === 201) {
-    return (await res.json()) as CreatedUser;
-  }
-
-  let msg = "회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.";
-  const body: unknown = await res.json().catch(() => null);
-  if (hasMsg(body)) msg = body.message;
-
-  const err = new Error(msg) as Error & { status?: number };
-  err.status = res.status;
-  throw err;
-}
 
 export default function SignupPage() {
   const router = useRouter();
@@ -148,10 +109,10 @@ export default function SignupPage() {
 
     if (!activeButton || !values.agree) return;
 
-    try {
-      setSubmitting(true);
+    setSubmitting(true);
 
-      await signupAPI({
+    try {
+      await signup({
         email: values.email,
         nickname: values.nickname,
         password: values.password,
