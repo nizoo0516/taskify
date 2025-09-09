@@ -27,8 +27,8 @@ export default function MyDashboardList() {
   const [searchKeyword, setSearchKeyword] = useState("");
 
   // 필터링된 초대 목록
-  const filteredInvitations = invitations.filter(invite =>
-    invite.dashboard.title.toLowerCase().includes(searchKeyword.toLowerCase())
+  const filteredInvitations = invitations.filter((invite) =>
+    invite.dashboard.title.toLowerCase().includes(searchKeyword.toLowerCase()),
   );
 
   const totalPages = Math.ceil(dashboardList.length / itemsPerPage);
@@ -39,26 +39,31 @@ export default function MyDashboardList() {
   useEffect(() => {
     // 내 대시보드 목록
     getDashboards("pagination", { page: 1, size: 100 })
-      .then(res => setDashboardList(res.dashboards))
-      .catch(err => console.error("대시보드 조회 실패:", err));
+      .then((res) => setDashboardList(res.dashboards))
+      .catch((err) => console.error("대시보드 조회 실패:", err));
 
     // 내가 받은 초대 목록
     getInvitations({ size: 100 })
-      .then(res => {
+      .then((res) => {
         console.log("받은 초대 목록: ", res.invitations);
         setInvitations(res.invitations);
       })
-      .catch(err => console.error("초대 조회 실패:", err));
+      .catch((err) => console.error("초대 조회 실패:", err));
   }, []);
 
   // 초대 수락
-  const handleAcceptInvite = async (inviteId: number, dashboardId: number, title: string, inviterId: number) => {
+  const handleAcceptInvite = async (
+    inviteId: number,
+    dashboardId: number,
+    title: string,
+    inviterId: number,
+  ) => {
     try {
       await respondInvitation(inviteId, true);
 
-      setDashboardList(prev => {
+      setDashboardList((prev) => {
         // 중복 대시보드가 있으면 추가하지 않음
-        if (prev.some(d => d.id === dashboardId)) return prev;
+        if (prev.some((d) => d.id === dashboardId)) return prev;
 
         const newDashboard: Dashboard = {
           id: dashboardId,
@@ -75,7 +80,7 @@ export default function MyDashboardList() {
       });
 
       // 초대 목록에서 제거
-      setInvitations(prev => prev.filter(inv => inv.id !== inviteId));
+      setInvitations((prev) => prev.filter((inv) => inv.id !== inviteId));
     } catch (err) {
       console.error("초대 수락 실패:", err);
     }
@@ -85,7 +90,7 @@ export default function MyDashboardList() {
   const handleRejectInvite = async (inviteId: number) => {
     try {
       await respondInvitation(inviteId, false);
-      setInvitations(prev => prev.filter(inv => inv.id !== inviteId));
+      setInvitations((prev) => prev.filter((inv) => inv.id !== inviteId));
     } catch (err) {
       console.error("초대 거절 실패:", err);
     }
@@ -95,7 +100,7 @@ export default function MyDashboardList() {
   const handleCreateDashboard = async (name: string, color: string) => {
     try {
       const newDashboard = await apiCreateDashboard({ title: name, color });
-      setDashboardList(prev => [newDashboard, ...prev]);  // 생성한 것도 앞에 추가
+      setDashboardList((prev) => [newDashboard, ...prev]); // 생성한 것도 앞에 추가
     } catch (err) {
       console.error("대시보드 생성 실패:", err);
     }
@@ -104,8 +109,8 @@ export default function MyDashboardList() {
   return (
     <div className="bg-[#fafafa] py-[40px]">
       {/* 내 대시보드 */}
-      <div className="w-[95%] mx-auto max-w-[1022px] min-h-[204px] pc:mx-0 pc:ml-[40px]">
-        <div className="grid grid-cols-1 tablet:grid-cols-2 pc:grid-cols-3 gap-4 min-h-[156px]">
+      <div className="pc:mx-0 pc:ml-[40px] mx-auto min-h-[204px] w-[95%] max-w-[1022px]">
+        <div className="tablet:grid-cols-2 pc:grid-cols-3 grid min-h-[156px] grid-cols-1 gap-4">
           <MyButton
             className="h-[70px] p-4 text-center font-semibold"
             color="buttonBasic"
@@ -156,25 +161,27 @@ export default function MyDashboardList() {
       </div>
 
       {/* 초대 받은 대시보드 */}
-      <div className="w-[95%] mx-auto max-w-[1022px] max-h-[650px] pc:mx-0 pc:ml-[40px] bg-white rounded-lg overflow-scroll mt-8">
-        <h2 className="text-2xl font-bold py-[32px] px-[28px]">초대 받은 대시보드</h2>
+      <div className="pc:mx-0 pc:ml-[40px] mx-auto mt-8 max-h-[650px] w-[95%] max-w-[1022px] overflow-scroll rounded-lg bg-white">
+        <h2 className="px-[28px] py-[32px] text-2xl font-bold">초대 받은 대시보드</h2>
         <div className="px-[28px] pb-[16px]">
           <Input
             placeholder="검색"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
-            leftIcon={<Image src="/icons/icon-search.svg" alt="검색 아이콘" width={20} height={20} />}
+            leftIcon={
+              <Image src="/icons/icon-search.svg" alt="검색 아이콘" width={20} height={20} />
+            }
           />
         </div>
 
         {/* PC/태블릿 */}
-        <div className="hidden pc:block tablet:block">
-          <table className="w-full text-sm text-left border-collapse">
-            <thead className="text-gray-500 border-b">
+        <div className="pc:block tablet:block hidden">
+          <table className="w-full border-collapse text-left text-sm">
+            <thead className="border-b text-gray-500">
               <tr>
-                <th className="py-2 w-1/3 px-[28px]">이름</th>
-                <th className="py-2 w-1/3 px-[28px]">초대자</th>
-                <th className="py-2 w-1/3 px-[28px]">수락 여부</th>
+                <th className="w-1/3 px-[28px] py-2">이름</th>
+                <th className="w-1/3 px-[28px] py-2">초대자</th>
+                <th className="w-1/3 px-[28px] py-2">수락 여부</th>
               </tr>
             </thead>
             <tbody>
@@ -194,26 +201,26 @@ export default function MyDashboardList() {
               ) : (
                 filteredInvitations.map((invite) => (
                   <tr key={invite.id} className="border-b last:border-0">
-                    <td className="py-[23px] w-1/3 px-[28px]">{invite.dashboard.title}</td>
-                    <td className="py-[23px] w-1/3 px-[28px]">{invite.inviter.nickname}</td>
-                    <td className="py-[23px] w-1/3 px-[28px]">
+                    <td className="w-1/3 px-[28px] py-[23px]">{invite.dashboard.title}</td>
+                    <td className="w-1/3 px-[28px] py-[23px]">{invite.inviter.nickname}</td>
+                    <td className="w-1/3 px-[28px] py-[23px]">
                       <div className="flex gap-2">
                         <MyButton
-                          className="py-[4px] px-[29.5px] text-white"
+                          className="px-[29.5px] py-[4px] text-white"
                           color="buttonBlue"
                           onClick={() =>
                             handleAcceptInvite(
                               invite.id,
                               invite.dashboard.id,
                               invite.dashboard.title,
-                              invite.inviter.id
+                              invite.inviter.id,
                             )
                           }
                         >
                           수락
                         </MyButton>
                         <MyButton
-                          className="py-[4px] px-[29.5px] text-[#4276EC]"
+                          className="px-[29.5px] py-[4px] text-[#4276EC]"
                           color="buttonBasic"
                           onClick={() => handleRejectInvite(invite.id)}
                         >
@@ -229,7 +236,7 @@ export default function MyDashboardList() {
         </div>
 
         {/* 모바일 */}
-        <div className="block pc:hidden tablet:hidden px-[20px] pb-[20px] space-y-4">
+        <div className="pc:hidden tablet:hidden block space-y-4 px-[20px] pb-[20px]">
           {filteredInvitations.length === 0 ? (
             <div className="text-center text-gray-400">
               검색 결과가 없습니다.
@@ -243,16 +250,13 @@ export default function MyDashboardList() {
             </div>
           ) : (
             filteredInvitations.map((invite) => (
-              <div
-                key={invite.id}
-                className="border border-gray-200 rounded-lg p-4 shadow-sm"
-              >
+              <div key={invite.id} className="rounded-lg border border-gray-200 p-4 shadow-sm">
                 <div className="mb-2">
-                  <div className="text-gray-500 text-sm">이름</div>
+                  <div className="text-sm text-gray-500">이름</div>
                   <div className="text-base font-semibold">{invite.dashboard.title}</div>
                 </div>
                 <div className="mb-4">
-                  <div className="text-gray-500 text-sm">초대자</div>
+                  <div className="text-sm text-gray-500">초대자</div>
                   <div className="text-base font-medium">{invite.inviter.nickname}</div>
                 </div>
                 <div className="flex gap-2">
@@ -264,7 +268,7 @@ export default function MyDashboardList() {
                         invite.id,
                         invite.dashboard.id,
                         invite.dashboard.title,
-                        invite.inviter.id
+                        invite.inviter.id,
                       )
                     }
                   >

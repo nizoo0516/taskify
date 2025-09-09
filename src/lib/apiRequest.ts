@@ -1,46 +1,26 @@
-import { ResponseCookies } from "next/dist/compiled/@edge-runtime/cookies";
+const BASE_URL = "/api/proxy";
 
 interface FetchOptions extends Omit<RequestInit, "body"> {
-  withAuth?: boolean; // 인증을 필요로 할 때
-  isFormData?: boolean; // FormData일 때
-  data?: unknown;
+  isFormData?: boolean; // FormData 여부
+  data?: unknown; // body 데이터
 }
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 export async function apiRequest<Response>(
   endpoint: string,
   options: FetchOptions = {},
 ): Promise<Response> {
-  const { withAuth, isFormData, headers, data, ...rest } = options;
-
-  // 토큰
-  let token: string | null = null;
-
-  if (withAuth) {
-    if (typeof window === "undefined") {
-      const { cookies } = await import("next/headers");
-      const cookieStore = cookies() as unknown as ResponseCookies;
-      token = cookieStore.get("accessToken")?.value ?? null;
-    } else {
-      token = localStorage.getItem("accessToken");
-    }
-
-    if (!token) throw new Error("토큰 없음: 다시 로그인하세요.");
-  }
-
-  const authHeader: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+  const { isFormData, headers, data, ...rest } = options;
 
   // fetch
   const fetchOptions: RequestInit = {
     ...rest,
+    credentials: "include",
     headers: {
-      ...authHeader,
       ...(headers as Record<string, string>),
     } as HeadersInit,
   };
 
-  // json 데이터일때
+  // JSON 데이터일 때
   if (!isFormData) {
     if (data !== undefined) {
       fetchOptions.headers = {
@@ -50,38 +30,31 @@ export async function apiRequest<Response>(
       fetchOptions.body = JSON.stringify(data);
     }
   } else {
-    // FormData일때
+    // FormData일 때
     fetchOptions.body = data as FormData;
   }
 
+  // Proxy 경유로 fetch
   const response = await fetch(`${BASE_URL}${endpoint}`, fetchOptions);
 
   // 인증 오류 > 로그아웃
   if (response.status === 401) {
-    if (typeof window === "undefined") {
-      try {
-        const { cookies } = await import("next/headers");
-        const cookieStore = cookies() as unknown as ResponseCookies;
-        cookieStore.delete("accessToken");
-      } catch {
-        /* noop */
-      }
-    }
-
     throw new Error("인증 실패: 다시 로그인하세요");
   }
 
   // 비밀번호변경 성공시
-  if (response.status === 204) return undefined as Response;
+  if (response.status === 204) {
+    return undefined as Response;
+  }
 
   // 카드 생성
-  if (response.status === 201) return response.json() as Promise<Response>;
+  if (response.status === 201) {
+    return response.json() as Promise<Response>;
+  }
 
   // 에러
   if (!response.ok) {
     const error = await response.json().catch(() => null);
-    // 오류 확인용
-    // console.log("API 호출:", `${BASE_URL}${endpoint}`);
     throw new Error(error?.message || "API 요청 실패");
   }
 
