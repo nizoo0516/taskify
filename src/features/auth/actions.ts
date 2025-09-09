@@ -6,7 +6,7 @@ import type { LogRequest, LoginRequest } from "@/features/auth/types";
 import { apiRequest } from "@/lib/apiRequest";
 
 // 로그인
-export const login = async (data: LoginRequest) => {
+export const login = async (data: LoginRequest): Promise<LogRequest> => {
   const res = await apiRequest<LogRequest>("/auth/login", {
     method: "POST",
     data,

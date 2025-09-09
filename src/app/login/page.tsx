@@ -7,12 +7,9 @@ import { useRef, useState } from "react";
 
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
-import MyButton from "@/components/layout/Button";
-// zustand 제거
-// import { useAuthStore } from "@/features/auth/store";
-// action 쿠키 형태 추가
+import MyButton from "@/components/common/Button";
 import { login } from "@/features/auth/actions";
-import { baseProfile } from "@/features/users/baseProfile";
+import { profileAvatar } from "@/features/users/profileAvatar";
 
 type Errors = { email?: string; password?: string };
 const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -20,9 +17,6 @@ const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 export default function LoginPage() {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
-
-  // zustand 토큰 제거
-  // const setAccessToken = useAuthStore((s) => s.setAccessToken);
 
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
@@ -62,14 +56,7 @@ export default function LoginPage() {
     try {
       setSubmitting(true);
 
-      // 쿠키 저장
-      const { accessToken } = await login({ email: values.email, password: values.password });
-      localStorage.setItem("accessToken", accessToken);
-
-      // zustand/로컬스토리지 제거
-      // const { accessToken } = await loginAPI(values.email, values.password);
-      // setAccessToken(accessToken);
-      // localStorage.setItem("accessToken", accessToken);
+      await login({ email: values.email, password: values.password });
 
       try {
         await profileAvatar();
@@ -77,9 +64,8 @@ export default function LoginPage() {
         console.warn("프로필 기본 이미지 적용 실패:", e);
       }
 
-      router.push("/mydashboard");
+      router.replace("/mydashboard");
     } catch (err: unknown) {
-      // 로그인 실패
       const message =
         err instanceof Error ? err.message : "로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.";
       window.alert(message);
@@ -93,7 +79,7 @@ export default function LoginPage() {
       <Link href="/" className="mb-3 flex flex-col items-center gap-[5px]" aria-label="홈으로 이동">
         <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={300} height={60} />
       </Link>
-      <p className="mb-[30px] text-center text-xl text-[#333236]">오늘도 만나서 반가워요!</p>
+      <p className="text-brand-gray-700 mb-[30px] text-center text-xl">오늘도 만나서 반가워요!</p>
 
       <form ref={formRef} onSubmit={onSubmit} className="w-full space-y-8">
         <Field id="email" label="이메일" error={errors.email}>
@@ -145,11 +131,11 @@ export default function LoginPage() {
           {submitting ? "로그인 중" : "로그인"}
         </MyButton>
       </form>
-      <div className="mt-6 text-center text-[16px] text-[#333236]">
+      <div className="text-brand-gray-700 mt-6 text-center text-[16px]">
         회원이 아니신가요?
         <Link
           href="/signup"
-          className="ml-1 text-[#2661E8] underline decoration-1 underline-offset-2"
+          className="text-brand-blue-500 ml-1 underline decoration-1 underline-offset-2"
         >
           회원가입하기
         </Link>

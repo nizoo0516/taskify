@@ -14,7 +14,7 @@ export default function UserMenu() {
   };
 
   const hoverBlueStyle = cn(
-    "hover:bg-brand-blue-50 hover:text-[var(--color-brand-blue-500)]",
+    "hover:bg-brand-blue-50 hover:text-brand-blue-500",
     "dark:hover:bg-brand-gray-700 dark:hover:text-brand-blue-100",
   );
   const buttonBase = cn("h-full w-full text-base font-normal rounded-[4px]");
