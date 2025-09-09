@@ -7,7 +7,15 @@ import DetailCardModal from "@/components/modal/cardModal/DetailCardModal";
 import Chip from "@/components/common/chip/Chip";
 import { CardData } from "@/features/dashboard/types";
 
-export default function Card({ title, tags, dueDate, imageUrl }: CardData) {
+type CardWithAssignee = CardData & {
+  assignee?: {
+    id: number;
+    nickname: string;
+    profileImageUrl?: string;
+  };
+};
+
+export default function Card({ title, tags, dueDate, imageUrl, assignee }: CardWithAssignee) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div
@@ -75,11 +83,20 @@ export default function Card({ title, tags, dueDate, imageUrl }: CardData) {
               <Image src="/icons/icon-calender.svg" alt="calendar" width={18} height={18} />
               <span>{dueDate}</span>
             </div>
-            <img
-              src="/images/img-profile-sample.svg"
-              alt="작성자"
-              className="h-6 w-6 rounded-full object-cover"
-            />
+
+            {assignee?.profileImageUrl ? (
+              <img
+                src={assignee.profileImageUrl}
+                alt={assignee.nickname}
+                className="h-6 w-6 rounded-full object-cover"
+              />
+            ) : (
+              <img
+                src="/images/img-profile-sample.svg"
+                alt="기본 프로필"
+                className="h-6 w-6 rounded-full object-cover"
+              />
+            )}
           </div>
         </div>
       </div>
