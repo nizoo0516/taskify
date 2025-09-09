@@ -8,7 +8,6 @@ import MyButton from "@/components/common/Button";
 import { getColumns } from "@/features/columns/api";
 import { getCards } from "@/features/cards/api";
 import { useColumnId } from "@/features/columns/store";
-
 import CreateCardModal from "../../../components/modal/cardModal/CreateCardModal";
 import CreateColumnModal from "../../../components/modal/columModal/CreateColumnModal";
 import { ColumnData } from "@/features/dashboard/types";
@@ -43,15 +42,13 @@ export default function DashboardId() {
               const cardResponse = await getCards(col.id, { size: 50 });
               const cards = cardResponse?.cards ?? [];
               return {
-                id: col.id,
-                title: col.title,
+                ...col,
                 cards: cards, // 실제 카드 데이터 포함
               };
             } catch (err) {
               console.error(`컬럼 ${col.id} 카드 조회 실패:`, err);
               return {
-                id: col.id,
-                title: col.title,
+                ...col,
                 cards: [], // 에러 시 빈 배열
               };
             }
