@@ -136,7 +136,7 @@ export default function AccountPage() {
   };
 
   return (
-    <main className="mx-auto flex w-full max-w-[720px] flex-col gap-6 p-5">
+    <main className="pc:max-w-[720px] tablet:max-w-[548px] flex w-full max-w-full flex-col gap-6 p-5">
       <button
         type="button"
         onClick={() => router.back()}
@@ -145,9 +145,9 @@ export default function AccountPage() {
         <Image src="/icons/icon-arrow-left.svg" alt="돌아가기 아이콘" width={20} height={20} />
         돌아가기
       </button>
-      <section className="w-[672px] rounded-2xl bg-white p-6">
+      <section className="w-full rounded-2xl bg-white p-6">
         <h2 className="mb-6 text-2xl font-bold text-[#333236]">프로필</h2>
-        <div className="flex gap-[42px]">
+        <div className="tablet:flex-row pc:flew-row flex flex-col gap-[42px]">
           <div className="w-[182px] flex-shrink-0">
             <button
               type="button"
@@ -213,7 +213,7 @@ export default function AccountPage() {
         </div>
       </section>
 
-      <section className="w-[672px] rounded-2xl bg-white p-6">
+      <section className="rounded-2xl bg-white p-6">
         <h2 className="mb-6 text-2xl font-bold text-[#333236]">비밀번호 변경</h2>
 
         <div className="space-y-4">
