@@ -40,7 +40,7 @@ export default function CreateCardModal({
   // input 값들
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
@@ -97,7 +97,7 @@ export default function CreateCardModal({
         columnId,
         title: title.trim(),
         description: description.trim(),
-        dueDate: dueDate || undefined,
+        dueDate: dueDate ? dueDate : "",
         tags: tags.length > 0 ? tags : undefined,
         imageUrl: finalImageUrl,
       };
@@ -108,7 +108,8 @@ export default function CreateCardModal({
       const createResult = await createCard(cardData);
 
       // API 응답 구조에 따른 처리
-      const createdCard: CardData = "data" in createResult ? createResult.data : createResult;
+      const createdCard: CardData =
+        "data" in (createResult as any) ? (createResult as any).data : createResult;
 
       // Zustand에다가 생성된 카드 아이디 담기
       const createdCardId = createdCard as CardData & { id: number };

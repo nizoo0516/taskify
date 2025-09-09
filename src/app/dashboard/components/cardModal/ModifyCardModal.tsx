@@ -20,7 +20,7 @@ import type { ColumnData, CardData } from "../../types";
 type ModalType = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  cardData?: CardData; // 기존 카드 데이터를 props로 받기
+  cardData?: CardData | null; // 기존 카드 데이터를 props로 받기
   setColumns?: React.Dispatch<React.SetStateAction<ColumnData[]>>; // 컬럼 상태 업데이트용
   onModifyComplete?: () => void; // 수정 완료 콜백 추가
 };
@@ -112,9 +112,9 @@ export default function ModifyModal({
         columnId: columnId,
         title: title.trim(),
         description: description.trim(),
-        dueDate: dueDate && { dueDate },
-        tags: tags.length > 0 && { tags },
-        imageUrl: updateImg && { imageUrl: updateImg },
+        dueDate, // string
+        tags, // string[]
+        imageUrl: updateImg, // string | undefined
       };
 
       console.log("카드 수정 요청 데이터:", updateData);
@@ -126,7 +126,8 @@ export default function ModifyModal({
 
       // 컬럼 상태 업데이트
       if (setColumns) {
-        const updatedCard = "data" in updateResult ? updateResult.data : updateResult;
+        const updatedCard =
+          "data" in (updateResult as any) ? (updateResult as any).data : updateResult;
 
         setColumns((prevColumns) => {
           return prevColumns.map((col) => {

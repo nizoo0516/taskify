@@ -38,12 +38,12 @@ export default function Comment() {
 
     try {
       const response = await getComments(cardId, { size: 10 });
-      const commentsData = "data" in response ? response.data : response;
+      const commentsData = "data" in (response as any) ? (response as any).data : response;
 
       // API 응답 구조에 따른 처리
       if (commentsData && typeof commentsData === "object") {
         if ("comments" in commentsData) {
-          setComments(commentsData.comments || []);
+          setComments(commentsData.comments);
         } else if (Array.isArray(commentsData)) {
           setComments(commentsData);
         } else {
@@ -76,7 +76,7 @@ export default function Comment() {
         dashboardId,
       });
 
-      const newComment = "data" in response ? response.data : response;
+      const newComment = "data" in (response as any) ? (response as any).data : response;
 
       // 새 댓글을 목록에 추가
       setComments((prev) => [newComment, ...prev]);
@@ -102,7 +102,7 @@ export default function Comment() {
     setIsLoading(true);
     try {
       const response = await updateComment(commentId, { content: editingContent.trim() });
-      const updatedComment = "data" in response ? response.data : response;
+      const updatedComment = "data" in (response as any) ? (response as any).data : response;
 
       // 댓글 목록에서 해당 댓글 업데이트
       setComments((prev) =>
