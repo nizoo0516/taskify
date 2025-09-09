@@ -10,6 +10,7 @@ import KebabModal from "@/components/modal/KebabModal";
 import MyButton from "@/components/common/Button";
 import Button from "@/components/common/Button";
 import { ColumnProps } from "@/features/dashboard/types";
+import { useColumnId } from "@/features/columns/store";
 
 export default function Column({
   status,
@@ -18,9 +19,14 @@ export default function Column({
   kebabIndex,
   isKebabOpen,
   columnId,
+  dashboardId,
   setColumns,
 }: ColumnProps) {
   const [modal, setModal] = useState<null | "manage" | "delete">(null);
+  const { setColumnIdData } = useColumnId();
+  const handleClickCard = (cardId: number) => {
+    setColumnIdData(dashboardId, columnId, cardId);
+  };
 
   return (
     <div
@@ -76,8 +82,10 @@ export default function Column({
 
       {/* 카드 리스트 */}
       <div className="flex flex-col gap-[15px]">
-        {cards.map((card, index) => (
-          <Card key={index} {...card} />
+        {cards.map((card) => (
+          <div key={card.id} onClick={() => handleClickCard(card.id)}>
+            <Card {...card} setColumns={setColumns} />
+          </div>
         ))}
       </div>
       {/* 수정하기, 삭제하기 모달 관리  */}

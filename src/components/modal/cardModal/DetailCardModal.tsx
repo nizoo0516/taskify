@@ -3,7 +3,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import Chip from "@/components/common/chip/Chip";
-import Field from "@/components/form/Field";
 import KebabModal from "@/components/modal/KebabModal";
 import Button from "@/components/common/Button";
 import { Modal, ModalHeader, ModalContext } from "@/components/modal/Modal";
@@ -130,7 +129,7 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
     <div>
       {isOpen && (
         <Modal open={isOpen} size="xl" className="relative">
-          <ModalHeader title={card?.title || "카드 상세"} onClose={() => setIsOpen(false)}>
+          <ModalHeader title={card?.title || "카드 상세 모달"} onClose={() => setIsOpen(false)}>
             <Button
               onClick={() => setIsKebabOpen(!isKebabOpen)}
               className="mr-6 ml-auto border-0"
@@ -153,13 +152,13 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
                 "pc:w-[200px]",
               )}
             >
-              <div className="w-1/2">
+              <div className="w-2/5">
                 <p className="font-bold">담당자</p>
                 <p className="text-sm">배문철</p>
               </div>
-              <div className="w-1/2">
+              <div className="w-3/5">
                 <p className="font-bold">마감일</p>
-                <p className="text-sm">{card?.dueDate || "마감일 없음"}</p>
+                <p className="text-sm whitespace-nowrap">{card?.dueDate || "마감일 없음"}</p>
               </div>
             </div>
             <div className={cn("flex w-full flex-col gap-4", "tablet:w-[420px]", "pc:w-[450px]")}>
@@ -180,7 +179,7 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
                     alt="이미지"
                     width={274}
                     height={160}
-                    className={cn("rounded-md object-cover", "h-auto w-full object-cover")}
+                    className={cn("h-[168px] w-full rounded-md object-contain", "pc:h-[260px]")}
                   />
                 ) : (
                   <Image
@@ -188,7 +187,7 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
                     alt="기본 이미지"
                     width={274}
                     height={160}
-                    className={cn("rounded-md object-cover", "h-auto w-full object-cover")}
+                    className={cn("rounded-mdobject-contain h-[168px] w-full", "pc:h-[260px]")}
                   />
                 )}
               </div>
