@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { useIsLoggedIn } from "@/features/auth/store";
 import { cn } from "@/lib/utils/cn";
@@ -12,7 +13,13 @@ type LogoProps = {
 
 export default function Logo({ isHome = false }: LogoProps) {
   const isLoggedIn = useIsLoggedIn();
-  const href = isLoggedIn ? "/mydashboard" : "/";
+  const [href, setHref] = useState("/");
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setHref("/mydashboard");
+    }
+  }, [isLoggedIn]);
 
   const logoConfig = isHome
     ? {

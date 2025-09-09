@@ -34,10 +34,9 @@ export default function Navbar({ id }: { id?: number }) {
   const createdByMe = data?.dashboard?.createdByMe ?? false;
 
   return (
-    <div className="pc:justify-between flex h-full items-center justify-end">
+    <div className="pc:justify-between pc:max-w-[calc(100vw-380px)] tablet:max-w-[calc(100vw-240px)] flex h-full max-w-[calc(100vw-92px)] items-center justify-end">
       <h2 className="flex gap-2">
         <div className="pc:inline-block tablet:text-xl hidden text-lg font-bold">{title}</div>
-
         {createdByMe && (
           <Image
             src={"/icons/icon-crown.svg"}
@@ -48,18 +47,19 @@ export default function Navbar({ id }: { id?: number }) {
           />
         )}
       </h2>
+
       <div className="flex h-full flex-row items-center">
         {id && (
           <>
             <div className="tablet:[&>*:not(:first-child)]:ml-4 flex h-full flex-row [&>*:not(:first-child)]:ml-3.5">
               <Link href={`/dashboard/${id}/edit`}>
                 <NavButton
-                  icon="/icons/icon-settings.svg"
+                  src="/icons/icon-settings.svg"
                   label="관리"
                   className="flex h-full flex-row"
                 />
               </Link>
-              <NavButton icon="/icons/icon-box-add.svg" label="초대하기" />
+              <NavButton src="/icons/icon-box-add.svg" label="초대하기" />
             </div>
             {isMember && <MemberList members={members} />}
             <div className="bg-brand-gray-300 pc:ml-8 tablet:ml-6 ml-3 h-[calc(100%-4px)] w-[1px]"></div>
