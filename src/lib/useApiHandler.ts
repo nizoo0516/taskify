@@ -11,29 +11,32 @@ export function useApiHandler<T>(
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await apiFn();
+      setData(res);
+      return res;
+    } catch (err) {
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
 
-    async function fetchData() {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const res = await apiFn();
-        if (isMounted) setData(res);
-      } catch (err) {
-        if (isMounted) setError(err as Error);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    }
-
-    fetchData();
-
-  useEffect(() => {
     if (options?.autoFetch !== false) {
       fetchData().catch(() => {});
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, deps);
 
   return { data, loading, error, refetch: fetchData };
