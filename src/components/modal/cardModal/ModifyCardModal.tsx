@@ -1,4 +1,5 @@
 "use client";
+import dayjs from "dayjs";
 import { useState, useEffect } from "react";
 
 import Chip from "@/components/common/chip/Chip";
@@ -15,6 +16,8 @@ import { updateCard } from "@/features/cards/api";
 import { uploadCardImage } from "@/features/columns/api";
 import { useColumnId } from "@/features/columns/store";
 import { CardData, ColumnData } from "@/features/dashboard/types";
+
+const now = dayjs();
 
 type ModalType = {
   isOpen: boolean;
@@ -44,7 +47,7 @@ export default function ModifyModal({
 }: ModalType) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState<Date | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
@@ -64,7 +67,7 @@ export default function ModifyModal({
     if (cardData && isOpen) {
       setTitle(cardData.title || "");
       setDescription(cardData.description || "");
-      setDueDate(cardData.dueDate || "");
+      setDueDate(cardData.dueDate ? new Date(cardData.dueDate) : null);
       setTags(cardData.tags || []);
       setImageUrl(cardData.imageUrl || "");
       setImageFile(null);
@@ -111,7 +114,7 @@ export default function ModifyModal({
         columnId: columnId,
         title: title.trim(),
         description: description.trim(),
-        dueDate, // string
+        dueDate: dueDate ? dayjs(dueDate).format("YYYY-MM-DD HH:mm") : "",
         tags, // string[]
         imageUrl: updateImg, // string | undefined
       };
@@ -162,7 +165,7 @@ export default function ModifyModal({
     // 폼 초기화
     setTitle("");
     setDescription("");
-    setDueDate("");
+    setDueDate(null);
     setTags([]);
     setImageFile(null);
     setImageUrl("");
@@ -201,17 +204,7 @@ export default function ModifyModal({
               />
             </Field>
             <Field id="dueDate" label="마감일">
-              <DatePicker
-                value={dueDate ? new Date(dueDate) : null}
-                onChange={(date) => {
-                  if (date) {
-                    const formatted = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-                    setDueDate(formatted);
-                  } else {
-                    setDueDate("");
-                  }
-                }}
-              />
+              <DatePicker value={dueDate} onChange={(date) => setDueDate(date)} />
             </Field>
             <Field id="tag" label="태그">
               <TagInput value={tags} onChange={setTags} />

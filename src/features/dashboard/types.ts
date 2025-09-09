@@ -70,6 +70,7 @@ export interface CardData {
   tags: string[];
   imageUrl?: string;
   author?: string;
+  id?: number;
 }
 // 컬럼 타입
 export interface ColumnData {
