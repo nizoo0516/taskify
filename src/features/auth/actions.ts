@@ -17,7 +17,7 @@ export const login = async (data: LoginRequest): Promise<LogRequest> => {
     secure: process.env.NODE_ENV === "production",
     path: "/",
     sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7, //7일
+    maxAge: 60 * 60 * 24 * 7, // 7일
   });
 
   return res;

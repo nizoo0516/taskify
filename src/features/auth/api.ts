@@ -6,5 +6,4 @@ export const changePassword = (data: NewPasswordRequest) =>
   apiRequest<ChangePasswordResponse>("/auth/password", {
     method: "PUT",
     data,
-    withAuth: true, //토큰 필요
   });

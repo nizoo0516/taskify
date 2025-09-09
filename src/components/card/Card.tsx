@@ -1,13 +1,22 @@
 "use client";
+import dayjs from "dayjs";
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
 
 import DetailCardModal from "@/components/modal/cardModal/DetailCardModal";
 import Chip from "@/components/common/chip/Chip";
-import { CardData } from "@/features/dashboard/types";
+import { CardData, ColumnData } from "@/features/dashboard/types";
 
-export default function Card({ title, tags, dueDate, imageUrl }: CardData) {
+type CardWithAssignee = CardData & {
+  assignee?: {
+    id: number;
+    nickname: string;
+    profileImageUrl?: string;
+  };
+};
+
+export default function Card({ title, tags, dueDate, imageUrl, assignee }: CardWithAssignee) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div
@@ -64,22 +73,33 @@ export default function Card({ title, tags, dueDate, imageUrl }: CardData) {
         >
           {/* 태그 영역 */}
           <div className="flex flex-wrap gap-2">
-            {tags.map((tag, index) => (
-              <Chip key={index} variant="category" label={tag} />
-            ))}
+            {tags && tags.length > 0 ? (
+              tags.map((tag, index) => <Chip key={index} variant="category" label={tag} />)
+            ) : (
+              <span className="text-xs text-gray-400">태그 없음</span>
+            )}
           </div>
 
           {/* 날짜 + 작성자 */}
           <div className="tablet:justify-start tablet:gap-4 pc:justify-between pc:w-full flex items-center justify-between text-xs text-gray-500">
             <div className="flex items-center gap-1">
               <Image src="/icons/icon-calender.svg" alt="calendar" width={18} height={18} />
-              <span>{dueDate}</span>
+              <span>{dayjs(dueDate).format("YYYY.MM.DD")}</span>
             </div>
-            <img
-              src="/images/img-profile-sample.svg"
-              alt="작성자"
-              className="h-6 w-6 rounded-full object-cover"
-            />
+
+            {assignee?.profileImageUrl ? (
+              <img
+                src={assignee.profileImageUrl}
+                alt={assignee.nickname}
+                className="h-6 w-6 rounded-full object-cover"
+              />
+            ) : (
+              <img
+                src="/images/img-profile-sample.svg"
+                alt="기본 프로필"
+                className="h-6 w-6 rounded-full object-cover"
+              />
+            )}
           </div>
         </div>
       </div>

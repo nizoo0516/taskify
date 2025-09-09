@@ -9,7 +9,7 @@ type columnIdData = {
 
 type columnState = {
   columnIdData: columnIdData | null;
-  setColumnIdData: (dashboardId: number, columnId: number) => void;
+  setColumnIdData: (dashboardId: number, columnId: number, cardId?: number) => void;
   setCardId: (cardId: number) => void;
   clearColumnIdData: () => void;
 };
@@ -17,7 +17,8 @@ type columnState = {
 export const useColumnId = create<columnState>((set) => ({
   columnIdData: null,
 
-  setColumnIdData: (dashboardId, columnId) => set({ columnIdData: { dashboardId, columnId } }),
+  setColumnIdData: (dashboardId, columnId, cardId) =>
+    set({ columnIdData: { dashboardId, columnId, cardId } }),
 
   setCardId: (cardId) =>
     set((state) => ({

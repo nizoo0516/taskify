@@ -30,9 +30,13 @@ function Modal({ open, children, size = "lg", isOpenModal, className }: ModalPro
     (
       {
         sm: "min-w-[368px] max-w-sm p-6",
-        md: "min-w-[568px] max-w-md p-6",
-        lg: "min-w-[584px] max-w-lg p-8",
-        xl: "min-w-[730px] max-w-xl pt-[30px] pr-[38px] pb-[30px] pl-4",
+        md: cn("w-[327px] px-4 py-6", "tablet:w-[568px] tablet:p-8"),
+        lg: cn("w-[327px] px-4 py-6", "tablet:w-[584px] tablet:p-8"),
+        xl: cn(
+          "w-[327px] p-4",
+          "tablet:w-[678px] tablet:py-6 tablet:px-8",
+          "pc:w-[730px] pc:pt-[30px] pc:pr-[38px] pc:pb-[30px] pc:pl-4",
+        ),
       } as const
     )[size] ?? "min-w-[584px] max-w-lg";
 

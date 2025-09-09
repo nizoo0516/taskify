@@ -2,8 +2,6 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { cn } from "@/lib/utils/cn";
-
 export type Option = {
   value: string;
   label: string;
@@ -16,6 +14,7 @@ type SelectProps = {
   placeholder?: string;
   className?: string;
   labelNone?: boolean;
+  onSelect?: (option: Option) => void;
 };
 
 export default function Select({
@@ -23,6 +22,7 @@ export default function Select({
   placeholder,
   className = "",
   labelNone = false,
+  onSelect,
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<Option | null>(null);
@@ -38,7 +38,14 @@ export default function Select({
   return (
     <div className="relative">
       <button type="button" onClick={() => setIsOpen((o) => !o)} className={btnClass}>
-        {selected ? (selected.chip ?? selected.label) : placeholder}
+        {selected ? (
+          <div className="flex items-center gap-2">
+            {selected?.chip}
+            {!labelNone && <span>{selected?.label}</span>}
+          </div>
+        ) : (
+          placeholder
+        )}
         <Image
           src="/icons/icon-arrow-dropdown.svg"
           width={26}
@@ -56,8 +63,9 @@ export default function Select({
               onClick={() => {
                 setSelected(item);
                 setIsOpen(false);
+                onSelect?.(item);
               }}
-              className="flex h-12 cursor-pointer items-center px-4 hover:bg-gray-100"
+              className="flex h-12 cursor-pointer items-center gap-2 px-4 hover:bg-gray-100"
             >
               {selected?.value === item.value && (
                 <Image
@@ -65,11 +73,10 @@ export default function Select({
                   width={22}
                   height={22}
                   alt="선택됨 체크 아이콘"
-                  className="absolute"
                 />
               )}
-              <span className="pl-[30px]"> {item.chip}</span>
-              <span className={cn(labelNone && "hidden", "pl-[30px]")}>{item.label}</span>
+              {item.chip}
+              {!labelNone && <span>{item.label}</span>}
             </li>
           ))}
         </ul>
