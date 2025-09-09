@@ -63,7 +63,6 @@ export default function LoginPage() {
 
       if (!res.ok) throw new Error("로그인 실패");
 
-      // ✅ Set-Cookie 헤더를 브라우저에 반영하려면 반드시 consume 필요
       await res.json();
 
       try {
