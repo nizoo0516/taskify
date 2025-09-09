@@ -8,7 +8,7 @@ import { useRef, useState } from "react";
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/common/Button";
-import { login } from "@/features/auth/actions";
+import { loginAction } from "@/features/auth/actions";
 import { profileAvatar } from "@/features/users/profileAvatar";
 
 type Errors = { email?: string; password?: string };
@@ -56,7 +56,7 @@ export default function LoginPage() {
     try {
       setSubmitting(true);
 
-      await login({ email: values.email, password: values.password });
+      await loginAction({ email: values.email, password: values.password });
 
       try {
         await profileAvatar();

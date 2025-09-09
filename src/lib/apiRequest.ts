@@ -1,4 +1,7 @@
-const BASE_URL = "/api/proxy"; // ✅ proxy 라우트 경유
+const BASE_URL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000/api/proxy"
+    : "https://yourdomain.com/api/proxy";
 
 interface FetchOptions extends Omit<RequestInit, "body"> {
   isFormData?: boolean;
@@ -31,6 +34,7 @@ export async function apiRequest<Response>(
   }
 
   const response = await fetch(`${BASE_URL}${endpoint}`, fetchOptions);
+  console.log("요청 URL:", `${BASE_URL}${endpoint}`);
 
   // 인증 오류 > 로그아웃
   if (response.status === 401) {
@@ -46,6 +50,8 @@ export async function apiRequest<Response>(
   // 에러
   if (!response.ok) {
     const error = await response.json().catch(() => null);
+    console.log("apiRequest 요청 URL:", `${BASE_URL}${endpoint}`);
+    console.log("fetch options:", fetchOptions);
     throw new Error(error?.message || "API 요청 실패");
   }
 

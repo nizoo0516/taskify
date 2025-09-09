@@ -6,7 +6,8 @@ import type { LogRequest, LoginRequest } from "@/features/auth/types";
 import { apiRequest } from "@/lib/apiRequest";
 
 // 로그인
-export const login = async (data: LoginRequest): Promise<LogRequest> => {
+export const loginAction = async (data: LoginRequest): Promise<LogRequest> => {
+  console.log("📌 loginAction 실행됨");
   const res = await apiRequest<LogRequest>("/auth/login", {
     method: "POST",
     data,
@@ -17,14 +18,14 @@ export const login = async (data: LoginRequest): Promise<LogRequest> => {
     secure: process.env.NODE_ENV === "production",
     path: "/",
     sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7, // 7일
+    maxAge: 60 * 60 * 24 * 7,
   });
 
   return res;
 };
 
 // 로그아웃
-export async function logout() {
+export async function logoutAction() {
   (await cookies()).delete("accessToken");
 }
 

@@ -9,17 +9,24 @@ async function proxy(req: NextRequest, method: string, params: string[]) {
 
   const newHeaders = new Headers(req.headers);
 
-  newHeaders.delete("accept-encoding");
+  newHeaders.delete("accept-encoding"); // 디코딩 중복 방지
 
   const token = (await cookies()).get("accessToken")?.value;
   if (token) {
     newHeaders.set("Authorization", `Bearer ${token}`);
   }
 
-  return fetch(targetUrl, {
+  const res = await fetch(targetUrl, {
     method,
     headers: newHeaders,
     body,
+  });
+
+  return new Response(res.body, {
+    status: res.status,
+    headers: {
+      "content-type": res.headers.get("content-type") || "application/json",
+    },
   });
 }
 
