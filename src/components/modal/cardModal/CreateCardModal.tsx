@@ -54,7 +54,7 @@ export default function CreateCardModal({
   // Zustand에서 값 가져오기
   const dashboardId = columnIdData?.dashboardId ?? 0;
   const columnId = columnIdData?.columnId ?? 0;
-  const assigneeUserId = 6204;
+  const assigneeUserId = 6203;
 
   const handleCreate = async () => {
     if (isDisabled || isLoading) return;
