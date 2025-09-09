@@ -139,8 +139,30 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
               <Image src="/icons/icon-menu.svg" width={28} height={28} alt="더보기" />
             </Button>
           </ModalHeader>
-          <ModalContext className="flex items-start justify-between">
-            <div className="flex w-[450px] flex-col gap-4">
+          <ModalContext
+            className={cn(
+              "flex flex-col",
+              "pc:flex pc:items-start pc:justify-between pc:flex-row-reverse",
+              "tablet:flex tablet:items-start tablet:justify-between tablet:flex-row-reverse",
+            )}
+          >
+            <div
+              className={cn(
+                "mb-4 flex w-full justify-between gap-4 self-start rounded-lg border border-[#D9D9D9] p-4",
+                "tablet:w-[180px] tablet:flex-col tablet:mb-4",
+                "pc:w-[200px]",
+              )}
+            >
+              <div className="w-1/2">
+                <p className="font-bold">담당자</p>
+                <p className="text-sm">배문철</p>
+              </div>
+              <div className="w-1/2">
+                <p className="font-bold">마감일</p>
+                <p className="text-sm">{card?.dueDate || "마감일 없음"}</p>
+              </div>
+            </div>
+            <div className={cn("flex w-full flex-col gap-4", "tablet:w-[420px]", "pc:w-[450px]")}>
               <div className="flex items-center gap-5">
                 <Chip variant="status" label="To Do" />
                 <span className="bg-brand-gray-300 h-5 w-[1px]" />
@@ -158,15 +180,7 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
                     alt="이미지"
                     width={274}
                     height={160}
-                    className={cn(
-                      "rounded-md object-cover",
-                      // 기본 (mobile)
-                      "h-auto w-full object-cover",
-                      // tablet
-                      "tablet:h-auto tablet:w-[120px]",
-                      // pc
-                      "pc:h-[160px] pc:w-[274px]",
-                    )}
+                    className={cn("rounded-md object-cover", "h-auto w-full object-cover")}
                   />
                 ) : (
                   <Image
@@ -174,27 +188,11 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
                     alt="기본 이미지"
                     width={274}
                     height={160}
-                    className={cn(
-                      "rounded-md object-cover",
-                      // 기본 (mobile)
-                      "h-auto w-full object-cover",
-                      // tablet
-                      "tablet:h-auto tablet:w-[120px]",
-                      // pc
-                      "pc:h-[160px] pc:w-[274px]",
-                    )}
+                    className={cn("rounded-md object-cover", "h-auto w-full object-cover")}
                   />
                 )}
               </div>
               <Comment />
-            </div>
-            <div className="flex w-[200px] flex-col gap-4 rounded-lg border border-[#D9D9D9] p-4">
-              <Field id="manager" label="담당자">
-                <p>배문철</p>
-              </Field>
-              <Field id="dueDate" label="마감일">
-                <p>{card?.dueDate || "마감일 없음"}</p>
-              </Field>
             </div>
           </ModalContext>
 
