@@ -19,6 +19,9 @@ export default function CalendarCommon({ value, onChange }: CalendarCommonProps)
         onChange={onChange}
         wrapperClassName="w-full m-0"
         className={cn(base, "h-12 cursor-pointer pr-4 pl-11")}
+        dateFormat="yyyy-MM-dd HH:mm"
+        timeFormat="HH:mm"
+        showTimeSelect
       />
       <Image
         src="/icons/icon-calender.svg"

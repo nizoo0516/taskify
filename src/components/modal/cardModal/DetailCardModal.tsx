@@ -79,7 +79,7 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
             if (col.id === columnId) {
               return {
                 ...col,
-                cards: col.cards?.filter((c) => (c as any).id !== cardId) || [],
+                cards: col.cards?.filter((c) => c.id !== cardId) || [],
               };
             }
             return col;
