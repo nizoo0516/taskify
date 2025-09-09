@@ -122,7 +122,7 @@ export default function ModifyModal({
       // 카드 수정 API 호출
       const updateResult = await updateCard(cardId, updateData);
 
-      console.log("수정된 카드:", updateResult);
+      console.log("수정된 카드");
 
       // 컬럼 상태 업데이트
       if (setColumns) {
@@ -151,7 +151,7 @@ export default function ModifyModal({
         onModifyComplete();
       }
     } catch (error) {
-      console.error("카드 수정 오류:", error);
+      console.error("카드 수정 오류");
       alert((error as Error).message || "카드 수정 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);

@@ -20,7 +20,7 @@ type ModalType = {
   isOpen: boolean;
   setIsOpen: () => void;
   setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>;
-  onCardCreated?: () => void; // 카드 생성 완료 콜백 추가
+  onCardCreated?: () => void;
 };
 
 const managerOpt = [
@@ -84,8 +84,7 @@ export default function CreateCardModal({
 
           finalImageUrl = url;
         } catch (uploadError) {
-          console.error("이미지 업로드 실패:", uploadError);
-          // 이미지 업로드 실패해도 카드는 생성하도록 함
+          console.error("이미지 업로드 실패", uploadError);
         }
       } else if (imageUrl && !imageUrl.startsWith("blob:")) {
         finalImageUrl = imageUrl;
