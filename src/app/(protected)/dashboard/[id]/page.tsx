@@ -10,7 +10,7 @@ import { getCards } from "@/features/cards/api";
 import { useColumnId } from "@/features/columns/store";
 import { ColumnData } from "@/features/dashboard/types";
 import CreateCardModal from "@/components/modal/cardModal/CreateCardModal";
-import CreateColumnModal from "@/components/modal/columModal/CreateColumnModal";
+import CreateColumnModal from "@/components/modal/columnModal/CreateColumnModal";
 
 export default function DashboardId() {
   const { id } = useParams();

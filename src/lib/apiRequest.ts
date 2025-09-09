@@ -34,7 +34,7 @@ export async function apiRequest<Response>(
   }
 
   const response = await fetch(`${BASE_URL}${endpoint}`, fetchOptions);
-  // console.log("요청 URL:", `${BASE_URL}${endpoint}`);
+  console.log("요청 URL:", `${BASE_URL}${endpoint}`);
 
   // 인증 오류 > 로그아웃
   if (response.status === 401) {

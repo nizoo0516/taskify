@@ -31,14 +31,21 @@ async function proxy(req: NextRequest, method: string, params: string[]) {
 }
 
 export async function GET(req: NextRequest, context: any) {
-  return proxy(req, "GET", context.params.path);
+  const { path } = await context.params;
+  return proxy(req, "GET", path);
 }
+
 export async function POST(req: NextRequest, context: any) {
-  return proxy(req, "POST", context.params.path);
+  const { path } = await context.params;
+  return proxy(req, "POST", path);
 }
+
 export async function PUT(req: NextRequest, context: any) {
-  return proxy(req, "PUT", context.params.path);
+  const { path } = await context.params;
+  return proxy(req, "PUT", path);
 }
+
 export async function DELETE(req: NextRequest, context: any) {
-  return proxy(req, "DELETE", context.params.path);
+  const { path } = await context.params;
+  return proxy(req, "DELETE", path);
 }
