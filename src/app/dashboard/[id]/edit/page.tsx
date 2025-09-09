@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Chip from "@/components/chip/Chip";
 import Input from "@/components/form/Input";
 import Label from "@/components/form/Label";
+import InviteModal from "@/components/InviteModal";
 import MyButton from "@/components/layout/Button";
 import Pagination from "@/components/layout/Pagination";
 import {
@@ -19,14 +20,10 @@ import {
 } from "@/features/dashboard/api";
 import { getMembers, deleteMember } from "@/features/members/api";
 
-import InviteModal from "../../components/InviteModal";
-
 export default function DashboardIdEdit() {
-  const { teamId, dashboardId } = useParams<{ teamId: string; dashboardId: string }>();
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const dashboardIdNum = Number(dashboardId);
-
-  console.log("useParams teamId:", teamId, "dashboardId:", dashboardIdNum);
+  const dashboardId = Number(id);
 
   const [inviteOpen, setInviteOpen] = useState(false);
 
@@ -47,10 +44,10 @@ export default function DashboardIdEdit() {
 
   // 대시보드 초기 데이터 불러오기
   useEffect(() => {
-    if (!dashboardIdNum) return;
+    if (!dashboardId) return;
     const fetchDashboard = async () => {
       try {
-        const data = await getDashboardById(dashboardIdNum);
+        const data = await getDashboardById(dashboardId);
         setDashboardName(data.title);
         setSelectedColor(data.color);
       } catch (e) {
@@ -58,14 +55,14 @@ export default function DashboardIdEdit() {
       }
     };
     fetchDashboard();
-  }, [dashboardIdNum]);
+  }, [dashboardId]);
 
   // 구성원 목록 불러오기
   useEffect(() => {
     const fetchMembers = async () => {
       try {
         const size = 4;
-        const data = await getMembers(dashboardIdNum, { page: memberPage, size });
+        const data = await getMembers(dashboardId, { page: memberPage, size });
         setMembers(data.members);
         setTotalMemberPages(Math.ceil(data.totalCount / size));
       } catch (e) {
@@ -73,14 +70,14 @@ export default function DashboardIdEdit() {
       }
     };
     fetchMembers();
-  }, [dashboardIdNum, memberPage]);
+  }, [dashboardId, memberPage]);
 
   // 초대 내역 불러오기
   useEffect(() => {
     const fetchInvites = async () => {
       try {
         const size = 5;
-        const data = await getDashboardInvitations(dashboardIdNum, { page: invitePage, size });
+        const data = await getDashboardInvitations(dashboardId, { page: invitePage, size });
         setInvites(
           data.invitations.map((inv) => ({
             id: inv.id,
@@ -93,16 +90,19 @@ export default function DashboardIdEdit() {
       }
     };
     fetchInvites();
-  }, [dashboardIdNum, invitePage]);
+  }, [dashboardId, invitePage]);
 
   // 대시보드 수정 함수
   const handleUpdateDashboard = async () => {
     try {
-      await updateDashboard(dashboardIdNum, {
+      await updateDashboard(dashboardId, {
         title: dashboardName,
         color: selectedColor,
       });
-      alert("대시보드가 성공적으로 수정되었습니다!");
+
+      alert("대시보드가 성공적으로 수정되었습니다.");
+
+      router.refresh();
     } catch (e) {
       console.error("대시보드 수정 실패", e);
       alert("대시보드 수정에 실패했습니다.");
@@ -112,7 +112,7 @@ export default function DashboardIdEdit() {
   // 대시보드 삭제 함수
   const handleDeleteDashboard = async () => {
     try {
-      await deleteDashboard(dashboardIdNum);
+      await deleteDashboard(dashboardId);
       alert("대시보드가 삭제되었습니다!");
       router.push("/mydashboard");
     } catch (e) {
@@ -123,10 +123,9 @@ export default function DashboardIdEdit() {
 
   const handleDeleteMember = async (memberId: number) => {
     try {
-      await deleteMember(memberId);
-      alert("구성원이 삭제되었습니다!");
+      await deleteMember(dashboardId, memberId);
       const size = 5;
-      const data = await getMembers(dashboardIdNum, { page: memberPage, size });
+      const data = await getMembers(dashboardId, { page: memberPage, size });
       setMembers(data.members);
       setTotalMemberPages(Math.ceil(data.totalCount / size));
     } catch (e) {
@@ -137,10 +136,10 @@ export default function DashboardIdEdit() {
 
   const handleCancelInvitation = async (invitationId: number) => {
     try {
-      await cancelDashboardInvitation(dashboardIdNum, invitationId);
+      await cancelDashboardInvitation(dashboardId, invitationId);
       alert("초대가 취소되었습니다!");
       const size = 5;
-      const data = await getDashboardInvitations(dashboardIdNum, { page: invitePage, size });
+      const data = await getDashboardInvitations(dashboardId, { page: invitePage, size });
       setInvites(
         data.invitations.map((inv) => ({
           id: inv.id,
@@ -160,7 +159,7 @@ export default function DashboardIdEdit() {
       <div className="pc:max-w-155 flex w-full min-w-71 flex-col gap-[15px]">
         {/* 돌아가기 버튼 */}
         <Link
-          href={`/dashboard/${dashboardIdNum}`}
+          href={`/dashboard/${dashboardId}`}
           className="tablet:text-base text-brand-gray-700 mb-1 flex text-left text-sm font-medium"
         >
           <img src="/icons/icon-arrow-left.svg" alt="돌아가기" className="mr-2" />
@@ -323,7 +322,13 @@ export default function DashboardIdEdit() {
           대시보드 삭제하기
         </MyButton>
 
-        <InviteModal isOpen={inviteOpen} onClose={() => setInviteOpen(false)} />
+        {inviteOpen && dashboardId !== undefined && (
+          <InviteModal
+            isOpen={inviteOpen}
+            onClose={() => setInviteOpen(false)}
+            dashboardId={dashboardId}
+          />
+        )}
       </div>
     </div>
   );

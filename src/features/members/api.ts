@@ -17,8 +17,8 @@ export const getMembers = (
 };
 
 // 대시보드 멤버 삭제
-export const deleteMember = (memberId: number) =>
-  apiRequest<DeleteMemberResponse>(`/members/${memberId}`, {
+export const deleteMember = (dashboardId: number, memberId: number) =>
+  apiRequest<DeleteMemberResponse>(`/members/${memberId}?dashboardId=${dashboardId}`, {
     method: "DELETE",
     withAuth: true,
   });
