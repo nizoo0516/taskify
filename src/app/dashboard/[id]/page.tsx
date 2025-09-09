@@ -91,12 +91,12 @@ export default function DashboardId() {
       ))}
 
       {/* 새로운 컬럼 추가 버튼 */}
-      <div className="pc:pt-17 pc:w-[354px] mx-5 py-5">
+      <div className="pc:pt-17 pc:w-[354px] mx-5 flex-shrink-0 py-5">
         <MyButton
           onClick={handleAddColumn}
           className="border-brand-gray-300 flex h-[70px] w-full items-center justify-center border bg-white"
         >
-          <span className="mr-3 text-lg font-bold">새로운 컬럼 추가하기</span>
+          <span className="mr-3 shrink-0 text-lg font-bold">새로운 컬럼 추가하기</span>
           <Chip variant="add" />
         </MyButton>
       </div>

@@ -22,7 +22,7 @@ export default function MemberList({ members }: { members: Member[] }) {
           <img src={m.profileImageUrl} alt="멤버 프로필" className="h-full w-full object-cover" />
         </li>
       ))}
-      {members.length > maxCount && (
+      {members.length > maxCount + 1 && (
         <li className="flex items-center justify-center bg-[#f4d7da] text-[#D25B68]">
           +{nonOwners.length - maxCount}
         </li>

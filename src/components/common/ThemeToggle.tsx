@@ -21,7 +21,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="bg-brand-blue-500 hover:bg-brand-blue-600 tablet:right-6 tablet:bottom-6 tablet:h-12 tablet:w-12 dark:bg-dark-800 fixed right-3 bottom-3 z-50 flex h-8 w-8 items-center justify-center rounded-full text-white shadow-lg transition-colors"
+      className="bg-brand-blue-500 hover:bg-brand-blue-600 tablet:right-6 tablet:bottom-6 tablet:h-12 tablet:w-12 dark:bg-dark-800 fixed right-3 bottom-3 z-40 flex h-8 w-8 items-center justify-center rounded-full text-white shadow-lg transition-colors"
     >
       {isDark ? "🌙" : "☀️"}
     </button>

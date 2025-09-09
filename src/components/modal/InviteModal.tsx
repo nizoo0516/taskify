@@ -55,42 +55,43 @@ export default function InviteModal({ isOpen, onClose, dashboardId }: InviteModa
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center">
-      <Modal
-        open={isOpen}
-        isOpenModal={() => onClose()}
-        className="tablet:w-full w-[calc(100%-32px)] max-w-[568px] min-w-0"
-      >
-        <div className="w-full">
-          <ModalHeader title="초대하기" onClose={onClose} />
-          <ModalContext>
-            <Field id="inviteEmail" label="이메일" error={error}>
-              <Input
-                type="email"
-                placeholder="이메일을 입력하세요"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setError(undefined);
-                }}
-              />
-            </Field>
-          </ModalContext>
-          <ModalFooter>
-            <div className="flex h-[54px] w-full justify-center gap-2">
-              <MyButton
-                className="bg-brand-gray-200 text-brand-gray-700 border-brand-gray-200 flex-1 text-lg font-medium"
-                onClick={onClose}
-              >
-                취소
-              </MyButton>
-              <MyButton className="bg-brand-blue-500 flex-1 text-white" onClick={handleInvite}>
-                {loading ? "초대 중..." : "초대"}
-              </MyButton>
-            </div>
-          </ModalFooter>
-        </div>
-      </Modal>
-    </div>
+    <Modal
+      open={isOpen}
+      isOpenModal={() => onClose()}
+      className="tablet:w-full w-[calc(100%-32px)] max-w-[568px] min-w-0"
+    >
+      <div className="w-full">
+        <ModalHeader title="초대하기" onClose={onClose} />
+        <ModalContext>
+          <Field id="inviteEmail" label="이메일" error={error}>
+            <Input
+              type="email"
+              placeholder="이메일을 입력하세요"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError(undefined);
+              }}
+            />
+          </Field>
+        </ModalContext>
+        <ModalFooter>
+          <div className="flex h-[54px] w-full justify-center gap-2">
+            <MyButton
+              className="bg-brand-gray-200 text-brand-gray-700 border-brand-gray-200 flex-1 border-0 text-lg font-medium"
+              onClick={onClose}
+            >
+              취소
+            </MyButton>
+            <MyButton
+              className="bg-brand-blue-500 flex-1 border-0 text-white"
+              onClick={handleInvite}
+            >
+              {loading ? "초대 중..." : "초대"}
+            </MyButton>
+          </div>
+        </ModalFooter>
+      </div>
+    </Modal>
   );
 }
