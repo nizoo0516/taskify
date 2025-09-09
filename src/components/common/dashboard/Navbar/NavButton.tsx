@@ -59,7 +59,7 @@ export default function NavButton({
           {label}
         </span>
       </MyButton>
-      {inviteOpen && dashboardId !== undefined && (
+      {dashboardId !== undefined && (
         <InviteModal isOpen={inviteOpen} onClose={closeInvite} dashboardId={dashboardId} />
       )}
     </>

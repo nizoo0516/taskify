@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { createDashboard, getDashboards } from "@/features/dashboard/api";
-import { useApiHandler } from "@/lib/useApiHandler";
 import { useDevice } from "@/lib/useDevice";
 
 import AddDashboard from "./AddDashboard";
@@ -56,8 +55,6 @@ export default function Sidebar() {
     await refetch();
 
     router.push(`/dashboard/${created.id}`); // dash보드 페이지에서 id 값 가지고 오려고 추가
-
-    router.refresh();
   };
 
   return (
@@ -72,7 +69,7 @@ export default function Sidebar() {
         <AddDashboard handleCreate={handleCreate} />
 
         <div className="pc:grid-cols-[271px_1fr] tablet:grid-cols-[130px_1fr] grid">
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence mode="wait">
             <motion.div
               key={page}
               initial={{ x: isPrev ? "-23%" : "23%", opacity: 0 }}

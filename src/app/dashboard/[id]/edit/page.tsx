@@ -327,7 +327,7 @@ export default function DashboardIdEdit() {
           대시보드 삭제하기
         </MyButton>
 
-        {inviteOpen && dashboardId !== undefined && (
+        {dashboardId !== undefined && (
           <InviteModal
             isOpen={inviteOpen}
             onClose={() => setInviteOpen(false)}

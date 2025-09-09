@@ -52,8 +52,6 @@ export default function InviteModal({ isOpen, onClose, dashboardId }: InviteModa
     }
   };
 
-  if (!isOpen) return null;
-
   return (
     <Modal
       open={isOpen}

@@ -1,19 +1,17 @@
 "use client";
-import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
 
 import UserMenu from "@/components/common/dashboard/Navbar/UserMenu";
 import { getMe } from "@/features/users/api";
 import { useApiHandler } from "@/lib/useApiHandler";
 import { useOutsideClick } from "@/lib/useOutsideClick";
+import Dropdown from "@/components/layout/Dropdown";
 import { cn } from "@/lib/utils/cn";
 
 export default function User() {
   const { data } = useApiHandler(() => getMe(), []);
 
   const [isMenu, setIsMenu] = useState(false);
-
-  const menuRef = useOutsideClick(() => setIsMenu(false));
 
   const userProfile = data?.profileImageUrl;
   const userName = data?.nickname;
@@ -23,7 +21,7 @@ export default function User() {
   };
 
   return (
-    <div ref={menuRef} className="tablet:ml-6 pc:ml-8 relative z-10 ml-3">
+    <div className="tablet:ml-6 pc:ml-8 relative z-10 ml-3">
       <button className="flex flex-row items-center" onClick={toggleMenu}>
         <img
           src={userProfile}
@@ -34,23 +32,16 @@ export default function User() {
         <div className="tablet:flex ml-3 hidden">{userName}</div>
       </button>
 
-      <AnimatePresence>
-        {isMenu && (
-          <motion.div
-            key="dropdown"
-            initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
-            animate={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
-            exit={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            className={cn(
-              "tablet:right-[-28px] absolute top-11 right-0 w-[128px] overflow-hidden rounded-[6px] border bg-white p-1.5 shadow-md",
-              "dark:bg-dark-800 dark:border-dark-600",
-            )}
-          >
-            <UserMenu />
-          </motion.div>
+      <Dropdown
+        isOpen={isMenu}
+        onClose={() => setIsMenu(false)}
+        className={cn(
+          "tablet:right-[-28px] absolute top-2 right-0 w-[128px] overflow-hidden rounded-[6px] border bg-white p-1.5 shadow-md",
+          "dark:bg-dark-800 dark:border-dark-600",
         )}
-      </AnimatePresence>
+      >
+        <UserMenu />
+      </Dropdown>
     </div>
   );
 }

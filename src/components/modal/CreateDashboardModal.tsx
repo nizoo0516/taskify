@@ -32,8 +32,6 @@ export default function NewDashboardModal({
     onClose();
   };
 
-  if (!open) return null;
-
   return (
     <Modal open={open} size="lg" className="h-[334px] w-[584px]">
       <ModalHeader title="새로운 대시보드" />
