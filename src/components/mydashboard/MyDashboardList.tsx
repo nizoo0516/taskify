@@ -1,233 +1,111 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 import Chip from "@/components/common/chip/Chip";
 import CreateDashboardModal from "@/components/modal/CreateDashboardModal";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/common/Button";
 import Pagination from "@/components/common/Pagination";
-import { Dashboard, Invitation } from "@/features/dashboard/types";
-
-interface InvitationResponse {
-  cursorId: number;
-  invitations: Invitation[];
-}
-
-const dashboards: Dashboard[] = [
-  {
-    id: 1,
-    title: "제니",
-    color: "#7AC555",
-    createdAt: "2025-09-03T00:00:00Z",
-    updatedAt: "2025-09-03T00:00:00Z",
-    createdByMe: true,
-    userId: 1,
-  },
-  {
-    id: 2,
-    title: "로제",
-    color: "#7AC555",
-    createdAt: "2025-09-03T00:00:00Z",
-    updatedAt: "2025-09-03T00:00:00Z",
-    createdByMe: true,
-    userId: 2,
-  },
-  {
-    id: 3,
-    title: "채원",
-    color: "#7AC555",
-    createdAt: "2025-09-03T00:00:00Z",
-    updatedAt: "2025-09-03T00:00:00Z",
-    createdByMe: true,
-    userId: 3,
-  },
-  {
-    id: 4,
-    title: "영서",
-    color: "#7AC555",
-    createdAt: "2025-09-03T00:00:00Z",
-    updatedAt: "2025-09-03T00:00:00Z",
-    createdByMe: true,
-    userId: 4,
-  },
-  {
-    id: 5,
-    title: "리사",
-    color: "#7AC555",
-    createdAt: "2025-09-03T00:00:00Z",
-    updatedAt: "2025-09-03T00:00:00Z",
-    createdByMe: true,
-    userId: 5,
-  },
-  {
-    id: 6,
-    title: "애니",
-    color: "#7AC555",
-    createdAt: "2025-09-03T00:00:00Z",
-    updatedAt: "2025-09-03T00:00:00Z",
-    createdByMe: true,
-    userId: 6,
-  },
-  {
-    id: 7,
-    title: "나띠",
-    color: "#7AC555",
-    createdAt: "2025-09-03T00:00:00Z",
-    updatedAt: "2025-09-03T00:00:00Z",
-    createdByMe: true,
-    userId: 7,
-  },
-];
-
-const mockResponse: InvitationResponse = {
-  cursorId: 0,
-  invitations: [
-    {
-      id: 1,
-      inviter: { nickname: "Mark", email: "mark@nct.com", id: 100 },
-      teamId: "team-1",
-      dashboard: { title: "프로덕트 디자인", id: 201 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 2,
-      inviter: { nickname: "Felix", email: "felix@skz.com", id: 101 },
-      teamId: "team-2",
-      dashboard: { title: "새로운 기획 문서", id: 202 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 3,
-      inviter: { nickname: "Hayoung", email: "hayoung@fromis9.com", id: 102 },
-      teamId: "team-3",
-      dashboard: { title: "유닛A", id: 203 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 4,
-      inviter: { nickname: "Mark", email: "mark@nct.com", id: 103 },
-      teamId: "team-1",
-      dashboard: { title: "프로덕트 디자인", id: 204 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 5,
-      inviter: { nickname: "Felix", email: "felix@skz.com", id: 104 },
-      teamId: "team-2",
-      dashboard: { title: "새로운 기획 문서", id: 205 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 6,
-      inviter: { nickname: "Hayoung", email: "hayoung@fromis9.com", id: 105 },
-      teamId: "team-3",
-      dashboard: { title: "유닛A", id: 206 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 7,
-      inviter: { nickname: "Mark", email: "mark@nct.com", id: 106 },
-      teamId: "team-1",
-      dashboard: { title: "프로덕트 디자인", id: 207 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 8,
-      inviter: { nickname: "Felix", email: "felix@skz.com", id: 107 },
-      teamId: "team-2",
-      dashboard: { title: "새로운 기획 문서", id: 208 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-    {
-      id: 9,
-      inviter: { nickname: "Hayoung", email: "hayoung@fromis9.com", id: 108 },
-      teamId: "team-3",
-      dashboard: { title: "유닛A", id: 209 },
-      invitee: { nickname: "You", email: "you@email.com", id: 999 },
-      inviteAccepted: false,
-      createdAt: "2025-09-03T15:54:08.171Z",
-      updatedAt: "2025-09-03T15:54:08.171Z",
-    },
-  ],
-};
+import type { Dashboard } from "@/features/dashboard/types";
+import { getDashboards, createDashboard as apiCreateDashboard } from "@/features/dashboard/api";
+import type { Invitation } from "@/features/invitations/types";
+import { getInvitations, respondInvitation } from "@/features/invitations/api";
 
 export default function MyDashboardList() {
+  const router = useRouter();
+
+  // 상태
+  const [dashboardList, setDashboardList] = useState<Dashboard[]>([]);
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedColor] = useState("#7AC555");
+  const [searchKeyword, setSearchKeyword] = useState("");
 
-  const [dashboardList, setDashboardList] = useState<Dashboard[]>(dashboards);
-  const [invitations, setInvitations] = useState<Invitation[]>(mockResponse.invitations);
+  // 필터링된 초대 목록
+  const filteredInvitations = invitations.filter(invite =>
+    invite.dashboard.title.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
 
-  const itemsPerPage = 5;
   const totalPages = Math.ceil(dashboardList.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = dashboardList.slice(startIndex, startIndex + itemsPerPage);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // 데이터 불러오기
+  useEffect(() => {
+    // 내 대시보드 목록
+    getDashboards("pagination", { page: 1, size: 100 })
+      .then(res => setDashboardList(res.dashboards))
+      .catch(err => console.error("대시보드 조회 실패:", err));
 
-  const [selectedColor] = useState("#7AC555");
+    // 내가 받은 초대 목록
+    getInvitations({ size: 100 })
+      .then(res => {
+        console.log("받은 초대 목록: ", res.invitations);
+        setInvitations(res.invitations);
+      })
+      .catch(err => console.error("초대 조회 실패:", err));
+  }, []);
 
-  const handleAcceptInvite = (inviteId: number) => {
-    const invite = invitations.find((inv) => inv.id === inviteId);
-    if (!invite) return;
+  // 초대 수락
+  const handleAcceptInvite = async (inviteId: number, dashboardId: number, title: string, inviterId: number) => {
+    try {
+      await respondInvitation(inviteId, true);
 
-    //내 대시보드 끝에 추가
-    setDashboardList((prev) => [
-      ...prev,
-      {
-        id: invite.dashboard.id,
-        title: invite.dashboard.title,
-        color: selectedColor,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        createdByMe: false,
-        userId: invite.inviter.id,
-      },
-    ]);
+      setDashboardList(prev => {
+        // 중복 대시보드가 있으면 추가하지 않음
+        if (prev.some(d => d.id === dashboardId)) return prev;
 
-    //초대 목록에서 제거
-    setInvitations((prev) => prev.filter((inv) => inv.id !== inviteId));
+        const newDashboard: Dashboard = {
+          id: dashboardId,
+          title,
+          color: selectedColor,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          createdByMe: false,
+          userId: inviterId,
+        };
+
+        // 새 대시보드를 리스트 맨 앞에 추가 (최근 수락이 위로)
+        return [newDashboard, ...prev];
+      });
+
+      // 초대 목록에서 제거
+      setInvitations(prev => prev.filter(inv => inv.id !== inviteId));
+    } catch (err) {
+      console.error("초대 수락 실패:", err);
+    }
   };
 
-  const handleRejectInvite = (inviteId: number) => {
-    setInvitations((prev) => prev.filter((inv) => inv.id !== inviteId));
+  // 초대 거절
+  const handleRejectInvite = async (inviteId: number) => {
+    try {
+      await respondInvitation(inviteId, false);
+      setInvitations(prev => prev.filter(inv => inv.id !== inviteId));
+    } catch (err) {
+      console.error("초대 거절 실패:", err);
+    }
   };
 
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const filteredInvitations = invitations.filter((invite) =>
-    invite.dashboard.title.toLowerCase().includes(searchKeyword.toLowerCase()),
-  );
+  // 대시보드 생성
+  const handleCreateDashboard = async (name: string, color: string) => {
+    try {
+      const newDashboard = await apiCreateDashboard({ title: name, color });
+      setDashboardList(prev => [newDashboard, ...prev]);  // 생성한 것도 앞에 추가
+    } catch (err) {
+      console.error("대시보드 생성 실패:", err);
+    }
+  };
 
   return (
     <div className="bg-[#fafafa] py-[40px]">
-      {/* 내 대시보드*/}
-      <div className="pc:mx-0 pc:ml-[40px] mx-auto min-h-[204px] w-[95%] max-w-[1022px]">
-        <div className="tablet:grid-cols-2 pc:grid-cols-3 grid min-h-[156px] grid-cols-1 gap-4">
+      {/* 내 대시보드 */}
+      <div className="w-[95%] mx-auto max-w-[1022px] min-h-[204px] pc:mx-0 pc:ml-[40px]">
+        <div className="grid grid-cols-1 tablet:grid-cols-2 pc:grid-cols-3 gap-4 min-h-[156px]">
           <MyButton
             className="h-[70px] p-4 text-center font-semibold"
             color="buttonBasic"
@@ -236,12 +114,12 @@ export default function MyDashboardList() {
             새로운 대시보드 &nbsp; <Chip variant="add" size="sm" />
           </MyButton>
 
-          {currentItems.map((dashboard) => (
+          {currentItems.map((dashboard, index) => (
             <MyButton
-              key={dashboard.id}
+              key={`${dashboard.id}-${index}`} // 중복키 방지
               className="h-[70px] p-4 text-left font-semibold"
               color="buttonBasic"
-              onClick={() => alert("대시보드 이동!")}
+              onClick={() => router.push(`/dashboard/${dashboard.id}`)}
             >
               <div className="flex items-center gap-2">
                 <div
@@ -260,7 +138,7 @@ export default function MyDashboardList() {
                 &nbsp;{" "}
                 <Image
                   src="/icons/icon-arrow-right.svg"
-                  alt="내가 만든 대시보드"
+                  alt="대시보드 이동"
                   width={18}
                   height={14}
                   className="ml-auto"
@@ -277,27 +155,26 @@ export default function MyDashboardList() {
         </div>
       </div>
 
-      {/* 초대 받은 대시보드*/}
-      <div className="pc:mx-0 pc:ml-[40px] mx-auto max-h-[650px] w-[95%] max-w-[1022px] overflow-scroll rounded-lg bg-white">
-        <h2 className="px-[28px] py-[32px] text-2xl font-bold">초대 받은 대시보드</h2>
+      {/* 초대 받은 대시보드 */}
+      <div className="w-[95%] mx-auto max-w-[1022px] max-h-[650px] pc:mx-0 pc:ml-[40px] bg-white rounded-lg overflow-scroll mt-8">
+        <h2 className="text-2xl font-bold py-[32px] px-[28px]">초대 받은 대시보드</h2>
         <div className="px-[28px] pb-[16px]">
           <Input
             placeholder="검색"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
-            leftIcon={
-              <Image src="/icons/icon-search.svg" alt="검색 아이콘" width={20} height={20} />
-            }
+            leftIcon={<Image src="/icons/icon-search.svg" alt="검색 아이콘" width={20} height={20} />}
           />
         </div>
 
-        <div className="pc:block tablet:block hidden">
-          <table className="w-full border-collapse text-left text-sm">
-            <thead className="border-b text-gray-500">
+        {/* PC/태블릿 */}
+        <div className="hidden pc:block tablet:block">
+          <table className="w-full text-sm text-left border-collapse">
+            <thead className="text-gray-500 border-b">
               <tr>
-                <th className="w-1/3 px-[28px] py-2">이름</th>
-                <th className="w-1/3 px-[28px] py-2">초대자</th>
-                <th className="w-1/3 px-[28px] py-2">수락 여부</th>
+                <th className="py-2 w-1/3 px-[28px]">이름</th>
+                <th className="py-2 w-1/3 px-[28px]">초대자</th>
+                <th className="py-2 w-1/3 px-[28px]">수락 여부</th>
               </tr>
             </thead>
             <tbody>
@@ -317,19 +194,26 @@ export default function MyDashboardList() {
               ) : (
                 filteredInvitations.map((invite) => (
                   <tr key={invite.id} className="border-b last:border-0">
-                    <td className="w-1/3 px-[28px] py-[23px]">{invite.dashboard.title}</td>
-                    <td className="w-1/3 px-[28px] py-[23px]">{invite.inviter.nickname}</td>
-                    <td className="w-1/3 px-[28px] py-[23px]">
+                    <td className="py-[23px] w-1/3 px-[28px]">{invite.dashboard.title}</td>
+                    <td className="py-[23px] w-1/3 px-[28px]">{invite.inviter.nickname}</td>
+                    <td className="py-[23px] w-1/3 px-[28px]">
                       <div className="flex gap-2">
                         <MyButton
-                          className="px-[29.5px] py-[4px] text-white"
+                          className="py-[4px] px-[29.5px] text-white"
                           color="buttonBlue"
-                          onClick={() => handleAcceptInvite(invite.id)}
+                          onClick={() =>
+                            handleAcceptInvite(
+                              invite.id,
+                              invite.dashboard.id,
+                              invite.dashboard.title,
+                              invite.inviter.id
+                            )
+                          }
                         >
                           수락
                         </MyButton>
                         <MyButton
-                          className="px-[29.5px] py-[4px] text-[#4276EC]"
+                          className="py-[4px] px-[29.5px] text-[#4276EC]"
                           color="buttonBasic"
                           onClick={() => handleRejectInvite(invite.id)}
                         >
@@ -344,8 +228,8 @@ export default function MyDashboardList() {
           </table>
         </div>
 
-        {/* 모바일 전용 */}
-        <div className="pc:hidden tablet:hidden block space-y-4 px-[20px] pb-[20px]">
+        {/* 모바일 */}
+        <div className="block pc:hidden tablet:hidden px-[20px] pb-[20px] space-y-4">
           {filteredInvitations.length === 0 ? (
             <div className="text-center text-gray-400">
               검색 결과가 없습니다.
@@ -359,20 +243,30 @@ export default function MyDashboardList() {
             </div>
           ) : (
             filteredInvitations.map((invite) => (
-              <div key={invite.id} className="rounded-lg border border-gray-200 p-4 shadow-sm">
+              <div
+                key={invite.id}
+                className="border border-gray-200 rounded-lg p-4 shadow-sm"
+              >
                 <div className="mb-2">
-                  <div className="text-sm text-gray-500">이름</div>
+                  <div className="text-gray-500 text-sm">이름</div>
                   <div className="text-base font-semibold">{invite.dashboard.title}</div>
                 </div>
                 <div className="mb-4">
-                  <div className="text-sm text-gray-500">초대자</div>
+                  <div className="text-gray-500 text-sm">초대자</div>
                   <div className="text-base font-medium">{invite.inviter.nickname}</div>
                 </div>
                 <div className="flex gap-2">
                   <MyButton
                     className="w-full py-[4px] text-white"
                     color="buttonBlue"
-                    onClick={() => handleAcceptInvite(invite.id)}
+                    onClick={() =>
+                      handleAcceptInvite(
+                        invite.id,
+                        invite.dashboard.id,
+                        invite.dashboard.title,
+                        invite.inviter.id
+                      )
+                    }
                   >
                     수락
                   </MyButton>
@@ -390,23 +284,12 @@ export default function MyDashboardList() {
         </div>
       </div>
 
-      {/*모달*/}
+      {/* 모달 */}
       <CreateDashboardModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onCreate={(name, color) => {
-          const newDashboard: Dashboard = {
-            id: dashboardList.length + 1,
-            title: name,
-            color,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            createdByMe: true,
-            userId: 999, //예시 userID
-          };
-          setDashboardList((prev) => [...prev, newDashboard]);
-        }}
-      ></CreateDashboardModal>
+        onCreate={handleCreateDashboard}
+      />
     </div>
   );
 }
