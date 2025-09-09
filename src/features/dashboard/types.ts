@@ -87,4 +87,5 @@ export interface ColumnProps {
   isKebabOpen?: () => void;
   columnId: number;
   setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>;
+  dashboardId?: number;
 }

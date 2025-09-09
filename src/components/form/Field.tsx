@@ -7,6 +7,7 @@ export type FieldProps<P extends A11yProps = A11yProps> = {
   label: string;
   error?: string;
   className?: string;
+  essential?: boolean;
   children: React.ReactElement<P>;
 };
 
@@ -15,6 +16,7 @@ export default function Field<P extends A11yProps>({
   label,
   error,
   className,
+  essential = false,
   children, // <Input/>, <Select/>, <Textarea/> 등 1개
 }: FieldProps<P>) {
   // 에러id
@@ -32,6 +34,7 @@ export default function Field<P extends A11yProps>({
     <div className={["w-full space-y-2", className].filter(Boolean).join(" ")}>
       <label htmlFor={id} className="block text-[18px] font-medium text-gray-800">
         {label}
+        {essential && <span className="text-brand-blue-500 pt-0.5 pl-0.5 text-lg">*</span>}
       </label>
       {clonedChild}
       {error && (
