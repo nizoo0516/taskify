@@ -8,9 +8,9 @@ import MyButton from "@/components/common/Button";
 import { getColumns } from "@/features/columns/api";
 import { getCards } from "@/features/cards/api";
 import { useColumnId } from "@/features/columns/store";
-import CreateCardModal from "../../../components/modal/cardModal/CreateCardModal";
-import CreateColumnModal from "../../../components/modal/columModal/CreateColumnModal";
 import { ColumnData } from "@/features/dashboard/types";
+import CreateCardModal from "@/components/modal/cardModal/CreateCardModal";
+import CreateColumnModal from "@/components/modal/columModal/CreateColumnModal";
 
 export default function DashboardId() {
   const { id } = useParams();

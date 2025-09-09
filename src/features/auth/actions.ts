@@ -7,7 +7,6 @@ import { apiRequest } from "@/lib/apiRequest";
 
 // 로그인
 export const loginAction = async (data: LoginRequest): Promise<LogRequest> => {
-  console.log("📌 loginAction 실행됨");
   const res = await apiRequest<LogRequest>("/auth/login", {
     method: "POST",
     data,
