@@ -7,6 +7,7 @@ import Input from "@/components/form/Input";
 import Button from "@/components/layout/Button";
 import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
 import { createColumn } from "@/features/columns/api";
+import { useColumnId } from "@/features/columns/store";
 
 import type { ColumnData } from "../../types";
 
@@ -19,6 +20,7 @@ type ModalType = {
 export default function CreateColumnModal({ isOpen, setIsOpen, setColumns }: ModalType) {
   const [newColumn, setNewColumn] = useState("");
   const isDisabled = newColumn.trim() === "";
+  const setColumnIdData = useColumnId((s) => s.setColumnIdData);
 
   // useParams로 dashbordId값 받아옴
   const { id } = useParams();
@@ -36,8 +38,8 @@ export default function CreateColumnModal({ isOpen, setIsOpen, setColumns }: Mod
       const col: ColumnData = (res as { data?: ColumnData }).data ?? (res as ColumnData);
 
       setColumns((prev) => [...prev, { id: col.id, title: col.title }]);
+      setColumnIdData(dashboardId, col.id);
       setIsOpen(false);
-      console.log(col);
     } catch (e) {
       alert((e as Error).message || "컬럼 생성 오류");
     }

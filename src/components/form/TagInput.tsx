@@ -10,43 +10,65 @@ type TagInputProps = {
 
 export default function TagInput({ value, onChange }: TagInputProps) {
   const [inputValue, setInputValue] = useState("");
+  const [previewTags, setPreviewTags] = useState<string[]>([]);
 
-  const addTags = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // 반드시 enter로 값 받음
+  // 엔터 시 미리보기 추가
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;
 
     const input = e.currentTarget;
     const newTag = input.value.trim();
     if (!newTag) return;
 
-    onChange([...value, newTag]);
+    setPreviewTags((prev) => [...prev, newTag]);
     setInputValue("");
     input.value = "";
   };
+
+  // 미리보기 클릭 시 input에 들어감
+  const confirmTag = (tag: string, idx: number) => {
+    onChange([...value, tag]);
+    setPreviewTags((prev) => prev.filter((_, i) => i !== idx));
+  };
+
   const removeTag = (idx: number) => {
     onChange(value.filter((_, i) => i !== idx));
   };
+
   return (
     <div className="relative">
       <Input
-        onKeyDown={addTags}
+        onKeyDown={handleKeyDown}
         onChange={(e) => setInputValue(e.currentTarget.value)}
         placeholder="태그 입력 후 Enter"
       />
-      <div className="bg-brand-gray-100 absolute top-[50px] left-0 flex w-full flex-wrap gap-2 rounded-lg px-4 py-2">
-        {/* 태그가 없거나 input입력이 시작되지 않았을때만 텍스트 보임 */}
-        {value.map((tag, i) => (
-          <div key={i}>
-            <Chip variant="category" label={tag} />
+
+      <div className="absolute top-2.5 left-0 w-full">
+        {/* 미리보기 태그 */}
+        <div className="bg-brand-gray-200/80 absolute top-10 flex w-full gap-2 rounded-lg px-4 py-3">
+          {previewTags.map((tag, i) => (
             <button
-              onClick={() => {
-                removeTag(i);
-              }}
+              key={i}
+              onClick={() => confirmTag(tag, i)}
+              className={
+                "inline-flex h-7 min-w-[25px] items-center justify-center rounded px-[6px] text-sm " +
+                "bg-[#F9EEE3] text-[#D58D49]"
+              }
             >
-              x
+              {tag}
             </button>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* 확정된 태그 */}
+        <div className="absolute flex w-full gap-2 rounded-lg px-4">
+          {value.map((tag, i) => (
+            <div key={`tag-${i}`} className="flex items-center gap-1">
+              <Chip variant="category" label={tag} />
+              <button onClick={() => removeTag(i)}>x</button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
