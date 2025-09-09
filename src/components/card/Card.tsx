@@ -44,10 +44,10 @@ export default function Card({ title, tags, dueDate, imageUrl, assignee }: CardW
           className={clsx(
             "rounded-md object-cover",
             // 기본 (mobile)
-            "h-auto w-full object-cover",
+            "h-auto max-h-50 w-full object-cover",
 
             // tablet
-            "tablet:h-auto tablet:w-[120px]",
+            "tablet:h-full tablet:w-25",
 
             // pc
             "pc:h-[160px] pc:w-[274px]",
