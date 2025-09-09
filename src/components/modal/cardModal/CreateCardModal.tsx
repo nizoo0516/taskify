@@ -1,12 +1,12 @@
 "use client";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import DatePicker from "@/components/form/DatePicker";
 import Field from "@/components/form/Field";
 import ImgUpload from "@/components/form/ImgUpload";
 import Input from "@/components/form/Input";
-import Select from "@/components/form/Select";
+import Select, { Option } from "@/components/form/Select";
 import TagInput from "@/components/form/TagInput";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/common/Button";
@@ -15,6 +15,7 @@ import { createCard } from "@/features/cards/api";
 import { uploadCardImage } from "@/features/columns/api";
 import { useColumnId } from "@/features/columns/store";
 import { CardData, ColumnData } from "@/features/dashboard/types";
+import { getMembers } from "@/features/members/api";
 
 const now = dayjs();
 
@@ -24,11 +25,6 @@ type ModalType = {
   setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>;
   onCardCreated?: () => void;
 };
-
-const managerOpt = [
-  { value: "1", label: "배유철" },
-  { value: "2", label: "배동석" },
-];
 
 export default function CreateCardModal({
   isOpen,
@@ -48,20 +44,50 @@ export default function CreateCardModal({
   const [imageUrl, setImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const [members, setMembers] = useState<Option[]>([]);
+  const [assigneeId, setAssigneeId] = useState<number | null>(null);
+
   // 필수 값 체크
   const isDisabled = title.trim() === "" || description.trim() === "";
 
   // Zustand에서 값 가져오기
   const dashboardId = columnIdData?.dashboardId ?? 0;
   const columnId = columnIdData?.columnId ?? 0;
-  const assigneeUserId = 6212;
+
+  useEffect(() => {
+    if (!isOpen || !dashboardId) return;
+
+    (async () => {
+      try {
+        const res = await getMembers(dashboardId, { page: 1, size: 20 });
+
+        const opts = res.members.map((m) => ({
+          value: String(m.userId),
+          label: m.nickname,
+          chip: (
+            <img
+              src={m.profileImageUrl}
+              alt={m.nickname}
+              className="h-[26px] w-[26px] rounded-full object-cover"
+            />
+          ),
+        }));
+
+        setMembers(opts);
+      } catch (err) {
+        console.error("멤버 목록 불러오기 실패:", err);
+      }
+    })();
+  }, [isOpen, dashboardId]);
 
   const handleCreate = async () => {
     if (isDisabled || isLoading) return;
-
-    // columnIdData가 없으면 에러
     if (!columnIdData) {
       alert("컬럼 정보가 없습니다.");
+      return;
+    }
+    if (!assigneeId) {
+      alert("담당자를 선택해주세요.");
       return;
     }
 
@@ -94,13 +120,13 @@ export default function CreateCardModal({
 
       // 카드 생성 데이터
       const cardData = {
-        assigneeUserId,
+        assigneeUserId: assigneeId,
         dashboardId,
         columnId,
         title: title.trim(),
         description: description.trim(),
         dueDate: dueDate ? dayjs(dueDate).format("YYYY-MM-DD HH:mm") : "",
-        tags: tags.length > 0 ? tags : undefined,
+        tags: Array.isArray(tags) ? tags : [],
         imageUrl: finalImageUrl,
       };
 
@@ -156,6 +182,7 @@ export default function CreateCardModal({
     setTags([]);
     setImageFile(null);
     setImageUrl("");
+    setAssigneeId(null);
 
     // 모달 닫기
     setIsOpen();
@@ -168,7 +195,11 @@ export default function CreateCardModal({
           <ModalHeader title="할 일 생성" />
           <ModalContext className="flex flex-col gap-7">
             <Field id="manager" label="담당자">
-              <Select options={managerOpt} placeholder="선택하기" />
+              <Select
+                options={members}
+                placeholder="선택하기"
+                onSelect={(opt) => setAssigneeId(Number(opt.value))}
+              />
             </Field>
 
             <Field id="title" label="제목" essential>

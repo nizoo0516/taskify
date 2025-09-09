@@ -15,14 +15,16 @@ export default function TagInput({ value, onChange }: TagInputProps) {
   // 엔터 시 미리보기 추가
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;
+    e.preventDefault();
+    e.stopPropagation();
 
-    const input = e.currentTarget;
-    const newTag = input.value.trim();
+    const newTag = inputValue.trim();
     if (!newTag) return;
+
+    if (previewTags.includes(newTag) || value.includes(newTag)) return;
 
     setPreviewTags((prev) => [...prev, newTag]);
     setInputValue("");
-    input.value = "";
   };
 
   // 미리보기 클릭 시 input에 들어감
@@ -38,6 +40,7 @@ export default function TagInput({ value, onChange }: TagInputProps) {
   return (
     <div className="relative">
       <Input
+        value={inputValue}
         onKeyDown={handleKeyDown}
         onChange={(e) => setInputValue(e.currentTarget.value)}
         placeholder="태그 입력 후 Enter"
