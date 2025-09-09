@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
-import MyButton from "@/components/layout/Button";
+import MyButton from "@/components/common/Button";
 import { login } from "@/features/auth/api";
 import { profileAvatar } from "@/features/users/profileAvatar";
 

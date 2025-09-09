@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import InviteModal from "@/components/InviteModal";
-import MyButton from "@/components/layout/Button";
+import InviteModal from "@/components/modal/InviteModal";
+import MyButton from "@/components/common/Button";
 import { cn } from "@/lib/utils/cn";
 
 type NavButtonProps = {

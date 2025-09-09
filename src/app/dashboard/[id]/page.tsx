@@ -2,15 +2,15 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
-import Chip from "@/components/chip/Chip";
+import Chip from "@/components/common/chip/Chip";
 import Column from "@/components/column/Column";
-import MyButton from "@/components/layout/Button";
+import MyButton from "@/components/common/Button";
 import { getColumns } from "@/features/columns/api";
 import { useColumnId } from "@/features/columns/store";
 
-import CreateCardModal from "../components/cardModal/CreateCardModal";
-import CreateColumnModal from "../components/columModal/CreateColumnModal";
-import type { ColumnData } from "../types";
+import CreateCardModal from "../../../components/modal/cardModal/CreateCardModal";
+import CreateColumnModal from "../../../components/modal/columModal/CreateColumnModal";
+import { ColumnData } from "@/features/dashboard/types";
 
 export default function DashboardId() {
   const { id } = useParams();

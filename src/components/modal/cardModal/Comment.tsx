@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 import Field from "@/components/form/Field";
 import Textarea from "@/components/form/Textarea";
-import Button from "@/components/layout/Button";
+import Button from "@/components/common/Button";
 import { useColumnId } from "@/features/columns/store";
 import { createComment, updateComment, deleteComment, getComments } from "@/features/comments/api";
 

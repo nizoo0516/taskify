@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
+import Chip from "@/components/common/chip/Chip";
 import DatePicker from "@/components/form/DatePicker";
 import Field from "@/components/form/Field";
 import ImgUpload from "@/components/form/ImgUpload";
@@ -8,139 +9,150 @@ import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
 import TagInput from "@/components/form/TagInput";
 import Textarea from "@/components/form/Textarea";
-import Button from "@/components/layout/Button";
-import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
-import { createCard } from "@/features/cards/api";
+import Button from "@/components/common/Button";
+import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
+import { updateCard } from "@/features/cards/api";
 import { uploadCardImage } from "@/features/columns/api";
 import { useColumnId } from "@/features/columns/store";
-
-import type { ColumnData, CardData } from "../../types";
+import { CardData, ColumnData } from "@/features/dashboard/types";
 
 type ModalType = {
   isOpen: boolean;
-  setIsOpen: () => void;
-  setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>;
-  onCardCreated?: () => void;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  cardData?: CardData | null; // 기존 카드 데이터를 props로 받기
+  setColumns?: React.Dispatch<React.SetStateAction<ColumnData[]>>; // 컬럼 상태 업데이트용
+  onModifyComplete?: () => void; // 수정 완료 콜백 추가
 };
 
+const stateOpt = [
+  { value: "1", label: "To Do", chip: <Chip variant="status" label="To Do" /> },
+  { value: "2", label: "On Progress", chip: <Chip variant="status" label="On Progress" /> },
+  { value: "3", label: "Done", chip: <Chip variant="status" label="Done" /> },
+];
 const managerOpt = [
+  { value: "6204", label: "사람1" },
   { value: "1", label: "배유철" },
   { value: "2", label: "배동석" },
 ];
 
-export default function CreateCardModal({
+export default function ModifyModal({
   isOpen,
   setIsOpen,
+  cardData,
   setColumns,
-  onCardCreated,
+  onModifyComplete,
 }: ModalType) {
-  // Zustand에서 컬럼 정보 가져오기
-  const { columnIdData, setCardId } = useColumnId();
-
-  // input 값들
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState<string>("");
+  const [dueDate, setDueDate] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // 필수 값 체크
+  // 공백값 체크(필수 표시 붙은것만!)
   const isDisabled = title.trim() === "" || description.trim() === "";
 
-  // Zustand에서 값 가져오기
+  const { columnIdData } = useColumnId();
+  const cardId = columnIdData?.cardId ?? 0;
   const dashboardId = columnIdData?.dashboardId ?? 0;
   const columnId = columnIdData?.columnId ?? 0;
   const assigneeUserId = 6204;
 
-  const handleCreate = async () => {
+  // 기존 카드 데이터로 폼 초기화
+  useEffect(() => {
+    if (cardData && isOpen) {
+      setTitle(cardData.title || "");
+      setDescription(cardData.description || "");
+      setDueDate(cardData.dueDate || "");
+      setTags(cardData.tags || []);
+      setImageUrl(cardData.imageUrl || "");
+      setImageFile(null);
+    }
+  }, [cardData, isOpen]);
+
+  const handleUpdate = async () => {
     if (isDisabled || isLoading) return;
 
-    // columnIdData가 없으면 에러
-    if (!columnIdData) {
-      alert("컬럼 정보가 없습니다.");
+    // cardId 있는지
+    if (!cardId) {
+      alert("카드 확인 실패");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // 이미지 업로드 처리
-      let finalImageUrl: string | undefined;
-
+      // 이미지 업로드 부분
+      let updateImg: string | undefined;
       if (imageFile) {
         try {
           const formData = new FormData();
           formData.append("image", imageFile);
 
-          const uploadResult = await uploadCardImage(columnId, formData);
-
-          // API 응답 구조에 따른 처리
-          const direct = (uploadResult as { imageUrl?: unknown }).imageUrl;
-          const nested = (uploadResult as { data?: { imageUrl?: unknown } }).data?.imageUrl;
+          const uploaded = await uploadCardImage(columnId, formData);
+          const direct = (uploaded as { imageUrl?: unknown }).imageUrl;
+          const nested = (uploaded as { data?: { imageUrl?: unknown } }).data?.imageUrl;
           const url =
             typeof direct === "string" ? direct : typeof nested === "string" ? nested : undefined;
 
-          finalImageUrl = url;
-        } catch (uploadError) {
-          console.error("이미지 업로드 실패", uploadError);
+          updateImg = url;
+        } catch {
+          console.error("이미지 업로드 실패");
         }
       } else if (imageUrl && !imageUrl.startsWith("blob:")) {
-        finalImageUrl = imageUrl;
+        updateImg = imageUrl;
       }
 
-      // 카드 생성 데이터
-      const cardData = {
-        assigneeUserId,
-        dashboardId,
-        columnId,
+      // 카드 수정 데이터 준비
+      const updateData = {
+        assigneeUserId: assigneeUserId,
+        dashboardId: dashboardId,
+        columnId: columnId,
         title: title.trim(),
         description: description.trim(),
-        dueDate: dueDate ? dueDate : "",
-        tags: tags.length > 0 ? tags : undefined,
-        imageUrl: finalImageUrl,
+        dueDate, // string
+        tags, // string[]
+        imageUrl: updateImg, // string | undefined
       };
 
-      console.log("카드 생성 요청 데이터:", cardData);
+      console.log("카드 수정 요청 데이터:", updateData);
 
-      // 카드 생성 API 호출
-      const createResult = await createCard(cardData);
+      // 카드 수정 API 호출
+      const updateResult = await updateCard(cardId, updateData);
 
-      // API 응답 구조에 따른 처리
-      const createdCard: CardData =
-        "data" in (createResult as any) ? (createResult as any).data : createResult;
-
-      // Zustand에다가 생성된 카드 아이디 담기
-      const createdCardId = createdCard as CardData & { id: number };
-      if (createdCardId.id) {
-        setCardId(createdCardId.id);
-      }
+      console.log("수정된 카드");
 
       // 컬럼 상태 업데이트
-      setColumns((prevColumns) => {
-        return prevColumns.map((col) => {
-          if (col.id === columnId) {
-            return {
-              ...col,
-              cards: [...(col.cards ?? []), createdCard],
-            };
-          }
-          return col;
-        });
-      });
+      if (setColumns) {
+        const updatedCard =
+          "data" in (updateResult as any) ? (updateResult as any).data : updateResult;
 
-      // 카드 생성 완료 콜백 호출 (서버에서 최신 데이터 다시 불러오기용)
-      if (onCardCreated) {
-        onCardCreated();
+        setColumns((prevColumns) => {
+          return prevColumns.map((col) => {
+            if (col.id === columnId) {
+              return {
+                ...col,
+                cards:
+                  col.cards?.map((card) => ((card as any).id === cardId ? updatedCard : card)) ||
+                  [],
+              };
+            }
+            return col;
+          });
+        });
       }
 
-      // 성공 시 모달 닫기 및 폼 초기화
+      alert("수정 완료");
       handleClose();
-      alert("카드가 생성되었습니다!");
+
+      // 수정 완료 콜백 호출 (디테일 모달 업데이트용)
+      if (onModifyComplete) {
+        onModifyComplete();
+      }
     } catch (error) {
-      console.error("카드 생성 오류:", error);
-      alert((error as Error).message || "카드 생성 중 오류가 발생했습니다.");
+      console.error("카드 수정 오류");
+      alert((error as Error).message || "카드 수정 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
     }
@@ -156,19 +168,23 @@ export default function CreateCardModal({
     setImageUrl("");
 
     // 모달 닫기
-    setIsOpen();
+    setIsOpen(false);
   };
 
   return (
-    <>
+    <div>
       {isOpen && (
         <Modal open={isOpen} isOpenModal={setIsOpen} size="lg">
-          <ModalHeader title="할 일 생성" />
+          <ModalHeader title="할 일 수정" />
           <ModalContext className="flex flex-col gap-7">
-            <Field id="manager" label="담당자">
-              <Select options={managerOpt} placeholder="선택하기" />
-            </Field>
-
+            <div className="grid grid-cols-2 gap-8">
+              <Field id="status" label="상태">
+                <Select options={stateOpt} placeholder="선택하기" labelNone={true} />
+              </Field>
+              <Field id="manager" label="담당자">
+                <Select options={managerOpt} placeholder="선택하기" />
+              </Field>
+            </div>
             <Field id="title" label="제목">
               <Input
                 value={title}
@@ -176,7 +192,6 @@ export default function CreateCardModal({
                 placeholder="제목을 입력해주세요"
               />
             </Field>
-
             <Field id="description" label="설명">
               <Textarea
                 className="resize-none"
@@ -185,7 +200,6 @@ export default function CreateCardModal({
                 placeholder="설명을 입력해주세요"
               />
             </Field>
-
             <Field id="dueDate" label="마감일">
               <DatePicker
                 value={dueDate ? new Date(dueDate) : null}
@@ -199,11 +213,9 @@ export default function CreateCardModal({
                 }}
               />
             </Field>
-
             <Field id="tag" label="태그">
               <TagInput value={tags} onChange={setTags} />
             </Field>
-
             <Field id="image" label="이미지">
               <ImgUpload
                 value={imageUrl}
@@ -214,22 +226,21 @@ export default function CreateCardModal({
               />
             </Field>
           </ModalContext>
-
           <ModalFooter>
             <Button className="h-[54px] w-64" onClick={handleClose} disabled={isLoading}>
               취소
             </Button>
             <Button
               className="text-brand-gray-100 h-[54px] w-64"
-              onClick={handleCreate}
-              color={isDisabled ? "buttonGrey" : "buttonBlue"}
+              onClick={handleUpdate}
+              color={isDisabled || isLoading ? "buttonGrey" : "buttonBlue"}
               disabled={isDisabled || isLoading}
             >
-              {isLoading ? "생성 중..." : "생성"}
+              {isLoading ? "수정 중..." : "수정"}
             </Button>
           </ModalFooter>
         </Modal>
       )}
-    </>
+    </div>
   );
 }

@@ -7,8 +7,8 @@ import { useMemo, useRef, useState } from "react";
 
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
-import MyButton from "@/components/layout/Button";
-import { Modal, ModalContext, ModalFooter } from "@/components/Modal";
+import MyButton from "@/components/common/Button";
+import { Modal, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { signup } from "@/features/users/api";
 
 type Errors = { email?: string; nickname?: string; password?: string; confirm?: string };

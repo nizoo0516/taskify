@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
-import MyButton from "@/components/layout/Button";
+import MyButton from "@/components/common/Button";
 import { changePassword } from "@/features/auth/api";
 import { getMe, updateMe, uploadProfileImage } from "@/features/users/api";
 import {

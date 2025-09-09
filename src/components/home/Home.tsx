@@ -3,8 +3,8 @@
 import ExtraFeatures from "@/components/home/ExtraFeatures";
 import Features from "@/components/home/Features";
 import Hero from "@/components/home/Hero";
-import Footer from "@/components/layout/home/Footer";
-import Header from "@/components/layout/home/Header";
+import Footer from "@/components/common/home/Footer";
+import Header from "@/components/common/home/Header";
 
 export default function Home() {
   return (

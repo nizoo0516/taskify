@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import MemberList from "@/components/layout/dashboard/Navbar/MemberList";
-import NavButton from "@/components/layout/dashboard/Navbar/NavButton";
-import User from "@/components/layout/dashboard/Navbar/User";
+import MemberList from "@/components/common/dashboard/Navbar/MemberList";
+import NavButton from "@/components/common/dashboard/Navbar/NavButton";
+import User from "@/components/common/dashboard/Navbar/User";
 import { getDashboardById } from "@/features/dashboard/api";
 import { Dashboard } from "@/features/dashboard/types";
 import { getMembers } from "@/features/members/api";

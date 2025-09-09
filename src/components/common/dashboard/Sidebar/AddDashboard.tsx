@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import NewDashboardModal from "@/components/CreateDashboardModal";
+import NewDashboardModal from "@/components/modal/CreateDashboardModal";
 import { cn } from "@/lib/utils/cn";
 
 import { CreateData } from ".";

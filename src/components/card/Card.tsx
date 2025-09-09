@@ -3,9 +3,9 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
 
-import DetailCardModal from "@/app/dashboard/components/cardModal/DetailCardModal";
-import type { CardData } from "@/app/dashboard/types";
-import Chip from "@/components/chip/Chip";
+import DetailCardModal from "@/components/modal/cardModal/DetailCardModal";
+import Chip from "@/components/common/chip/Chip";
+import { CardData } from "@/features/dashboard/types";
 
 export default function Card({ title, tags, dueDate, imageUrl }: CardData) {
   const [isOpen, setIsOpen] = useState(false);

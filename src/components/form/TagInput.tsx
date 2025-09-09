@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import Chip from "@/components/chip/Chip";
+import Chip from "@/components/common/chip/Chip";
 import Input from "@/components/form/Input";
 
 type TagInputProps = {

@@ -4,12 +4,12 @@ import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import Chip from "@/components/chip/Chip";
+import Chip from "@/components/common/chip/Chip";
 import Input from "@/components/form/Input";
 import Label from "@/components/form/Label";
-import InviteModal from "@/components/InviteModal";
-import MyButton from "@/components/layout/Button";
-import Pagination from "@/components/layout/Pagination";
+import InviteModal from "@/components/modal/InviteModal";
+import MyButton from "@/components/common/Button";
+import Pagination from "@/components/common/Pagination";
 import {
   getDashboardById,
   updateDashboard,

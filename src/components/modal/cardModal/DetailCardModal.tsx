@@ -2,18 +2,18 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-import Chip from "@/components/chip/Chip";
+import Chip from "@/components/common/chip/Chip";
 import Field from "@/components/form/Field";
-import KebabModal from "@/components/KebabModal";
-import Button from "@/components/layout/Button";
-import { Modal, ModalHeader, ModalContext } from "@/components/Modal";
+import KebabModal from "@/components/modal/KebabModal";
+import Button from "@/components/common/Button";
+import { Modal, ModalHeader, ModalContext } from "@/components/modal/Modal";
 import { getCard, deleteCard } from "@/features/cards/api";
 import { useColumnId } from "@/features/columns/store";
 import { cn } from "@/lib/utils/cn";
 
 import Comment from "./Comment";
 import ModifyCardModal from "./ModifyCardModal";
-import { CardData, ColumnData } from "../../types";
+import { CardData, ColumnData } from "@/features/dashboard/types";
 
 type ModalType = {
   isOpen: boolean;
