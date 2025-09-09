@@ -2,7 +2,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
 
-import UserMenu from "@/components/layout/dashboard/Navbar/UserMenu";
+import UserMenu from "@/components/common/dashboard/Navbar/UserMenu";
 import { getMe } from "@/features/users/api";
 import { useApiHandler } from "@/lib/useApiHandler";
 import { useOutsideClick } from "@/lib/useOutsideClick";

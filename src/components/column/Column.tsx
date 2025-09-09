@@ -2,14 +2,14 @@
 import clsx from "clsx";
 import { useState } from "react";
 
-import DeleteColumnModal from "@/app/dashboard/components/columModal/DeleteColumnModal";
-import ManageColumnModal from "@/app/dashboard/components/columModal/ManageColumnModal";
-import type { ColumnProps } from "@/app/dashboard/types";
+import DeleteColumnModal from "@/components/modal/columModal/DeleteColumnModal";
+import ManageColumnModal from "@/components/modal/columModal/ManageColumnModal";
 import Card from "@/components/card/Card";
-import Chip from "@/components/chip/Chip";
-import KebabModal from "@/components/KebabModal";
-import MyButton from "@/components/layout/Button";
-import Button from "@/components/layout/Button";
+import Chip from "@/components/common/chip/Chip";
+import KebabModal from "@/components/modal/KebabModal";
+import MyButton from "@/components/common/Button";
+import Button from "@/components/common/Button";
+import { ColumnProps } from "@/features/dashboard/types";
 
 export default function Column({
   status,

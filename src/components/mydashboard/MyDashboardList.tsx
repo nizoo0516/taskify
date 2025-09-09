@@ -3,11 +3,11 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import Chip from "@/components/chip/Chip";
-import CreateDashboardModal from "@/components/CreateDashboardModal";
+import Chip from "@/components/common/chip/Chip";
+import CreateDashboardModal from "@/components/modal/CreateDashboardModal";
 import Input from "@/components/form/Input";
-import MyButton from "@/components/layout/Button";
-import Pagination from "@/components/layout/Pagination";
+import MyButton from "@/components/common/Button";
+import Pagination from "@/components/common/Pagination";
 import { Dashboard, Invitation } from "@/features/dashboard/types";
 
 interface InvitationResponse {

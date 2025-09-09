@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import MyButton from "../layout/Button";
+import MyButton from "../common/Button";
 
 export default function LoginButton() {
   return (
