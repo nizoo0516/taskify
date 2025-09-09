@@ -8,25 +8,8 @@ import { useRef, useState } from "react";
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/layout/Button";
-import { useAuthStore } from "@/features/auth/store";
-import { baseProfile } from "@/features/users/baseProfile";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL!;
-async function loginAPI(email: string, password: string) {
-  const res = await fetch(`${API_BASE}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-  if (res.status === 201) return res.json();
-
-  let msg = "로그인에 실패했습니다.";
-  const body: unknown = await res.json().catch(() => null);
-  const m = (body as { message?: unknown })?.message;
-  if (typeof m === "string") msg = m;
-
-  throw new Error(msg);
-}
+import { login } from "@/features/auth/api";
+import { profileAvatar } from "@/features/users/profileAvatar";
 
 type Errors = { email?: string; password?: string };
 const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -34,7 +17,6 @@ const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 export default function LoginPage() {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
-  const setAccessToken = useAuthStore((s) => s.setAccessToken);
 
   const [values, setValues] = useState({
     email: "",
@@ -81,18 +63,13 @@ export default function LoginPage() {
     try {
       // 로그인 성공
       setSubmitting(true);
-
-      const { accessToken } = await loginAPI(values.email, values.password);
-      setAccessToken(accessToken);
-      // localStorage에 토큰 저장
-      localStorage.setItem("accessToken", accessToken);
-
+      await login({ email: values.email, password: values.password });
       try {
-        await baseProfile();
+        await profileAvatar();
       } catch (e) {
         console.warn("프로필 기본 이미지 적용 실패:", e);
       }
-      router.push("/mydashboard");
+      router.replace("/mydashboard");
     } catch (err: unknown) {
       // 로그인 실패
       const message =
@@ -104,12 +81,8 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-[520px] flex-col items-center justify-center">
-      <Link
-        href="/"
-        className="mb-[12px] flex flex-col items-center gap-[5px]"
-        aria-label="홈으로 이동"
-      >
+    <main className="pc:max-w-[520px] tablet:max-w-[520px] mx-auto flex min-h-screen w-full max-w-[351px] flex-col items-center justify-center">
+      <Link href="/" className="mb-3 flex flex-col items-center gap-[5px]" aria-label="홈으로 이동">
         <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={300} height={60} />
       </Link>
       <p className="mb-[30px] text-center text-xl text-[#333236]">오늘도 만나서 반가워요!</p>
@@ -164,7 +137,7 @@ export default function LoginPage() {
           {submitting ? "로그인 중" : "로그인"}
         </MyButton>
       </form>
-      <div className="mt-[24px] text-center text-[16px] text-[#333236]">
+      <div className="mt-6 text-center text-[16px] text-[#333236]">
         회원이 아니신가요?
         <Link
           href="/signup"

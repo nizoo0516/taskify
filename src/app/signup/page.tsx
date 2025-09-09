@@ -9,53 +9,14 @@ import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/layout/Button";
 import { Modal, ModalContext, ModalFooter } from "@/components/Modal";
+import { signup } from "@/features/users/api";
 
 type Errors = { email?: string; nickname?: string; password?: string; confirm?: string };
 type Keys = "email" | "nickname" | "password" | "confirm";
+
 const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 const MAX_NICK = 10;
 const MIN_PW = 8;
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL!;
-
-type CreatedUser = {
-  id: number;
-  email: string;
-  nickname: string;
-  profileImageUrl?: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
-
-function hasMsg(x: unknown): x is { message: string } {
-  if (!x || typeof x !== "object") return false;
-  const m = (x as { message?: unknown }).message;
-  return typeof m === "string";
-}
-
-async function signupAPI(payload: {
-  email: string;
-  nickname: string;
-  password: string;
-}): Promise<CreatedUser> {
-  const res = await fetch(`${API_BASE}/users`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  if (res.status === 201) {
-    return (await res.json()) as CreatedUser;
-  }
-
-  let msg = "회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.";
-  const body: unknown = await res.json().catch(() => null);
-  if (hasMsg(body)) msg = body.message;
-
-  const err = new Error(msg) as Error & { status?: number };
-  err.status = res.status;
-  throw err;
-}
 
 export default function SignupPage() {
   const router = useRouter();
@@ -148,10 +109,10 @@ export default function SignupPage() {
 
     if (!activeButton || !values.agree) return;
 
-    try {
-      setSubmitting(true);
+    setSubmitting(true);
 
-      await signupAPI({
+    try {
+      await signup({
         email: values.email,
         nickname: values.nickname,
         password: values.password,
@@ -178,12 +139,8 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-[520px] flex-col items-center justify-center">
-      <Link
-        href="/"
-        className="mb-[12px] flex flex-col items-center gap-[5px]"
-        aria-label="홈으로 이동"
-      >
+    <main className="pc:max-w-[520px] tablet:max-w-[520px] mx-auto flex min-h-screen w-full max-w-[351px] flex-col items-center justify-center">
+      <Link href="/" className="mb-3 flex flex-col items-center gap-[5px]" aria-label="홈으로 이동">
         <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={300} height={60} />
       </Link>
       <p className="mb-[30px] text-center text-xl text-[#333236]">첫 방문을 환영합니다!</p>
@@ -288,7 +245,7 @@ export default function SignupPage() {
         </MyButton>
       </form>
 
-      <div className="mt-[24px] text-center text-[16px] text-[#333236]">
+      <div className="mt-6 text-center text-[16px] text-[#333236]">
         이미 회원이신가요?
         <Link
           href="/login"
