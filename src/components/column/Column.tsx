@@ -32,7 +32,7 @@ export default function Column({
         "tablet:w-full",
 
         // pc
-        "pc:w-[354px] pc:border-r pc:border-b-0",
+        "pc:w-[354px] pc:flex-shrink-0 pc:border-r pc:border-b-0",
       )}
       onClick={() => console.log("컬럼클릭시 id 숫자", columnId)}
     >
