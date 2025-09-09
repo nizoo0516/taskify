@@ -1,4 +1,5 @@
 "use client";
+import dayjs from "dayjs";
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
@@ -81,7 +82,7 @@ export default function Card({ title, tags, dueDate, imageUrl, assignee }: CardW
           <div className="tablet:justify-start tablet:gap-4 pc:justify-between pc:w-full flex items-center justify-between text-xs text-gray-500">
             <div className="flex items-center gap-1">
               <Image src="/icons/icon-calender.svg" alt="calendar" width={18} height={18} />
-              <span>{dueDate}</span>
+              <span>{dayjs(dueDate).format("YYYY.MM.DD")}</span>
             </div>
 
             {assignee?.profileImageUrl ? (
