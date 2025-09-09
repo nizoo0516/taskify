@@ -9,6 +9,7 @@ import { Dashboard } from "@/features/dashboard/types";
 import { getMembers } from "@/features/members/api";
 import { Member } from "@/features/members/types";
 import { useQuery } from "@tanstack/react-query";
+import { cn } from "@/lib/utils/cn";
 
 // id는 사이드 바에서 클릭된 id와 title을 전달
 export default function Navbar({ id }: { id?: number }) {
@@ -32,8 +33,15 @@ export default function Navbar({ id }: { id?: number }) {
 
   return (
     <div className="pc:justify-between pc:max-w-[calc(100vw-380px)] tablet:max-w-[calc(100vw-240px)] flex h-full max-w-[calc(100vw-92px)] items-center justify-end">
-      <h2 className="flex gap-2">
-        <div className="pc:inline-block tablet:text-xl hidden text-lg font-bold">{title}</div>
+      <h2 className="flex max-w-[490px] gap-2">
+        <div
+          className={cn(
+            "hidden truncate overflow-hidden text-lg font-bold",
+            "pc:inline-block tablet:text-xl",
+          )}
+        >
+          {title}
+        </div>
         {createdByMe && (
           <Image
             src={"/icons/icon-crown.svg"}

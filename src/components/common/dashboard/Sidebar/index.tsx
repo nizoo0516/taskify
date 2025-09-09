@@ -62,7 +62,7 @@ export default function Sidebar() {
 
   return (
     <>
-      <div>
+      <div className="w-full">
         {/* 로고 이미지 */}
         <div className="tablet:mb-14 pc:justify-start mb-8 flex h-full w-full items-center justify-center">
           <Logo />
@@ -71,7 +71,7 @@ export default function Sidebar() {
         {/*클릭 시 대시보드 생성 모달 열림*/}
         <AddDashboard handleCreate={handleCreate} />
 
-        <div className="grid">
+        <div className="pc:grid-cols-[271px_1fr] tablet:grid-cols-[130px_1fr] grid">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={page}

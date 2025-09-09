@@ -27,7 +27,7 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
       <ul
         className={cn(
           scrollbarStyle,
-          "tablet:h-full text-brand-gray-500 h-[300px]",
+          "tablet:h-full text-brand-gray-500 h-[300px] w-full",
           "dark:text-dark-200",
         )}
       >
@@ -57,14 +57,14 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
                 <div
                   style={{ backgroundColor: d.color }}
                   className={cn(
-                    "h-2 w-2 shrink-0 rounded-full",
+                    "h-2 w-2 flex-shrink-0 rounded-full",
                     activeId && "tablet:h-2 tablet:w-2 h-3 w-3",
                   )}
                 ></div>
                 <div className="tablet:flex hidden w-full min-w-0 items-center justify-start gap-[5px]">
                   <div
                     className={cn(
-                      "hidden truncate font-medium",
+                      "truncate overflow-hidden font-medium",
                       "tablet:text-lg tablet:inline-block",
                       "pc:text-2lg",
                     )}
@@ -77,6 +77,7 @@ export default function DashboardList({ dashboards }: { dashboards: Dashboard[] 
                       alt="내가만든 대시보드"
                       width={18}
                       height={14}
+                      className="flex-shrink-0"
                     />
                   )}
                 </div>
