@@ -2,7 +2,7 @@
 
 import { notFound } from "next/navigation";
 
-import Loading from "@/app/Loading";
+import Loading from "@/app/loading";
 import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function LoggedInLayout({ children }: { children: React.ReactNode }) {
