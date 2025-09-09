@@ -33,7 +33,6 @@ const stateOpt = [
   { value: "3", label: "Done", chip: <Chip variant="status" label="Done" /> },
 ];
 const managerOpt = [
-  { value: "6204", label: "사람1" },
   { value: "1", label: "배유철" },
   { value: "2", label: "배동석" },
 ];
@@ -60,7 +59,7 @@ export default function ModifyModal({
   const cardId = columnIdData?.cardId ?? 0;
   const dashboardId = columnIdData?.dashboardId ?? 0;
   const columnId = columnIdData?.columnId ?? 0;
-  const assigneeUserId = 6204;
+  const assigneeUserId = 6212;
 
   // 기존 카드 데이터로 폼 초기화
   useEffect(() => {
@@ -179,7 +178,7 @@ export default function ModifyModal({
       {isOpen && (
         <Modal open={isOpen} isOpenModal={setIsOpen} size="lg">
           <ModalHeader title="할 일 수정" />
-          <ModalContext className="flex flex-col gap-7">
+          <ModalContext className="flex max-w-xl flex-col gap-7">
             <div className="grid grid-cols-2 gap-8">
               <Field id="status" label="상태">
                 <Select options={stateOpt} placeholder="선택하기" labelNone={true} />
@@ -188,14 +187,14 @@ export default function ModifyModal({
                 <Select options={managerOpt} placeholder="선택하기" />
               </Field>
             </div>
-            <Field id="title" label="제목">
+            <Field id="title" label="제목" essential>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.currentTarget.value)}
                 placeholder="제목을 입력해주세요"
               />
             </Field>
-            <Field id="description" label="설명">
+            <Field id="description" label="설명" essential>
               <Textarea
                 className="resize-none"
                 value={description}

@@ -54,7 +54,7 @@ export default function CreateCardModal({
   // Zustand에서 값 가져오기
   const dashboardId = columnIdData?.dashboardId ?? 0;
   const columnId = columnIdData?.columnId ?? 0;
-  const assigneeUserId = 6203;
+  const assigneeUserId = 6212;
 
   const handleCreate = async () => {
     if (isDisabled || isLoading) return;
@@ -171,7 +171,7 @@ export default function CreateCardModal({
               <Select options={managerOpt} placeholder="선택하기" />
             </Field>
 
-            <Field id="title" label="제목">
+            <Field id="title" label="제목" essential>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.currentTarget.value)}
@@ -179,7 +179,7 @@ export default function CreateCardModal({
               />
             </Field>
 
-            <Field id="description" label="설명">
+            <Field id="description" label="설명" essential>
               <Textarea
                 className="resize-none"
                 value={description}

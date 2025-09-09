@@ -5,9 +5,13 @@ import { useState } from "react";
 
 import DetailCardModal from "@/components/modal/cardModal/DetailCardModal";
 import Chip from "@/components/common/chip/Chip";
-import { CardData } from "@/features/dashboard/types";
+import { CardData, ColumnData } from "@/features/dashboard/types";
 
-export default function Card({ title, tags, dueDate, imageUrl }: CardData) {
+export interface CardDataType extends CardData {
+  setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>;
+}
+
+export default function Card({ title, tags, dueDate, imageUrl, setColumns }: CardDataType) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div
@@ -83,7 +87,7 @@ export default function Card({ title, tags, dueDate, imageUrl }: CardData) {
           </div>
         </div>
       </div>
-      {isOpen && <DetailCardModal isOpen setIsOpen={setIsOpen} />}
+      {isOpen && <DetailCardModal isOpen setIsOpen={setIsOpen} setColumns={setColumns} />}
     </div>
   );
 }
