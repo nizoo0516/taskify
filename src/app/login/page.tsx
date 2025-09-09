@@ -8,25 +8,11 @@ import { useRef, useState } from "react";
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/layout/Button";
-import { useAuthStore } from "@/features/auth/store";
+// zustand 제거
+// import { useAuthStore } from "@/features/auth/store";
+// action 쿠키 형태 추가
+import { login } from "@/features/auth/actions";
 import { baseProfile } from "@/features/users/baseProfile";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL!;
-async function loginAPI(email: string, password: string) {
-  const res = await fetch(`${API_BASE}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-  if (res.status === 201) return res.json();
-
-  let msg = "로그인에 실패했습니다.";
-  const body: unknown = await res.json().catch(() => null);
-  const m = (body as { message?: unknown })?.message;
-  if (typeof m === "string") msg = m;
-
-  throw new Error(msg);
-}
 
 type Errors = { email?: string; password?: string };
 const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -34,25 +20,21 @@ const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 export default function LoginPage() {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
-  const setAccessToken = useAuthStore((s) => s.setAccessToken);
 
-  const [values, setValues] = useState({
-    email: "",
-    password: "",
-  });
+  // zustand 토큰 제거
+  // const setAccessToken = useAuthStore((s) => s.setAccessToken);
+
+  const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [showPw, setShowPw] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const onchange = (k: "email" | "password") => (e: React.ChangeEvent<HTMLInputElement>) => {
-    // 이전 상태(s)를 받아서 복사 후 [k] 자리에 덮어씀
     setValues((s) => ({ ...s, [k]: e.target.value }));
     setErrors((s) => ({ ...s, [k]: undefined }));
   };
 
-  // 블러 시 이메일 검사
   const validateEmailOnBlur = () => {
-    // 기존 에러 객체 s 복사 후 email 필드만 새로운 값으로 갱신
     setErrors((s) => ({
       ...s,
       email:
@@ -60,7 +42,6 @@ export default function LoginPage() {
     }));
   };
 
-  // 블러 시 비밀번호 검사
   const validatePwOnBlur = () => {
     setErrors((s) => ({
       ...s,
@@ -79,22 +60,25 @@ export default function LoginPage() {
     if (!canSubmit) return;
 
     try {
-      // 로그인 성공
       setSubmitting(true);
 
-      const { accessToken } = await loginAPI(values.email, values.password);
-      setAccessToken(accessToken);
-      // localStorage에 토큰 저장
+      // 쿠키 저장
+      const { accessToken } = await login({ email: values.email, password: values.password });
       localStorage.setItem("accessToken", accessToken);
+
+      // zustand/로컬스토리지 제거
+      // const { accessToken } = await loginAPI(values.email, values.password);
+      // setAccessToken(accessToken);
+      // localStorage.setItem("accessToken", accessToken);
 
       try {
         await baseProfile();
       } catch (e) {
         console.warn("프로필 기본 이미지 적용 실패:", e);
       }
+
       router.push("/mydashboard");
     } catch (err: unknown) {
-      // 로그인 실패
       const message =
         err instanceof Error ? err.message : "로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.";
       window.alert(message);

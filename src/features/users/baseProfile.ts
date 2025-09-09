@@ -1,6 +1,7 @@
 import { getMe, updateMe } from "./api";
 import { DEFAULT_PROFILE_URL } from "./constants";
-import { useAuthStore } from "../auth/store";
+// zustand 파일
+// import { useAuthStore } from "../auth/store";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL!;
 
@@ -11,9 +12,14 @@ export async function baseProfile(): Promise<boolean> {
   // 프로필 이미지 있으면 리턴
   if (me.profileImageUrl) return false;
 
-  const token =
-    useAuthStore.getState().accessToken ??
-    (typeof window !== "undefined" ? localStorage.getItem("accessToken") : null);
+  // zustand 삭제
+  // const token =
+  //   useAuthStore.getState().accessToken ??
+  //   (typeof window !== "undefined" ? localStorage.getItem("accessToken") : null);
+  // if (!token) throw new Error("토큰 없음: 회원가입 후 다시 시도하세요.");
+
+  // 쿠키가져오기
+  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
   if (!token) throw new Error("토큰 없음: 회원가입 후 다시 시도하세요.");
 
   // 기본 이미지 가져와서 File 만들기, 최신 버전 보장 위해 no-store로 캐시 무시
