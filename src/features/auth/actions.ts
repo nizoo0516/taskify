@@ -11,7 +11,6 @@ export const loginAction = async (data: LoginRequest): Promise<LogRequest> => {
     method: "POST",
     data,
   });
-  console.log("NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
 
   (await cookies()).set("accessToken", res.accessToken, {
     httpOnly: true,

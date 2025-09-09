@@ -6,7 +6,6 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
 async function proxy(req: NextRequest, method: string, params: string[]) {
   const targetUrl = `${BASE_URL}/${params.join("/")}${req.nextUrl.search}`;
   const body = method === "GET" ? undefined : await req.text();
-  console.log("Proxy forwarding to:", targetUrl);
 
   const newHeaders = new Headers(req.headers);
 
@@ -16,15 +15,12 @@ async function proxy(req: NextRequest, method: string, params: string[]) {
   if (token) {
     newHeaders.set("Authorization", `Bearer ${token}`);
   }
-  console.log("🔑 Proxy using token:", token);
 
   const res = await fetch(targetUrl, {
     method,
     headers: newHeaders,
     body,
   });
-  console.log("Proxy response status:", res.status);
-  console.log("Proxy response body:", await res.clone().text());
 
   return new Response(res.body, {
     status: res.status,
