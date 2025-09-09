@@ -1,7 +1,4 @@
-"use server";
-
 import { ResponseCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import { cookies } from "next/headers";
 
 interface FetchOptions extends Omit<RequestInit, "body"> {
   withAuth?: boolean; // 인증을 필요로 할 때
@@ -17,12 +14,22 @@ export async function apiRequest<Response>(
 ): Promise<Response> {
   const { withAuth, isFormData, headers, data, ...rest } = options;
 
-  const cookieStore = cookies() as unknown as ResponseCookies;
-
   // 토큰
-  const token = cookieStore.get("accessToken")?.value;
+  let token: string | null = null;
 
-  const authHeader = withAuth && token ? { Authorization: `Bearer ${token}` } : {};
+  if (withAuth) {
+    if (typeof window === "undefined") {
+      const { cookies } = await import("next/headers");
+      const cookieStore = cookies() as unknown as ResponseCookies;
+      token = cookieStore.get("accessToken")?.value ?? null;
+    } else {
+      token = localStorage.getItem("accessToken");
+    }
+
+    if (!token) throw new Error("토큰 없음: 다시 로그인하세요.");
+  }
+
+  const authHeader: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
 
   // fetch
   const fetchOptions: RequestInit = {
@@ -51,7 +58,16 @@ export async function apiRequest<Response>(
 
   // 인증 오류 > 로그아웃
   if (response.status === 401) {
-    cookieStore.delete("accessToken");
+    if (typeof window === "undefined") {
+      try {
+        const { cookies } = await import("next/headers");
+        const cookieStore = cookies() as unknown as ResponseCookies;
+        cookieStore.delete("accessToken");
+      } catch {
+        /* noop */
+      }
+    }
+
     throw new Error("인증 실패: 다시 로그인하세요");
   }
 
@@ -66,7 +82,6 @@ export async function apiRequest<Response>(
     const error = await response.json().catch(() => null);
     // 오류 확인용
     // console.log("API 호출:", `${BASE_URL}${endpoint}`);
-    // console.log("현재 토큰:", useAuthStore.getState().accessToken);
     throw new Error(error?.message || "API 요청 실패");
   }
 
