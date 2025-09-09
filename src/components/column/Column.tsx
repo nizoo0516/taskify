@@ -32,7 +32,7 @@ export default function Column({
     <div
       className={clsx(
         // 기본 (mobile)
-        "border-b border-[#D9D9D9] bg-[#FAFAFA] p-5",
+        "flex-shrink-0 border-b border-[#D9D9D9] bg-[#FAFAFA] p-5",
 
         // tablet
         "tablet:w-full",
