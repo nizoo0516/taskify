@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import DetailCardModal from "@/components/modal/cardModal/DetailCardModal";
 import Chip from "@/components/common/chip/Chip";
-import { CardData } from "@/features/dashboard/types";
+import { CardData, ColumnData } from "@/features/dashboard/types";
 
 type CardWithAssignee = CardData & {
   assignee?: {

@@ -202,7 +202,7 @@ export default function CreateCardModal({
               />
             </Field>
 
-            <Field id="title" label="제목">
+            <Field id="title" label="제목" essential>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.currentTarget.value)}
@@ -210,7 +210,7 @@ export default function CreateCardModal({
               />
             </Field>
 
-            <Field id="description" label="설명">
+            <Field id="description" label="설명" essential>
               <Textarea
                 className="resize-none"
                 value={description}
