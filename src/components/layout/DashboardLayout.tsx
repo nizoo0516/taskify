@@ -36,7 +36,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <Navbar id={dashboardId ?? undefined} />
         </div>
 
-        <main className="w-full overflow-x-auto">
+        <main className="min-h-screen w-full overflow-x-auto">
           <div className="flex-1 gap-4">{children}</div>
         </main>
       </div>
