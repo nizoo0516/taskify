@@ -11,10 +11,11 @@ export const loginAction = async (data: LoginRequest): Promise<LogRequest> => {
     method: "POST",
     data,
   });
+  console.log("NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
 
   (await cookies()).set("accessToken", res.accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production" && process.env.VERCEL === "1",
     path: "/",
     sameSite: "lax",
     maxAge: 60 * 60 * 24 * 7,

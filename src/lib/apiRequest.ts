@@ -1,7 +1,4 @@
-const BASE_URL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3000/api/proxy"
-    : "https://yourdomain.com/api/proxy";
+const BASE_URL = "/api/proxy";
 
 interface FetchOptions extends Omit<RequestInit, "body"> {
   isFormData?: boolean;
@@ -22,7 +19,6 @@ export async function apiRequest<Response>(
     },
   };
 
-  // JSON 데이터 처리
   if (!isFormData && data !== undefined) {
     fetchOptions.headers = {
       ...fetchOptions.headers,
@@ -34,7 +30,6 @@ export async function apiRequest<Response>(
   }
 
   const response = await fetch(`${BASE_URL}${endpoint}`, fetchOptions);
-  console.log("요청 URL:", `${BASE_URL}${endpoint}`);
 
   // 인증 오류 > 로그아웃
   if (response.status === 401) {

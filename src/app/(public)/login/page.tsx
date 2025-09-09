@@ -8,7 +8,6 @@ import { useRef, useState } from "react";
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/common/Button";
-import { loginAction } from "@/features/auth/actions";
 import { profileAvatar } from "@/features/users/profileAvatar";
 
 type Errors = { email?: string; password?: string };
@@ -56,7 +55,16 @@ export default function LoginPage() {
     try {
       setSubmitting(true);
 
-      await loginAction({ email: values.email, password: values.password });
+      const res = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify(values),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) throw new Error("로그인 실패");
+
+      // ✅ Set-Cookie 헤더를 브라우저에 반영하려면 반드시 consume 필요
+      await res.json();
 
       try {
         await profileAvatar();
