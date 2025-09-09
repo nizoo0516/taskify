@@ -84,7 +84,7 @@ export default function Column({
       <div className="flex flex-col gap-[15px]">
         {cards.map((card) => (
           <div key={card.id} onClick={() => card.id !== undefined && handleClickCard(card.id)}>
-            <Card {...card} />
+            <Card {...card} setColumns={setColumns} />
           </div>
         ))}
       </div>

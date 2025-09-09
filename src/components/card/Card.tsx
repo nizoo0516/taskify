@@ -14,9 +14,19 @@ type CardWithAssignee = CardData & {
     nickname: string;
     profileImageUrl?: string;
   };
+  setColumns?: React.Dispatch<React.SetStateAction<ColumnData[]>>;
+  columnId?: number;
 };
 
-export default function Card({ title, tags, dueDate, imageUrl, assignee }: CardWithAssignee) {
+export default function Card({
+  title,
+  tags,
+  dueDate,
+  imageUrl,
+  assignee,
+  setColumns,
+  columnId,
+}: CardWithAssignee) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div
@@ -103,7 +113,9 @@ export default function Card({ title, tags, dueDate, imageUrl, assignee }: CardW
           </div>
         </div>
       </div>
-      {isOpen && <DetailCardModal isOpen setIsOpen={setIsOpen} />}
+      {isOpen && (
+        <DetailCardModal isOpen setIsOpen={setIsOpen} setColumns={setColumns} columnId={columnId} />
+      )}
     </div>
   );
 }
