@@ -8,8 +8,7 @@ import Button from "@/components/common/Button";
 import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { createColumn } from "@/features/columns/api";
 import { useColumnId } from "@/features/columns/store";
-
-import type { ColumnData } from "../../../app/dashboard/types";
+import { ColumnData } from "@/features/dashboard/types";
 
 type ModalType = {
   isOpen: boolean;

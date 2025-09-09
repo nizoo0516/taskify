@@ -3,8 +3,7 @@
 import Button from "@/components/common/Button";
 import { Modal, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { deleteColumn } from "@/features/columns/api";
-
-import type { ColumnData } from "../../../app/dashboard/types";
+import { ColumnData } from "@/features/dashboard/types";
 
 type ModalType = {
   isOpen: boolean;

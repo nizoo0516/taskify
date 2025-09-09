@@ -6,8 +6,7 @@ import Input from "@/components/form/Input";
 import Button from "@/components/common/Button";
 import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { updateColumn } from "@/features/columns/api";
-
-import type { ColumnData } from "../../../app/dashboard/types";
+import { ColumnData } from "@/features/dashboard/types";
 
 type ModalType = {
   isOpen: boolean;
