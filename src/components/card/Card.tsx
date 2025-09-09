@@ -13,7 +13,7 @@ export default function Card({ title, tags, dueDate, imageUrl }: CardData) {
     <div
       className={clsx(
         // 기본 (mobile)
-        "border-brand-gray-300 flex w-full flex-col gap-4 rounded-md border bg-white p-5",
+        "border-brand-gray-300 flex w-full cursor-pointer flex-col gap-4 rounded-md border bg-white p-5",
 
         // tablet
         "tablet:w-full tablet:h-[112px] tablet:flex-row tablet:items-start tablet:gap-4 tablet:px-5",

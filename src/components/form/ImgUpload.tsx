@@ -34,7 +34,7 @@ export default function ImgUpload({ value, onChange }: ImgUploadProps) {
       {/* 실제 보이는 이미지 업로드 */}
       <div
         onClick={onClickInput}
-        className="bg-brand-gray-200 flex h-[76px] w-[76px] items-center justify-center rounded border-0"
+        className="bg-brand-gray-200 flex h-[76px] w-[76px] cursor-pointer items-center justify-center rounded border-0"
       >
         {value ? (
           <img
