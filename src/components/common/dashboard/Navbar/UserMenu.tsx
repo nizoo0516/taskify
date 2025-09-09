@@ -2,15 +2,14 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { useAuthStore } from "@/features/auth/store";
+import { logout } from "@/features/auth/actions";
 import { cn } from "@/lib/utils/cn";
 
 export default function UserMenu() {
   const router = useRouter();
-  const clearToken = useAuthStore((state) => state.clearToken);
 
-  const handleLogout = () => {
-    clearToken();
+  const handleLogout = async () => {
+    await logout();
     router.push("/");
   };
 

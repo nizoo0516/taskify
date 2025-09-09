@@ -7,9 +7,12 @@ import { useRef, useState } from "react";
 
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
-import MyButton from "@/components/common/Button";
-import { login } from "@/features/auth/api";
-import { profileAvatar } from "@/features/users/profileAvatar";
+import MyButton from "@/components/layout/Button";
+// zustand 제거
+// import { useAuthStore } from "@/features/auth/store";
+// action 쿠키 형태 추가
+import { login } from "@/features/auth/actions";
+import { baseProfile } from "@/features/users/baseProfile";
 
 type Errors = { email?: string; password?: string };
 const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -18,23 +21,20 @@ export default function LoginPage() {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [values, setValues] = useState({
-    email: "",
-    password: "",
-  });
+  // zustand 토큰 제거
+  // const setAccessToken = useAuthStore((s) => s.setAccessToken);
+
+  const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [showPw, setShowPw] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const onchange = (k: "email" | "password") => (e: React.ChangeEvent<HTMLInputElement>) => {
-    // 이전 상태(s)를 받아서 복사 후 [k] 자리에 덮어씀
     setValues((s) => ({ ...s, [k]: e.target.value }));
     setErrors((s) => ({ ...s, [k]: undefined }));
   };
 
-  // 블러 시 이메일 검사
   const validateEmailOnBlur = () => {
-    // 기존 에러 객체 s 복사 후 email 필드만 새로운 값으로 갱신
     setErrors((s) => ({
       ...s,
       email:
@@ -42,7 +42,6 @@ export default function LoginPage() {
     }));
   };
 
-  // 블러 시 비밀번호 검사
   const validatePwOnBlur = () => {
     setErrors((s) => ({
       ...s,
@@ -61,15 +60,24 @@ export default function LoginPage() {
     if (!canSubmit) return;
 
     try {
-      // 로그인 성공
       setSubmitting(true);
-      await login({ email: values.email, password: values.password });
+
+      // 쿠키 저장
+      const { accessToken } = await login({ email: values.email, password: values.password });
+      localStorage.setItem("accessToken", accessToken);
+
+      // zustand/로컬스토리지 제거
+      // const { accessToken } = await loginAPI(values.email, values.password);
+      // setAccessToken(accessToken);
+      // localStorage.setItem("accessToken", accessToken);
+
       try {
         await profileAvatar();
       } catch (e) {
         console.warn("프로필 기본 이미지 적용 실패:", e);
       }
-      router.replace("/mydashboard");
+
+      router.push("/mydashboard");
     } catch (err: unknown) {
       // 로그인 실패
       const message =

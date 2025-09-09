@@ -1,9 +1,6 @@
 "use client";
 
-import { notFound } from "next/navigation";
-import { DependencyList, useCallback, useEffect, useState } from "react";
-
-import { useAuthStore } from "@/features/auth/store";
+import { DependencyList, useEffect, useState } from "react";
 
 export function useApiHandler<T>(
   apiFn: () => Promise<T>,
@@ -14,28 +11,24 @@ export function useApiHandler<T>(
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const token = useAuthStore((s) => s.accessToken);
+  useEffect(() => {
+    let isMounted = true;
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+    async function fetchData() {
+      setLoading(true);
+      setError(null);
 
-    if (!token) {
-      notFound();
-      return;
+      try {
+        const res = await apiFn();
+        if (isMounted) setData(res);
+      } catch (err) {
+        if (isMounted) setError(err as Error);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
     }
 
-    try {
-      const res = await apiFn();
-      setData(res);
-      return res;
-    } catch (err) {
-      setError(err as Error);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [apiFn, token]);
+    fetchData();
 
   useEffect(() => {
     if (options?.autoFetch !== false) {

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 import "@/styles/globals.css";
-import QueryProvider from "@/components/providers/QueryProvider";
+
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Taskify",
@@ -15,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
