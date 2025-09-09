@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
-import MyButton from "@/components/layout/Button";
+import MyButton from "@/components/common/Button";
 import { Dashboard } from "@/features/dashboard/types";
 import { cn } from "@/lib/utils/cn";
 

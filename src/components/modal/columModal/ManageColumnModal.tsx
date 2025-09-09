@@ -3,11 +3,10 @@ import { useState } from "react";
 
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
-import Button from "@/components/layout/Button";
-import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
+import Button from "@/components/common/Button";
+import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { updateColumn } from "@/features/columns/api";
-
-import type { ColumnData } from "../../types";
+import { ColumnData } from "@/features/dashboard/types";
 
 type ModalType = {
   isOpen: boolean;

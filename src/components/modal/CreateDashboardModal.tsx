@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 
-import Chip from "@/components/chip/Chip";
-import MyButton from "@/components/layout/Button";
-import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
+import Chip from "@/components/common/chip/Chip";
+import MyButton from "@/components/common/Button";
+import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
 
 interface NewDashboardModalProps {
   open: boolean;

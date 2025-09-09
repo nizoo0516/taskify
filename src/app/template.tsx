@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 
 import MotionLayout from "@/components/layout/MotionLayout";
-import ThemeToggle from "@/components/layout/ThemeToggle";
+import ThemeToggle from "@/components/common/ThemeToggle";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

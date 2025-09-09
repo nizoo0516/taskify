@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 
-import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/Modal";
+import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { getDashboardInvitations, inviteToDashboard } from "@/features/dashboard/api";
 import { useApiHandler } from "@/lib/useApiHandler";
-
-import Field from "./form/Field";
-import Input from "./form/Input";
-import MyButton from "./layout/Button";
+import Field from "../form/Field";
+import Input from "../form/Input";
+import MyButton from "../common/Button";
 
 type InviteModalProps = {
   isOpen: boolean;

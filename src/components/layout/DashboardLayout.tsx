@@ -3,8 +3,8 @@
 import { useParams } from "next/navigation";
 import { ReactNode } from "react";
 
-import Navbar from "@/components/layout/dashboard/Navbar";
-import Sidebar from "@/components/layout/dashboard/Sidebar";
+import Navbar from "@/components/common/dashboard/Navbar";
+import Sidebar from "@/components/common/dashboard/Sidebar";
 import { cn } from "@/lib/utils/cn";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

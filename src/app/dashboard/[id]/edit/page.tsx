@@ -1,44 +1,157 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-import Chip from "@/components/chip/Chip";
+import Chip from "@/components/common/chip/Chip";
 import Input from "@/components/form/Input";
 import Label from "@/components/form/Label";
-import MyButton from "@/components/layout/Button";
-import Pagination from "@/components/layout/Pagination";
-import InviteModal from "@/components/InviteModal";
+import InviteModal from "@/components/modal/InviteModal";
+import MyButton from "@/components/common/Button";
+import Pagination from "@/components/common/Pagination";
+import {
+  getDashboardById,
+  updateDashboard,
+  deleteDashboard,
+  getDashboardInvitations,
+  cancelDashboardInvitation,
+  // inviteToDashboard,
+} from "@/features/dashboard/api";
+import { getMembers, deleteMember } from "@/features/members/api";
 
 export default function DashboardIdEdit() {
   const { id } = useParams<{ id: string }>();
-  const dashboardId = id;
-  const numId = Number(id);
+  const router = useRouter();
+  const dashboardId = Number(id);
+
   const [inviteOpen, setInviteOpen] = useState(false);
 
   const colors = ["#7AC555", "#760DDE", "#FFA500", "#E876EA", "#76A5EA"];
+
+  const [dashboardName, setDashboardName] = useState("");
   const [selectedColor, setSelectedColor] = useState("#7AC555");
 
+  const [members, setMembers] = useState<
+    { id: number; userId: number; email: string; nickname: string; profileImageUrl?: string }[]
+  >([]);
   const [memberPage, setMemberPage] = useState(1);
-  const totalMemberPages = 2;
+  const [totalMemberPages, setTotalMemberPages] = useState(1);
 
+  const [invites, setInvites] = useState<{ id: number; email: string }[]>([]);
   const [invitePage, setInvitePage] = useState(1);
-  const totalInvitePages = 2;
+  const [totalInvitePages, setTotalInvitePages] = useState(1);
 
-  const members = [
-    { id: 1, name: "정만철", avatar: "/images/img-profile-sample.svg" },
-    { id: 2, name: "김태순", avatar: "/images/img-profile-sample.svg" },
-    { id: 3, name: "최주협", avatar: "/images/img-profile-sample.svg" },
-    { id: 4, name: "윤지현", avatar: "/images/img-profile-sample.svg" },
-  ];
-  const invites = [
-    { id: 1, email: "codeitA@codeit.com" },
-    { id: 2, email: "codeitB@codeit.com" },
-    { id: 3, email: "codeitC@codeit.com" },
-    { id: 4, email: "codeitD@codeit.com" },
-    { id: 5, email: "codeitE@codeit.com" },
-  ];
+  // 대시보드 초기 데이터 불러오기
+  useEffect(() => {
+    if (!dashboardId) return;
+    const fetchDashboard = async () => {
+      try {
+        const data = await getDashboardById(dashboardId);
+        setDashboardName(data.title);
+        setSelectedColor(data.color);
+      } catch (e) {
+        console.error("대시보드 조회 실패", e);
+      }
+    };
+    fetchDashboard();
+  }, [dashboardId]);
+
+  // 구성원 목록 불러오기
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const size = 4;
+        const data = await getMembers(dashboardId, { page: memberPage, size });
+        setMembers(data.members);
+        setTotalMemberPages(Math.ceil(data.totalCount / size));
+      } catch (e) {
+        console.error("구성원 조회 실패", e);
+      }
+    };
+    fetchMembers();
+  }, [dashboardId, memberPage]);
+
+  // 초대 내역 불러오기
+  useEffect(() => {
+    const fetchInvites = async () => {
+      try {
+        const size = 5;
+        const data = await getDashboardInvitations(dashboardId, { page: invitePage, size });
+        setInvites(
+          data.invitations.map((inv) => ({
+            id: inv.id,
+            email: inv.invitee.email,
+          })),
+        );
+        setTotalInvitePages(Math.ceil(data.totalCount / size));
+      } catch (e) {
+        console.error("초대 내역 조회 실패", e);
+      }
+    };
+    fetchInvites();
+  }, [dashboardId, invitePage]);
+
+  // 대시보드 수정 함수
+  const handleUpdateDashboard = async () => {
+    try {
+      await updateDashboard(dashboardId, {
+        title: dashboardName,
+        color: selectedColor,
+      });
+
+      alert("대시보드가 성공적으로 수정되었습니다.");
+
+      router.refresh();
+    } catch (e) {
+      console.error("대시보드 수정 실패", e);
+      alert("대시보드 수정에 실패했습니다.");
+    }
+  };
+
+  // 대시보드 삭제 함수
+  const handleDeleteDashboard = async () => {
+    try {
+      await deleteDashboard(dashboardId);
+      alert("대시보드가 삭제되었습니다!");
+      router.push("/mydashboard");
+    } catch (e) {
+      console.error("대시보드 삭제 실패", e);
+      alert("대시보드 삭제에 실패했습니다.");
+    }
+  };
+
+  const handleDeleteMember = async (memberId: number) => {
+    try {
+      await deleteMember(dashboardId, memberId);
+      const size = 5;
+      const data = await getMembers(dashboardId, { page: memberPage, size });
+      setMembers(data.members);
+      setTotalMemberPages(Math.ceil(data.totalCount / size));
+    } catch (e) {
+      console.error("구성원 삭제 실패", e);
+      alert("구성원 삭제에 실패했습니다.");
+    }
+  };
+
+  const handleCancelInvitation = async (invitationId: number) => {
+    try {
+      await cancelDashboardInvitation(dashboardId, invitationId);
+      alert("초대가 취소되었습니다!");
+      const size = 5;
+      const data = await getDashboardInvitations(dashboardId, { page: invitePage, size });
+      setInvites(
+        data.invitations.map((inv) => ({
+          id: inv.id,
+          email: inv.invitee.email,
+        })),
+      );
+      setTotalInvitePages(Math.ceil(data.totalCount / size));
+    } catch (e) {
+      console.error("초대 취소 실패", e);
+      alert("초대 취소에 실패했습니다.");
+    }
+  };
 
   return (
     <div className="bg-brand-gray-100 min-h-screen p-6">
@@ -59,7 +172,11 @@ export default function DashboardIdEdit() {
           <div className="flex flex-col gap-4">
             <div>
               <Label className="tablet:text-2lg text-lg font-medium">대시보드 이름</Label>
-              <Input placeholder="대시보드 이름" defaultValue="뉴프로젝트" />
+              <Input
+                placeholder="대시보드 이름"
+                value={dashboardName}
+                onChange={(e) => setDashboardName(e.target.value)}
+              />
             </div>
 
             <div className="mb-6 flex items-center gap-2">
@@ -75,7 +192,7 @@ export default function DashboardIdEdit() {
             </div>
 
             <MyButton
-              onClick={() => alert("대시보드 변경")}
+              onClick={handleUpdateDashboard}
               color="buttonBlue"
               className="tablet:text-base h-[54px] w-full text-sm font-semibold text-white"
             >
@@ -96,7 +213,7 @@ export default function DashboardIdEdit() {
                 <Pagination
                   page={memberPage}
                   setPage={setMemberPage}
-                  totalPages={totalMemberPages}
+                  totalPages={Math.max(totalMemberPages, 1)}
                 />
               </div>
             </div>
@@ -115,14 +232,14 @@ export default function DashboardIdEdit() {
               >
                 <div className="flex items-center gap-3">
                   <img
-                    src={m.avatar}
-                    alt={m.name}
+                    src={m.profileImageUrl || "/images/img-profile-sample.svg"}
+                    alt={m.nickname}
                     className="h-[38px] w-[38px] rounded-full object-cover"
                   />
-                  <span className="text-sm">{m.name}</span>
+                  <span className="text-sm">{m.nickname}</span>
                 </div>
                 <MyButton
-                  onClick={() => alert(`${m.name} 삭제`)}
+                  onClick={() => handleDeleteMember(m.id)}
                   color="buttonBasic"
                   className="tablet:w-21 tablet:text-sm text-brand-blue-500 h-8 w-13 rounded-md px-3 py-1 text-xs font-medium"
                 >
@@ -145,7 +262,7 @@ export default function DashboardIdEdit() {
                 <Pagination
                   page={invitePage}
                   setPage={setInvitePage}
-                  totalPages={totalInvitePages}
+                  totalPages={Math.max(totalInvitePages, 1)}
                 />
               </div>
               <MyButton
@@ -185,7 +302,7 @@ export default function DashboardIdEdit() {
               >
                 <span className="text-sm">{i.email}</span>
                 <MyButton
-                  onClick={() => alert(`${i.email} 취소`)}
+                  onClick={() => handleCancelInvitation(i.id)}
                   color="buttonBasic"
                   className="tablet:w-21 tablet:text-sm text-brand-blue-500 h-8 w-13 rounded-md px-3 py-1 text-xs font-medium"
                 >
@@ -198,7 +315,7 @@ export default function DashboardIdEdit() {
 
         {/* 삭제 버튼 */}
         <MyButton
-          onClick={() => alert("대시보드 삭제")}
+          onClick={handleDeleteDashboard}
           color="buttonBasic"
           className="tablet:text-lg pc:mb-[33px] tablet:mb-12 tablet:w-80 tablet:h-[62px] text-brand-gray-700 mt-2 mb-25 h-13 w-full text-base font-medium"
         >
@@ -209,7 +326,7 @@ export default function DashboardIdEdit() {
           <InviteModal
             isOpen={inviteOpen}
             onClose={() => setInviteOpen(false)}
-            dashboardId={numId!}
+            dashboardId={dashboardId}
           />
         )}
       </div>

@@ -1,7 +1,5 @@
-import MyDashboardList from "./MyDashboardList";
+import MyDashboardList from "../../components/mydashboard/MyDashboardList";
 
 export default function MyDashboard() {
-  return (
-    <MyDashboardList />
-  );
+  return <MyDashboardList />;
 }

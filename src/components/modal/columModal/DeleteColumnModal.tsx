@@ -1,10 +1,9 @@
 "use client";
 
-import Button from "@/components/layout/Button";
-import { Modal, ModalContext, ModalFooter } from "@/components/Modal";
+import Button from "@/components/common/Button";
+import { Modal, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { deleteColumn } from "@/features/columns/api";
-
-import type { ColumnData } from "../../types";
+import { ColumnData } from "@/features/dashboard/types";
 
 type ModalType = {
   isOpen: boolean;

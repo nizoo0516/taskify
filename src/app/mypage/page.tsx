@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
-import MyButton from "@/components/layout/Button";
+import MyButton from "@/components/common/Button";
 import { changePassword } from "@/features/auth/api";
 import { getMe, updateMe, uploadProfileImage } from "@/features/users/api";
 import {
@@ -15,6 +16,8 @@ import {
 } from "@/features/users/types";
 
 export default function AccountPage() {
+  const router = useRouter();
+
   const [myData, setMyData] = useState<SignupResponse | null>(null);
   const [nickname, setNickname] = useState("");
   const [pendingFile, setPendingFile] = useState<File | null>(null);
@@ -133,15 +136,23 @@ export default function AccountPage() {
   };
 
   return (
-    <main className="mx-auto flex w-full max-w-[720px] flex-col gap-6 p-5">
-      <section className="w-[672px] rounded-2xl bg-white p-6">
+    <main className="pc:max-w-[720px] tablet:max-w-[548px] flex w-full max-w-full flex-col gap-6 p-5">
+      <button
+        type="button"
+        onClick={() => router.back()}
+        className="mb-[5px] flex items-center gap-[3px] text-lg text-[#333236]"
+      >
+        <Image src="/icons/icon-arrow-left.svg" alt="돌아가기 아이콘" width={20} height={20} />
+        돌아가기
+      </button>
+      <section className="w-full rounded-2xl bg-white p-6">
         <h2 className="mb-6 text-2xl font-bold text-[#333236]">프로필</h2>
-        <div className="flex gap-[42px]">
+        <div className="tablet:flex-row pc:flew-row flex flex-col gap-[42px]">
           <div className="w-[182px] flex-shrink-0">
             <button
               type="button"
               onClick={onPick}
-              className="flex h-[182px] w-[182px] items-center justify-center rounded-[6px]"
+              className="flex h-[182px] w-[182px] items-center justify-center rounded-md"
               aria-label="프로필 이미지 업로드"
             >
               {profileUrl ? (
@@ -171,11 +182,19 @@ export default function AccountPage() {
           </div>
 
           <div className="w-full space-y-4">
-            <Field id="email" label="이메일">
-              <Input value={myData?.email ?? ""} readOnly disabled />
+            <Field
+              id="email"
+              label="이메일"
+              className="[&_input]:text-lg [&_input]:read-only:!text-[#9FA6B2] [&>label]:text-lg [&>label]:text-[#333236]"
+            >
+              <Input value={myData?.email ?? ""} readOnly />
             </Field>
 
-            <Field id="nickname" label="닉네임">
+            <Field
+              id="nickname"
+              label="닉네임"
+              className="[&>label]:text-lg [&>label]:text-[#333236]"
+            >
               <Input
                 value={nickname}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNickname(e.target.value)}
@@ -194,21 +213,29 @@ export default function AccountPage() {
         </div>
       </section>
 
-      <section className="w-[672px] rounded-2xl bg-white p-6">
+      <section className="rounded-2xl bg-white p-6">
         <h2 className="mb-6 text-2xl font-bold text-[#333236]">비밀번호 변경</h2>
 
         <div className="space-y-4">
-          <Field id="currentPw" label="현재 비밀번호">
+          <Field
+            id="currentPw"
+            label="현재 비밀번호"
+            className="[&>label]:text-lg [&>label]:text-[#333236]"
+          >
             <Input
               type="password"
               name="current-password"
               autoComplete="current-password"
               value={curPw}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCurPw(e.target.value)}
-              placeholder="현재 비밀번호 입력"
+              placeholder="비밀번호 입력"
             />
           </Field>
-          <Field id="newPw" label="새 비밀번호">
+          <Field
+            id="newPw"
+            label="새 비밀번호"
+            className="[&>label]:text-lg [&>label]:text-[#333236]"
+          >
             <Input
               type="password"
               name="new-password"
@@ -218,7 +245,12 @@ export default function AccountPage() {
               placeholder="새 비밀번호 입력"
             />
           </Field>
-          <Field id="confirmPw" label="새 비밀번호 확인" error={error}>
+          <Field
+            id="confirmPw"
+            label="새 비밀번호 확인"
+            error={error}
+            className="[&>label]:text-lg [&>label]:text-[#333236]"
+          >
             <Input
               type="password"
               name="new-password-confirm"
@@ -231,7 +263,7 @@ export default function AccountPage() {
               onBlur={onBlurConfirm}
               aria-invalid={!!error}
               className={error ? "border-red-500" : ""}
-              placeholder="새 비밀번호 확인"
+              placeholder="새 비밀번호 입력"
             />
           </Field>
 
