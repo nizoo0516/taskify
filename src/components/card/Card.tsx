@@ -73,9 +73,11 @@ export default function Card({ title, tags, dueDate, imageUrl, assignee }: CardW
         >
           {/* 태그 영역 */}
           <div className="flex flex-wrap gap-2">
-            {tags.map((tag, index) => (
-              <Chip key={index} variant="category" label={tag} />
-            ))}
+            {tags && tags.length > 0 ? (
+              tags.map((tag, index) => <Chip key={index} variant="category" label={tag} />)
+            ) : (
+              <span className="text-xs text-gray-400">태그 없음</span>
+            )}
           </div>
 
           {/* 날짜 + 작성자 */}

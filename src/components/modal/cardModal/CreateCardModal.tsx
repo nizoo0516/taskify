@@ -126,7 +126,7 @@ export default function CreateCardModal({
         title: title.trim(),
         description: description.trim(),
         dueDate: dueDate ? dayjs(dueDate).format("YYYY-MM-DD HH:mm") : "",
-        tags: tags.length > 0 ? tags : undefined,
+        tags: Array.isArray(tags) ? tags : [],
         imageUrl: finalImageUrl,
       };
 
