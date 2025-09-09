@@ -1,0 +1,37 @@
+import { cn } from "@/lib/utils/cn";
+
+import MyButton from "../../Button";
+
+export default function AddDashboard() {
+  const addIconSrc = "/icons/icon-box-add.svg";
+
+  return (
+    <>
+      <div className="tablet:mb-4 mb-6 flex w-full justify-center">
+        <MyButton
+          className="tablet:justify-between tablet:w-full flex justify-center border-0 bg-transparent"
+          onClick={() => {}}
+        >
+          <div
+            className={cn(
+              "tablet:flex text-brand-gray-500 hidden text-xs font-semibold",
+              "dark:text-dark-200",
+            )}
+          >
+            Dash Boards
+          </div>
+          {/* 이미지 색상 바꾸기 위해서 svg라이브러리 설치해도 좋았을거같다. */}
+          <span
+            className={cn("bg-brand-gray-500 h-5 w-5", "dark:bg-brand-gray-200")}
+            style={{
+              mask: `url(${addIconSrc}) no-repeat center`,
+              WebkitMask: `url(${addIconSrc}) no-repeat center`,
+              maskSize: "contain",
+              WebkitMaskSize: "contain",
+            }}
+          />
+        </MyButton>
+      </div>
+    </>
+  );
+}

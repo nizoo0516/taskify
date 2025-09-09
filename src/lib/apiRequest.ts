@@ -1,4 +1,7 @@
-import { useAuthStore } from "@/features/auth/store";
+"use server";
+
+import { ResponseCookies } from "next/dist/compiled/@edge-runtime/cookies";
+import { cookies } from "next/headers";
 
 interface FetchOptions extends Omit<RequestInit, "body"> {
   withAuth?: boolean; // 인증을 필요로 할 때
@@ -14,14 +17,10 @@ export async function apiRequest<Response>(
 ): Promise<Response> {
   const { withAuth, isFormData, headers, data, ...rest } = options;
 
+  const cookieStore = cookies() as unknown as ResponseCookies;
+
   // 토큰
-  let token = useAuthStore.getState().accessToken;
-  if (!token) {
-    token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-    if (token) {
-      useAuthStore.getState().setAccessToken(token);
-    }
-  }
+  const token = cookieStore.get("accessToken")?.value;
 
   const authHeader = withAuth && token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -52,8 +51,7 @@ export async function apiRequest<Response>(
 
   // 인증 오류 > 로그아웃
   if (response.status === 401) {
-    useAuthStore.getState().clearToken();
-    localStorage.removeItem("accessToken");
+    cookieStore.delete("accessToken");
     throw new Error("인증 실패: 다시 로그인하세요");
   }
 

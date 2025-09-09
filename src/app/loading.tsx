@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils/cn";
 
 export default function Loading() {
   return (
-    <div className="bg-brand-gray-100 flex h-screen items-center justify-center">
+    <div className="flex h-screen items-center justify-center bg-black">
       <video
         autoPlay
         loop
