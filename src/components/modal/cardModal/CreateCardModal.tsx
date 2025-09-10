@@ -17,8 +17,6 @@ import { useColumnId } from "@/features/columns/store";
 import { CardData, ColumnData } from "@/features/dashboard/types";
 import { getMembers } from "@/features/members/api";
 
-const now = dayjs();
-
 type ModalType = {
   isOpen: boolean;
   setIsOpen: () => void;
@@ -33,7 +31,7 @@ export default function CreateCardModal({
   onCardCreated,
 }: ModalType) {
   // Zustand에서 컬럼 정보 가져오기
-  const { columnIdData, setCardId } = useColumnId();
+  const { columnIdData, setCardId, setUserId, setMembersId } = useColumnId();
 
   // input 값들
   const [title, setTitle] = useState("");
@@ -74,11 +72,21 @@ export default function CreateCardModal({
         }));
 
         setMembers(opts);
+        // 모든 멤버를 저장하지 말고, 선택된 담당자만 저장하도록 변경
       } catch (err) {
         console.error("멤버 목록 불러오기 실패:", err);
       }
     })();
   }, [isOpen, dashboardId]);
+
+  // 담당자 선택 시 호출되는 함수
+  const handleAssigneeSelect = (opt: Option) => {
+    const selectedId = Number(opt.value);
+    setAssigneeId(selectedId);
+
+    // 선택된 담당자만 Zustand에 저장
+    setMembersId([opt]);
+  };
 
   const handleCreate = async () => {
     if (isDisabled || isLoading) return;
@@ -95,7 +103,7 @@ export default function CreateCardModal({
 
     try {
       // 이미지 업로드 처리
-      let finalImageUrl: string | undefined;
+      let updateImg: string | undefined;
 
       if (imageFile) {
         try {
@@ -110,12 +118,12 @@ export default function CreateCardModal({
           const url =
             typeof direct === "string" ? direct : typeof nested === "string" ? nested : undefined;
 
-          finalImageUrl = url;
+          updateImg = url;
         } catch (uploadError) {
           console.error("이미지 업로드 실패", uploadError);
         }
       } else if (imageUrl && !imageUrl.startsWith("blob:")) {
-        finalImageUrl = imageUrl;
+        updateImg = imageUrl;
       }
 
       // 카드 생성 데이터
@@ -127,7 +135,7 @@ export default function CreateCardModal({
         description: description.trim(),
         dueDate: dueDate ? dayjs(dueDate).format("YYYY-MM-DD HH:mm") : "",
         tags: Array.isArray(tags) ? tags : [],
-        imageUrl: finalImageUrl,
+        imageUrl: updateImg,
       };
 
       console.log("카드 생성 요청 데이터:", cardData);
@@ -143,6 +151,7 @@ export default function CreateCardModal({
       const createdCardId = createdCard as CardData & { id: number };
       if (createdCardId.id) {
         setCardId(createdCardId.id);
+        setUserId(assigneeId);
       }
 
       // 컬럼 상태 업데이트
@@ -165,7 +174,6 @@ export default function CreateCardModal({
 
       // 성공 시 모달 닫기 및 폼 초기화
       handleClose();
-      alert("카드가 생성되었습니다!");
     } catch (error) {
       console.error("카드 생성 오류:", error);
       alert((error as Error).message || "카드 생성 중 오류가 발생했습니다.");
@@ -195,11 +203,7 @@ export default function CreateCardModal({
           <ModalHeader title="할 일 생성" />
           <ModalContext className="flex flex-col gap-7">
             <Field id="manager" label="담당자">
-              <Select
-                options={members}
-                placeholder="선택하기"
-                onSelect={(opt) => setAssigneeId(Number(opt.value))}
-              />
+              <Select options={members} placeholder="선택하기" onSelect={handleAssigneeSelect} />
             </Field>
 
             <Field id="title" label="제목" essential>

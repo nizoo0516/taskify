@@ -14,9 +14,19 @@ type CardWithAssignee = CardData & {
     nickname: string;
     profileImageUrl?: string;
   };
+  setColumns?: React.Dispatch<React.SetStateAction<ColumnData[]>>;
+  columnId?: number;
 };
 
-export default function Card({ title, tags, dueDate, imageUrl, assignee }: CardWithAssignee) {
+export default function Card({
+  title,
+  tags,
+  dueDate,
+  imageUrl,
+  assignee,
+  setColumns,
+  columnId,
+}: CardWithAssignee) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div
@@ -44,10 +54,10 @@ export default function Card({ title, tags, dueDate, imageUrl, assignee }: CardW
           className={clsx(
             "rounded-md object-cover",
             // 기본 (mobile)
-            "h-auto w-full object-cover",
+            "h-auto max-h-50 w-full object-cover",
 
             // tablet
-            "tablet:h-auto tablet:w-[120px]",
+            "tablet:h-full tablet:w-25",
 
             // pc
             "pc:h-[160px] pc:w-[274px]",
@@ -72,13 +82,13 @@ export default function Card({ title, tags, dueDate, imageUrl, assignee }: CardW
           )}
         >
           {/* 태그 영역 */}
-          <div className="flex flex-wrap gap-2">
-            {tags && tags.length > 0 ? (
-              tags.map((tag, index) => <Chip key={index} variant="category" label={tag} />)
-            ) : (
-              <span className="text-xs text-gray-400">태그 없음</span>
-            )}
-          </div>
+          {tags && tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag, index) => (
+                <Chip key={index} variant="category" label={tag} />
+              ))}
+            </div>
+          )}
 
           {/* 날짜 + 작성자 */}
           <div className="tablet:justify-start tablet:gap-4 pc:justify-between pc:w-full flex items-center justify-between text-xs text-gray-500">
@@ -103,7 +113,9 @@ export default function Card({ title, tags, dueDate, imageUrl, assignee }: CardW
           </div>
         </div>
       </div>
-      {isOpen && <DetailCardModal isOpen setIsOpen={setIsOpen} />}
+      {isOpen && (
+        <DetailCardModal isOpen setIsOpen={setIsOpen} setColumns={setColumns} columnId={columnId} />
+      )}
     </div>
   );
 }

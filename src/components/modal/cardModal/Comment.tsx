@@ -6,23 +6,12 @@ import Field from "@/components/form/Field";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/common/Button";
 import { useColumnId } from "@/features/columns/store";
+import { Comment } from "@/features/comments/types";
 import { createComment, updateComment, deleteComment, getComments } from "@/features/comments/api";
 
-// 댓글 타입 정의
-interface CommentItem {
-  id: number;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  author?: {
-    profileImageUrl?: string;
-    nickname?: string;
-  };
-}
-
-export default function Comment() {
+export default function CommentList() {
   const [input, setInput] = useState("");
-  const [comments, setComments] = useState<CommentItem[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editingContent, setEditingContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +39,7 @@ export default function Comment() {
           setComments([]);
         }
       }
+      console.log("댓글목록!!!!", commentsData);
     } catch (error) {
       console.error("댓글 목록 불러오기 실패:", error);
       setComments([]);
@@ -76,7 +66,8 @@ export default function Comment() {
         dashboardId,
       });
 
-      const newComment = "data" in (response as any) ? (response as any).data : response;
+      const newComment =
+        "data" in response ? (response as { data: Comment }).data : (response as Comment);
 
       // 새 댓글을 목록에 추가
       setComments((prev) => [newComment, ...prev]);
@@ -102,7 +93,8 @@ export default function Comment() {
     setIsLoading(true);
     try {
       const response = await updateComment(commentId, { content: editingContent.trim() });
-      const updatedComment = "data" in (response as any) ? (response as any).data : response;
+      const updatedComment =
+        "data" in response ? (response as { data: Comment }).data : (response as Comment);
 
       // 댓글 목록에서 해당 댓글 업데이트
       setComments((prev) =>

@@ -26,7 +26,7 @@ export default function Column({
   const { setColumnIdData } = useColumnId();
   const handleClickCard = (cardId: number) => {
     if (dashboardId == null || columnId == null) return;
-    setColumnIdData(dashboardId, columnId, cardId);
+    setColumnIdData(dashboardId, columnId, status, cardId);
   };
   return (
     <div
@@ -84,7 +84,7 @@ export default function Column({
       <div className="flex flex-col gap-[15px]">
         {cards.map((card) => (
           <div key={card.id} onClick={() => card.id !== undefined && handleClickCard(card.id)}>
-            <Card {...card} />
+            <Card {...card} setColumns={setColumns} />
           </div>
         ))}
       </div>

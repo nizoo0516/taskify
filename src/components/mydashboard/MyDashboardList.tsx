@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import Chip from "@/components/common/chip/Chip";
 import CreateDashboardModal from "@/components/modal/CreateDashboardModal";
@@ -20,36 +20,91 @@ export default function MyDashboardList() {
   // 상태
   const [dashboardList, setDashboardList] = useState<Dashboard[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedColor] = useState("#7AC555");
   const [searchKeyword, setSearchKeyword] = useState("");
+
+  // 무한스크롤 관련 상태
+  const [visibleCount, setVisibleCount] = useState(6);
+  const loadMoreRefPc = useRef<HTMLTableRowElement>(null);
+  const loadMoreRefMobile = useRef<HTMLDivElement>(null);
 
   // 필터링된 초대 목록
   const filteredInvitations = invitations.filter((invite) =>
     invite.dashboard.title.toLowerCase().includes(searchKeyword.toLowerCase()),
   );
 
+  // 현재 보여줄 초대 리스트 (무한스크롤 적용)
+  const visibleInvitations = filteredInvitations.slice(0, visibleCount);
+
+  // 대시보드 페이징 처리 (기존 방식 유지)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
   const totalPages = Math.ceil(dashboardList.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = dashboardList.slice(startIndex, startIndex + itemsPerPage);
 
-  // 데이터 불러오기
+  // 데이터 불러오기 (처음에만)
   useEffect(() => {
-    // 내 대시보드 목록
     getDashboards("pagination", { page: 1, size: 100 })
       .then((res) => setDashboardList(res.dashboards))
       .catch((err) => console.error("대시보드 조회 실패:", err));
 
-    // 내가 받은 초대 목록
     getInvitations({ size: 100 })
       .then((res) => {
-        console.log("받은 초대 목록: ", res.invitations);
         setInvitations(res.invitations);
       })
       .catch((err) => console.error("초대 조회 실패:", err));
   }, []);
+
+  // 무한스크롤 IntersectionObserver 설정
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => {
+            if (prev >= filteredInvitations.length) return prev; // 최대치 이상은 증가 금지
+            return prev + 6; // 5개씩 더 보여주기
+          });
+        }
+      },
+      { threshold: 1 },
+    );
+
+    if (loadMoreRefPc.current) {
+      observer.observe(loadMoreRefPc.current);
+    }
+
+    return () => {
+      if (loadMoreRefPc.current) {
+        observer.unobserve(loadMoreRefPc.current);
+      }
+    };
+  }, [filteredInvitations.length]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => {
+            if (prev >= filteredInvitations.length) return prev;
+            return prev + 6;
+          });
+        }
+      },
+      { threshold: 1 },
+    );
+
+    if (loadMoreRefMobile.current) {
+      observer.observe(loadMoreRefMobile.current);
+    }
+
+    return () => {
+      if (loadMoreRefMobile.current) {
+        observer.unobserve(loadMoreRefMobile.current);
+      }
+    };
+  }, [filteredInvitations.length]);
 
   // 초대 수락
   const handleAcceptInvite = async (
@@ -62,7 +117,6 @@ export default function MyDashboardList() {
       await respondInvitation(inviteId, true);
 
       setDashboardList((prev) => {
-        // 중복 대시보드가 있으면 추가하지 않음
         if (prev.some((d) => d.id === dashboardId)) return prev;
 
         const newDashboard: Dashboard = {
@@ -75,11 +129,9 @@ export default function MyDashboardList() {
           userId: inviterId,
         };
 
-        // 새 대시보드를 리스트 맨 앞에 추가 (최근 수락이 위로)
         return [newDashboard, ...prev];
       });
 
-      // 초대 목록에서 제거
       setInvitations((prev) => prev.filter((inv) => inv.id !== inviteId));
     } catch (err) {
       console.error("초대 수락 실패:", err);
@@ -100,7 +152,7 @@ export default function MyDashboardList() {
   const handleCreateDashboard = async (name: string, color: string) => {
     try {
       const newDashboard = await apiCreateDashboard({ title: name, color });
-      setDashboardList((prev) => [newDashboard, ...prev]); // 생성한 것도 앞에 추가
+      setDashboardList((prev) => [newDashboard, ...prev]);
     } catch (err) {
       console.error("대시보드 생성 실패:", err);
     }
@@ -109,7 +161,7 @@ export default function MyDashboardList() {
   return (
     <div className="bg-[#fafafa] py-[40px]">
       {/* 내 대시보드 */}
-      <div className="pc:mx-0 pc:ml-[40px] mx-auto min-h-[204px] w-[95%] max-w-[1022px]">
+      <div className="pc:mx-0 pc:ml-[40px] mx-auto min-h-[204px] w-[95%] max-w-[1022px] overflow-hidden">
         <div className="tablet:grid-cols-2 pc:grid-cols-3 grid min-h-[156px] grid-cols-1 gap-4">
           <MyButton
             className="h-[70px] p-4 text-center font-semibold"
@@ -121,7 +173,7 @@ export default function MyDashboardList() {
 
           {currentItems.map((dashboard, index) => (
             <MyButton
-              key={`${dashboard.id}-${index}`} // 중복키 방지
+              key={`${dashboard.id}-${index}`}
               className="h-[70px] p-4 text-left font-semibold"
               color="buttonBasic"
               onClick={() => router.push(`/dashboard/${dashboard.id}`)}
@@ -131,7 +183,7 @@ export default function MyDashboardList() {
                   style={{ backgroundColor: dashboard.color }}
                   className="h-2 w-2 shrink-0 rounded-full"
                 />
-                <div>{dashboard.title}</div>
+                <div className="truncate overflow-hidden whitespace-nowrap">{dashboard.title}</div>
                 {dashboard.createdByMe && (
                   <Image
                     src="/icons/icon-crown.svg"
@@ -161,84 +213,140 @@ export default function MyDashboardList() {
       </div>
 
       {/* 초대 받은 대시보드 */}
-      <div className="pc:mx-0 pc:ml-[40px] mx-auto mt-8 max-h-[650px] w-[95%] max-w-[1022px] overflow-scroll rounded-lg bg-white">
+      <div className="pc:mx-0 pc:ml-[40px] mx-auto mt-8 w-[95%] max-w-[1022px] rounded-lg bg-white">
         <h2 className="px-[28px] py-[32px] text-2xl font-bold">초대 받은 대시보드</h2>
-        <div className="px-[28px] pb-[16px]">
-          <Input
-            placeholder="검색"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-            leftIcon={
-              <Image src="/icons/icon-search.svg" alt="검색 아이콘" width={20} height={20} />
-            }
-          />
-        </div>
+        {invitations.length > 0 && (
+          <div className="px-[28px] pb-[16px]">
+            <Input
+              placeholder="검색"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              leftIcon={
+                <Image src="/icons/icon-search.svg" alt="검색 아이콘" width={20} height={20} />
+              }
+            />
+          </div>
+        )}
 
-        {/* PC/태블릿 */}
-        <div className="pc:block tablet:block hidden">
-          <table className="w-full border-collapse text-left text-sm">
-            <thead className="border-b text-gray-500">
-              <tr>
-                <th className="w-1/3 px-[28px] py-2">이름</th>
-                <th className="w-1/3 px-[28px] py-2">초대자</th>
-                <th className="w-1/3 px-[28px] py-2">수락 여부</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredInvitations.length === 0 ? (
-                <tr>
-                  <td colSpan={3} className="py-6 text-center text-gray-400">
-                    검색 결과가 없습니다.
-                    <Image
-                      src="/images/img-no-dashboard.svg"
-                      alt="없음"
-                      width={100}
-                      height={100}
-                      className="mx-auto mt-4 block"
-                    />
-                  </td>
-                </tr>
-              ) : (
-                filteredInvitations.map((invite) => (
-                  <tr key={invite.id} className="border-b last:border-0">
-                    <td className="w-1/3 px-[28px] py-[23px]">{invite.dashboard.title}</td>
-                    <td className="w-1/3 px-[28px] py-[23px]">{invite.inviter.nickname}</td>
-                    <td className="w-1/3 px-[28px] py-[23px]">
-                      <div className="flex gap-2">
-                        <MyButton
-                          className="px-[29.5px] py-[4px] text-white"
-                          color="buttonBlue"
-                          onClick={() =>
-                            handleAcceptInvite(
-                              invite.id,
-                              invite.dashboard.id,
-                              invite.dashboard.title,
-                              invite.inviter.id,
-                            )
-                          }
-                        >
-                          수락
-                        </MyButton>
-                        <MyButton
-                          className="px-[29.5px] py-[4px] text-[#4276EC]"
-                          color="buttonBasic"
-                          onClick={() => handleRejectInvite(invite.id)}
-                        >
-                          거절
-                        </MyButton>
-                      </div>
-                    </td>
+        {/* PC/태블릿 - 테이블 스크롤 영역 */}
+        {invitations.length > 0 && (
+          <div className="pc:block tablet:block hidden px-[28px] pb-[28px]">
+            <div className="h-[458px] overflow-y-auto rounded-md border">
+              <table className="w-full border-collapse text-left text-sm">
+                <thead className="sticky top-0 z-10 border-b bg-white">
+                  <tr>
+                    <th className="w-1/3 px-[28px] py-2">이름</th>
+                    <th className="w-1/3 px-[28px] py-2">초대자</th>
+                    <th className="w-1/3 px-[28px] py-2">수락 여부</th>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {invitations.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="py-6 text-center text-gray-400">
+                        아직 초대받은 대시보드가 없어요.
+                        <Image
+                          src="/images/img-no-dashboard.svg"
+                          alt="없음"
+                          width={100}
+                          height={100}
+                          className="mx-auto mt-4 block"
+                        />
+                      </td>
+                    </tr>
+                  ) : visibleInvitations.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="py-6 text-center text-gray-400">
+                        검색 결과가 없습니다.
+                        <Image
+                          src="/images/img-no-dashboard.svg"
+                          alt="없음"
+                          width={100}
+                          height={100}
+                          className="mx-auto mt-4 block"
+                        />
+                      </td>
+                    </tr>
+                  ) : (
+                    visibleInvitations.map((invite) => (
+                      <tr key={invite.id} className="border-b last:border-0">
+                        <td className="w-1/3 truncate overflow-hidden px-[28px] py-[23px] whitespace-nowrap">
+                          {invite.dashboard.title}
+                        </td>
+                        <td className="w-1/3 truncate overflow-hidden px-[28px] py-[23px] whitespace-nowrap">
+                          {invite.inviter.nickname}
+                        </td>
+                        <td className="w-1/3 px-[28px] py-[23px]">
+                          <div className="flex gap-2">
+                            <MyButton
+                              className="tablet:px-[19px] pc:px-[29.5px] py-[4px] text-white"
+                              color="buttonBlue"
+                              onClick={() =>
+                                handleAcceptInvite(
+                                  invite.id,
+                                  invite.dashboard.id,
+                                  invite.dashboard.title,
+                                  invite.inviter.id,
+                                )
+                              }
+                            >
+                              수락
+                            </MyButton>
+                            <MyButton
+                              className="tablet:px-[19px] pc:px-[29.5px] px-[29.5px] py-[4px] text-[#4276EC]"
+                              color="buttonBasic"
+                              onClick={() => handleRejectInvite(invite.id)}
+                            >
+                              거절
+                            </MyButton>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
 
-        {/* 모바일 */}
-        <div className="pc:hidden tablet:hidden block space-y-4 px-[20px] pb-[20px]">
-          {filteredInvitations.length === 0 ? (
-            <div className="text-center text-gray-400">
+                  {/* 무한스크롤 관찰 요소 */}
+                  {visibleInvitations.length < filteredInvitations.length && (
+                    <tr ref={loadMoreRefPc}>
+                      <td colSpan={3} className="py-4 text-center text-gray-400">
+                        불러오는 중...
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {invitations.length === 0 && (
+          <div className="pc:flex tablet:flex hidden h-[458px] flex-col items-center justify-center px-[28px] text-center text-gray-400">
+            아직 초대받은 대시보드가 없어요.
+            <Image
+              src="/images/img-no-dashboard.svg"
+              alt="없음"
+              width={100}
+              height={100}
+              className="mx-auto mt-4 block"
+            />
+          </div>
+        )}
+
+        {/* 모바일 - 카드 리스트 */}
+        <div className="pc:hidden tablet:hidden block px-[28px] pb-[28px]">
+          {invitations.length === 0 ? (
+            <div className="py-8 text-center text-gray-400">
+              아직 초대받은 대시보드가 없어요.
+              <Image
+                src="/images/img-no-dashboard.svg"
+                alt="없음"
+                width={100}
+                height={100}
+                className="mx-auto mt-4 block"
+              />
+            </div>
+          ) : visibleInvitations.length === 0 ? (
+            <div className="py-8 text-center text-gray-400">
               검색 결과가 없습니다.
               <Image
                 src="/images/img-no-dashboard.svg"
@@ -249,50 +357,56 @@ export default function MyDashboardList() {
               />
             </div>
           ) : (
-            filteredInvitations.map((invite) => (
-              <div key={invite.id} className="rounded-lg border border-gray-200 p-4 shadow-sm">
-                <div className="mb-2">
-                  <div className="text-sm text-gray-500">이름</div>
-                  <div className="text-base font-semibold">{invite.dashboard.title}</div>
+            visibleInvitations.map((invite, index) => {
+              const isLast = index === visibleInvitations.length - 1;
+              return (
+                <div
+                  key={invite.id}
+                  ref={isLast ? loadMoreRefMobile : null}
+                  className="mb-4 rounded-md border px-4 py-3 shadow-sm"
+                >
+                  <div className="truncate overflow-hidden text-lg font-semibold whitespace-nowrap">
+                    {invite.dashboard.title}
+                  </div>
+                  <div className="truncate overflow-hidden text-sm whitespace-nowrap text-gray-500">
+                    초대자: {invite.inviter.nickname}
+                  </div>
+                  <div className="mt-3 flex gap-2">
+                    <MyButton
+                      className="w-full px-[29.5px] py-[4px] text-white"
+                      color="buttonBlue"
+                      onClick={() =>
+                        handleAcceptInvite(
+                          invite.id,
+                          invite.dashboard.id,
+                          invite.dashboard.title,
+                          invite.inviter.id,
+                        )
+                      }
+                    >
+                      수락
+                    </MyButton>
+                    <MyButton
+                      className="w-full px-[29.5px] py-[4px] text-[#4276EC]"
+                      color="buttonBasic"
+                      onClick={() => handleRejectInvite(invite.id)}
+                    >
+                      거절
+                    </MyButton>
+                  </div>
                 </div>
-                <div className="mb-4">
-                  <div className="text-sm text-gray-500">초대자</div>
-                  <div className="text-base font-medium">{invite.inviter.nickname}</div>
-                </div>
-                <div className="flex gap-2">
-                  <MyButton
-                    className="w-full py-[4px] text-white"
-                    color="buttonBlue"
-                    onClick={() =>
-                      handleAcceptInvite(
-                        invite.id,
-                        invite.dashboard.id,
-                        invite.dashboard.title,
-                        invite.inviter.id,
-                      )
-                    }
-                  >
-                    수락
-                  </MyButton>
-                  <MyButton
-                    className="w-full py-[4px] text-[#4276EC]"
-                    color="buttonBasic"
-                    onClick={() => handleRejectInvite(invite.id)}
-                  >
-                    거절
-                  </MyButton>
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>
 
-      {/* 모달 */}
+      {/* 대시보드 생성 모달 */}
       <CreateDashboardModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onCreate={handleCreateDashboard}
+        defaultColor={selectedColor}
       />
     </div>
   );

@@ -7,7 +7,7 @@ import DatePicker from "@/components/form/DatePicker";
 import Field from "@/components/form/Field";
 import ImgUpload from "@/components/form/ImgUpload";
 import Input from "@/components/form/Input";
-import Select from "@/components/form/Select";
+import Select, { Option } from "@/components/form/Select";
 import TagInput from "@/components/form/TagInput";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/common/Button";
@@ -15,34 +15,28 @@ import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/moda
 import { updateCard } from "@/features/cards/api";
 import { uploadCardImage } from "@/features/columns/api";
 import { useColumnId } from "@/features/columns/store";
-import { CardData, ColumnData } from "@/features/dashboard/types";
+import { ColumnData } from "@/features/dashboard/types";
+import { getMembers } from "@/features/members/api";
+import { Card } from "@/features/cards/types";
 
 const now = dayjs();
 
 type ModalType = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  cardData?: CardData | null; // 기존 카드 데이터를 props로 받기
-  setColumns?: React.Dispatch<React.SetStateAction<ColumnData[]>>; // 컬럼 상태 업데이트용
-  onModifyComplete?: () => void; // 수정 완료 콜백 추가
+  cardData?: Card | null;
+  setColumns?: React.Dispatch<React.SetStateAction<ColumnData[]>>;
+  onModifyComplete?: () => void;
+  columnTitle: string;
 };
 
-const stateOpt = [
-  { value: "1", label: "To Do", chip: <Chip variant="status" label="To Do" /> },
-  { value: "2", label: "On Progress", chip: <Chip variant="status" label="On Progress" /> },
-  { value: "3", label: "Done", chip: <Chip variant="status" label="Done" /> },
-];
-const managerOpt = [
-  { value: "1", label: "배유철" },
-  { value: "2", label: "배동석" },
-];
-
-export default function ModifyModal({
+export default function ModifyCardModal({
   isOpen,
   setIsOpen,
   cardData,
   setColumns,
   onModifyComplete,
+  columnTitle,
 }: ModalType) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -51,27 +45,104 @@ export default function ModifyModal({
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedColumnId, setSelectedColumnId] = useState<number | null>(null); // 추가: 선택된 컬럼 ID
+
+  // 멤버 관련
+  const [members, setMembers] = useState<Option[]>([]);
+  const [selectedMember, setSelectedMember] = useState<Option | null>(null);
+  const [assigneeId, setAssigneeId] = useState<number | null>(null);
 
   // 공백값 체크(필수 표시 붙은것만!)
   const isDisabled = title.trim() === "" || description.trim() === "";
 
-  const { columnIdData } = useColumnId();
+  const { columnIdData, setMembersId, columnStatusTitle } = useColumnId();
   const cardId = columnIdData?.cardId ?? 0;
   const dashboardId = columnIdData?.dashboardId ?? 0;
   const columnId = columnIdData?.columnId ?? 0;
-  const assigneeUserId = 6212;
+
+  // 상태 선택하기 - 주스탠드 데이터를 활용해서 생성
+  const stateOpt = columnStatusTitle
+    ? Object.entries(columnStatusTitle).map(([title, id]) => ({
+        value: String(id),
+        label: title,
+        chip: <Chip variant="status" label={title} />,
+      }))
+    : [];
+
+  console.log("컬럼 타이틀 찍어보기!!", columnTitle);
+  console.log("생성된 stateOpt:", stateOpt);
+
+  // 멤버 목록 가져오기
+  useEffect(() => {
+    if (!isOpen || !dashboardId) return;
+
+    (async () => {
+      try {
+        const res = await getMembers(dashboardId, { page: 1, size: 20 });
+
+        const opts = res.members.map((m) => ({
+          value: String(m.userId),
+          label: m.nickname,
+          chip: (
+            <img
+              src={m.profileImageUrl}
+              alt={m.nickname}
+              className="h-[26px] w-[26px] rounded-full object-cover"
+            />
+          ),
+        }));
+
+        setMembers(opts);
+      } catch (err) {
+        console.error("멤버 목록 불러오기 실패:", err);
+      }
+    })();
+  }, [isOpen, dashboardId]);
+
+  // 담당자 선택 시 호출되는 함수
+  const handleAssigneeSelect = (opt: Option) => {
+    const selectedId = Number(opt.value);
+    setAssigneeId(selectedId);
+    setSelectedMember(opt);
+
+    // 선택된 담당자만 Zustand에 저장
+    setMembersId([opt]);
+  };
+
+  // 상태(컬럼) 선택 시 호출되는 함수
+  const handleStatusSelect = (opt: Option) => {
+    const newColumnId = Number(opt.value);
+    setSelectedColumnId(newColumnId);
+    console.log("선택된 컬럼 ID:", newColumnId);
+  };
 
   // 기존 카드 데이터로 폼 초기화
   useEffect(() => {
-    if (cardData && isOpen) {
+    if (cardData && isOpen && members.length > 0) {
       setTitle(cardData.title || "");
       setDescription(cardData.description || "");
       setDueDate(cardData.dueDate ? new Date(cardData.dueDate) : null);
       setTags(cardData.tags || []);
       setImageUrl(cardData.imageUrl || "");
       setImageFile(null);
+
+      // 현재 카드의 컬럼 ID 설정
+      setSelectedColumnId(columnId);
+
+      // 기존 담당자 정보 설정
+      if (cardData.assignee) {
+        const currentAssigneeId = cardData.assignee.id;
+        setAssigneeId(currentAssigneeId);
+
+        // 멤버 목록에서 해당 담당자 찾기
+        const currentMember = members.find((m) => Number(m.value) === currentAssigneeId);
+        if (currentMember) {
+          setSelectedMember(currentMember);
+          setMembersId([currentMember]);
+        }
+      }
     }
-  }, [cardData, isOpen]);
+  }, [cardData, isOpen, members, columnId]);
 
   const handleUpdate = async () => {
     if (isDisabled || isLoading) return;
@@ -79,6 +150,11 @@ export default function ModifyModal({
     // cardId 있는지
     if (!cardId) {
       alert("카드 확인 실패");
+      return;
+    }
+
+    if (!assigneeId) {
+      alert("담당자를 선택해주세요.");
       return;
     }
 
@@ -106,24 +182,25 @@ export default function ModifyModal({
         updateImg = imageUrl;
       }
 
+      // 카드가 이동할 컬럼 ID 결정
+      const targetColumnId = selectedColumnId || columnId;
+
       // 카드 수정 데이터 준비
       const updateData = {
-        assigneeUserId: assigneeUserId,
+        assigneeUserId: assigneeId,
         dashboardId: dashboardId,
-        columnId: columnId,
+        columnId: targetColumnId, // 새로운 컬럼 ID 사용
         title: title.trim(),
-        description: description.trim(),
+        description,
         dueDate: dueDate ? dayjs(dueDate).format("YYYY-MM-DD HH:mm") : "",
-        tags, // string[]
-        imageUrl: updateImg, // string | undefined
+        tags: Array.isArray(tags) ? tags : [],
+        imageUrl: updateImg,
       };
-
-      console.log("카드 수정 요청 데이터:", updateData);
 
       // 카드 수정 API 호출
       const updateResult = await updateCard(cardId, updateData);
 
-      console.log("수정된 카드");
+      console.log("수정된 카드!!!!!!!!!!!", updateData);
 
       // 컬럼 상태 업데이트
       if (setColumns) {
@@ -132,13 +209,31 @@ export default function ModifyModal({
 
         setColumns((prevColumns) => {
           return prevColumns.map((col) => {
-            if (col.id === columnId) {
+            // 기존 컬럼에서 카드 제거
+            if (col.id === columnId && targetColumnId !== columnId) {
               return {
                 ...col,
-                cards:
-                  col.cards?.map((card) => ((card as any).id === cardId ? updatedCard : card)) ||
-                  [],
+                cards: col.cards?.filter((card) => (card as any).id !== cardId) || [],
               };
+            }
+            // 새 컬럼에 카드 추가 또는 기존 컬럼에서 카드 업데이트
+            else if (col.id === targetColumnId) {
+              // 컬럼이 변경된 경우 카드 추가
+              if (targetColumnId !== columnId) {
+                return {
+                  ...col,
+                  cards: [...(col.cards || []), updatedCard],
+                };
+              }
+              // 같은 컬럼 내에서 카드 업데이트
+              else {
+                return {
+                  ...col,
+                  cards:
+                    col.cards?.map((card) => ((card as any).id === cardId ? updatedCard : card)) ||
+                    [],
+                };
+              }
             }
             return col;
           });
@@ -148,13 +243,13 @@ export default function ModifyModal({
       alert("수정 완료");
       handleClose();
 
-      // 수정 완료 콜백 호출 (디테일 모달 업데이트용)
+      // 수정 완료
       if (onModifyComplete) {
         onModifyComplete();
       }
-    } catch (error) {
+    } catch (e) {
       console.error("카드 수정 오류");
-      alert((error as Error).message || "카드 수정 중 오류가 발생했습니다.");
+      alert((e as Error).message || "카드 수정 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
     }
@@ -168,6 +263,9 @@ export default function ModifyModal({
     setTags([]);
     setImageFile(null);
     setImageUrl("");
+    setAssigneeId(null);
+    setSelectedMember(null);
+    setSelectedColumnId(null); // 추가
 
     // 모달 닫기
     setIsOpen(false);
@@ -181,10 +279,16 @@ export default function ModifyModal({
           <ModalContext className="flex max-w-xl flex-col gap-7">
             <div className="grid grid-cols-2 gap-8">
               <Field id="status" label="상태">
-                <Select options={stateOpt} placeholder="선택하기" labelNone={true} />
+                <Select
+                  options={stateOpt}
+                  placeholder="선택하기"
+                  labelNone={true}
+                  onSelect={handleStatusSelect}
+                  value={selectedColumnId ? String(selectedColumnId) : undefined}
+                />
               </Field>
               <Field id="manager" label="담당자">
-                <Select options={managerOpt} placeholder="선택하기" />
+                <Select options={members} placeholder="선택하기" onSelect={handleAssigneeSelect} />
               </Field>
             </div>
             <Field id="title" label="제목" essential>

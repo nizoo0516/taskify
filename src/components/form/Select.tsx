@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export type Option = {
   value: string;
@@ -15,6 +15,7 @@ type SelectProps = {
   className?: string;
   labelNone?: boolean;
   onSelect?: (option: Option) => void;
+  value?: string;
 };
 
 export default function Select({
@@ -23,9 +24,20 @@ export default function Select({
   className = "",
   labelNone = false,
   onSelect,
+  value,
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<Option | null>(null);
+
+  // value prop이 변경될 때 selected 업데이트
+  useEffect(() => {
+    if (value) {
+      const foundOption = options.find((opt) => opt.value === value);
+      setSelected(foundOption || null);
+    } else {
+      setSelected(null);
+    }
+  }, [value, options]);
 
   const btnClass = [
     "relative w-full",

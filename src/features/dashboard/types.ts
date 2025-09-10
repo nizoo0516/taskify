@@ -78,6 +78,7 @@ export interface ColumnData {
   title: string;
   cards?: CardData[];
 }
+
 // 컬럼 컴포넌트 타입
 export interface ColumnProps {
   status: string;
