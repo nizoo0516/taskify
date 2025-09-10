@@ -54,18 +54,20 @@ export default function Navbar({ id }: { id?: number }) {
       </h2>
 
       <div className="flex h-full flex-row items-center">
-        {id && createdByMe && (
+        {id && (
           <>
-            <div className="flex h-full flex-row">
-              <Link href={`/dashboard/${id}/edit`}>
-                <NavButton
-                  src="/icons/icon-settings.svg"
-                  label="관리"
-                  className="flex h-full flex-row"
-                />
-              </Link>
-              <NavButton src="/icons/icon-box-add.svg" label="초대하기" dashboardId={id} />
-            </div>
+            {createdByMe && (
+              <div className="flex h-full flex-row">
+                <Link href={`/dashboard/${id}/edit`}>
+                  <NavButton
+                    src="/icons/icon-settings.svg"
+                    label="관리"
+                    className="flex h-full flex-row"
+                  />
+                </Link>
+                <NavButton src="/icons/icon-box-add.svg" label="초대하기" dashboardId={id} />
+              </div>
+            )}
 
             {isMember && <MemberList members={members} />}
             <div className="bg-brand-gray-300 pc:ml-8 tablet:ml-6 ml-3 h-[calc(100%-4px)] w-[1px]"></div>
