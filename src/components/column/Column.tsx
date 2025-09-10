@@ -26,7 +26,7 @@ export default function Column({
   const { setColumnIdData } = useColumnId();
   const handleClickCard = (cardId: number) => {
     if (dashboardId == null || columnId == null) return;
-    setColumnIdData(dashboardId, columnId, cardId);
+    setColumnIdData(dashboardId, columnId, status, cardId);
   };
   return (
     <div
