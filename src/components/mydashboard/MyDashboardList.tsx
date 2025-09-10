@@ -10,18 +10,25 @@ import Input from "@/components/form/Input";
 import MyButton from "@/components/common/Button";
 import Pagination from "@/components/common/Pagination";
 
-import { getDashboards, createDashboard as apiCreateDashboard } from "@/features/dashboard/api";
+import {
+  getDashboards,
+  createDashboard as apiCreateDashboard,
+  createDashboard,
+} from "@/features/dashboard/api";
 import { getInvitations, respondInvitation } from "@/features/invitations/api";
 import type { Invitation } from "@/features/invitations/types";
 
-import { useDashboardStore } from "./useDashboardStore";
 import { loadAcceptedMap, saveAcceptedAt } from "@/lib/utils/localStorage";
+import { useQueryClient } from "@tanstack/react-query";
+import { useMyDashboardStore } from "./useDashboardStore";
+import { sortDashboards } from "@/lib/sortDashboard";
 
 export default function MyDashboardList() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   // Zustand 대시보드 상태
-  const { dashboards, setDashboards, addDashboard } = useDashboardStore();
+  const { dashboards, setDashboards, addDashboard, page, setPage } = useMyDashboardStore();
 
   // 로컬 상태
   const [invitations, setInvitations] = useState<Invitation[]>([]);
@@ -48,15 +55,11 @@ export default function MyDashboardList() {
           ...d,
           acceptedAt: acceptedMap[d.id] ?? null,
         }));
-        setDashboards(merged);
-        setCurrentPage(1);
+        setDashboards(sortDashboards(merged));
+        setPage(1);
       })
-      .catch((err) => console.error("대시보드 조회 실패:", err));
-
-    getInvitations({ size: 100 })
-      .then((res) => setInvitations(res.invitations))
-      .catch((err) => console.error("초대 조회 실패:", err));
-  }, [setDashboards]);
+      .catch(console.error);
+  }, [setDashboards, setPage]);
 
   // 초대 필터링
   const filteredInvitations = useMemo(
@@ -117,27 +120,19 @@ export default function MyDashboardList() {
     title: string,
     inviterId: number,
   ) => {
-    try {
-      await respondInvitation(inviteId, true);
-
-      const now = new Date().toISOString();
-      addDashboard({
-        id: dashboardId,
-        title,
-        color: selectedColor,
-        createdAt: now,
-        updatedAt: now,
-        createdByMe: false,
-        userId: inviterId,
-        acceptedAt: now,
-      });
-
-      saveAcceptedAt(dashboardId, now);
-      setInvitations((prev) => prev.filter((inv) => inv.id !== inviteId));
-      setCurrentPage(1);
-    } catch (err) {
-      console.error("초대 수락 실패:", err);
-    }
+    await respondInvitation(inviteId, true);
+    const now = new Date().toISOString();
+    addDashboard({
+      id: dashboardId,
+      title,
+      color: "#7AC555",
+      createdAt: now,
+      updatedAt: now,
+      createdByMe: false,
+      userId: inviterId,
+      acceptedAt: now,
+    });
+    saveAcceptedAt(dashboardId, now);
   };
 
   // 초대 거절
@@ -151,21 +146,11 @@ export default function MyDashboardList() {
   };
 
   // 대시보드 생성
-  const handleCreateDashboard = async (name: string, color: string) => {
-    try {
-      const newDashboard = await apiCreateDashboard({ title: name, color });
-      const now = new Date().toISOString();
-
-      addDashboard({
-        ...newDashboard,
-        acceptedAt: now,
-      });
-
-      saveAcceptedAt(newDashboard.id, now);
-      setCurrentPage(1);
-    } catch (err) {
-      console.error("대시보드 생성 실패:", err);
-    }
+  const handleCreateDashboard = async (title: string, color: string) => {
+    const newDashboard = await createDashboard({ title, color });
+    const now = new Date().toISOString();
+    addDashboard({ ...newDashboard, acceptedAt: now });
+    saveAcceptedAt(newDashboard.id, now);
   };
 
   return (

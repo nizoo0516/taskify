@@ -12,8 +12,9 @@ import Logo from "../../Logo";
 import Pagination from "../../Pagination";
 import { useQuery } from "@tanstack/react-query";
 import { GetDashboardsResponse } from "@/features/dashboard/types";
-import { useDashboardStore } from "@/components/mydashboard/useDashboardStore";
+import { sortDashboards } from "@/lib/sortDashboard";
 import { loadAcceptedMap } from "@/lib/utils/localStorage";
+import { useSidebarStore } from "./useSidebarStore";
 
 export type CreateData = {
   title: string;
@@ -27,7 +28,7 @@ export default function Sidebar() {
   const [direction, setDirection] = useState<"prev" | "next">("next");
   const prevPage = useRef(page);
 
-  const { dashboards, setDashboards, addDashboard } = useDashboardStore();
+  const { dashboards, setDashboards } = useSidebarStore();
 
   // 페이지 버튼 방향 감지
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function Sidebar() {
   }, [page]);
 
   const { data } = useQuery<GetDashboardsResponse>({
-    queryKey: ["dashboards"],
+    queryKey: ["dashboards", "sidebar", page, device],
     queryFn: () =>
       device === "mobile"
         ? getDashboards("infiniteScroll", { size: 20 })
@@ -49,12 +50,12 @@ export default function Sidebar() {
 
   useEffect(() => {
     if (data?.dashboards) {
-      const acceptedMap = typeof window !== "undefined" ? loadAcceptedMap() : {};
+      const acceptedMap = loadAcceptedMap();
       const merged = data.dashboards.map((d) => ({
         ...d,
         acceptedAt: acceptedMap[d.id] ?? null,
       }));
-      setDashboards(merged);
+      setDashboards(sortDashboards(merged));
     }
   }, [data, setDashboards]);
 
@@ -86,7 +87,7 @@ export default function Sidebar() {
               key={page}
               initial={{ x: isPrev ? "-23%" : "23%", opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: isPrev ? "-23%" : "23%", opacity: 0 }}
+              exit={{ x: isPrev ? "23%" : "-23%", opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="col-start-1 row-start-1"
             >
