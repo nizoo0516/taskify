@@ -49,7 +49,6 @@ export default function Chip({
         <span
           className={
             "inline-flex h-7 min-w-[25px] items-center justify-center rounded px-[6px] text-sm " +
-            "bg-[#F9EEE3] text-[#D58D49]" +
             className
           }
         >

@@ -7,15 +7,18 @@ import Field from "@/components/form/Field";
 import ImgUpload from "@/components/form/ImgUpload";
 import Input from "@/components/form/Input";
 import Select, { Option } from "@/components/form/Select";
-import TagInput from "@/components/form/TagInput";
+import TagInput, { Tag } from "@/components/form/TagInput";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/common/Button";
 import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { createCard } from "@/features/cards/api";
 import { uploadCardImage } from "@/features/columns/api";
 import { useColumnId } from "@/features/columns/store";
-import { CardData, ColumnData } from "@/features/dashboard/types";
+import type { Card } from "@/features/cards/types";
+import { ColumnData } from "@/features/dashboard/types";
 import { getMembers } from "@/features/members/api";
+
+type CardWithTags = Card & { tags: Tag[] };
 
 type ModalType = {
   isOpen: boolean;
@@ -37,7 +40,7 @@ export default function CreateCardModal({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | null>(null);
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -134,7 +137,7 @@ export default function CreateCardModal({
         title: title.trim(),
         description: description.trim(),
         dueDate: dueDate ? dayjs(dueDate).format("YYYY-MM-DD HH:mm") : "",
-        tags: Array.isArray(tags) ? tags : [],
+        tags: tags.map((tag) => tag.label),
         imageUrl: updateImg,
       };
 
@@ -144,11 +147,10 @@ export default function CreateCardModal({
       const createResult = await createCard(cardData);
 
       // API 응답 구조에 따른 처리
-      const createdCard: CardData =
+      const createdCard: Card =
         "data" in (createResult as any) ? (createResult as any).data : createResult;
 
-      // Zustand에다가 생성된 카드 아이디 담기
-      const createdCardId = createdCard as CardData & { id: number };
+      const createdCardId = createdCard as Card & { id: number };
       if (createdCardId.id) {
         setCardId(createdCardId.id);
         setUserId(assigneeId);
@@ -160,14 +162,13 @@ export default function CreateCardModal({
           if (col.id === columnId) {
             return {
               ...col,
-              cards: [...(col.cards ?? []), createdCard],
+              cards: [...(col.cards ?? []), { ...createdCard, tags } as CardWithTags],
             };
           }
           return col;
         });
       });
 
-      // 카드 생성 완료 콜백 호출 (서버에서 최신 데이터 다시 불러오기용)
       if (onCardCreated) {
         onCardCreated();
       }
