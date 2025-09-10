@@ -85,7 +85,9 @@ export default function LoginPage() {
       <Link href="/" className="mb-3 flex flex-col items-center gap-[5px]" aria-label="홈으로 이동">
         <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={300} height={60} />
       </Link>
-      <p className="mb-[30px] text-center text-xl text-[#333236]">오늘도 만나서 반가워요!</p>
+      <p className="mb-[30px] text-center text-xl text-[var(--text-primary)]">
+        오늘도 만나서 반가워요!
+      </p>
 
       <form ref={formRef} onSubmit={onSubmit} className="w-full space-y-8">
         <Field id="email" label="이메일" error={errors.email}>
@@ -137,7 +139,7 @@ export default function LoginPage() {
           {submitting ? "로그인 중" : "로그인"}
         </MyButton>
       </form>
-      <div className="mt-6 text-center text-[16px] text-[#333236]">
+      <div className="mt-6 text-center text-[16px] text-[var(--text-primary)]">
         회원이 아니신가요?
         <Link
           href="/signup"

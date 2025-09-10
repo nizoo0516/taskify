@@ -1,6 +1,6 @@
 export const base = [
-  "w-full rounded-lg border bg-white text-base text-[#333236] outline-none",
-  "border-[#D9D9D9] placeholder:text-[#9FA6B2]",
+  "w-full rounded-lg border bg-[var(--input-bg)] text-base text-[var(--text-primary)] outline-none",
+  "border-[var(--border)] placeholder:text-[var(--placeholder)]",
   "aria-[invalid=true]:border-red-500",
   "focus:aria-[invalid=true]:border-red-500",
 ].join(" ");
