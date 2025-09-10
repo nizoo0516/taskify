@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import "@/styles/globals.css";
 import { ThemeProvider } from "next-themes";
-import Providers from "./providers";
+import QueryProvider from "./QueryProvider";
 
 export const metadata: Metadata = {
   title: "Taskify",
@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <body className="bg-brand-gray-100 text-brand-gray-700 dark:bg-dark-900 dark:text-dark-200 min-h-screen">
-        <Providers>
+        <QueryProvider>
           <ThemeProvider
             attribute="data-theme"
             defaultTheme="system"
@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             {children}
           </ThemeProvider>
-        </Providers>
+        </QueryProvider>
       </body>
     </html>
   );
