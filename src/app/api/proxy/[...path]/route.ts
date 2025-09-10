@@ -5,9 +5,24 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 async function proxy(req: NextRequest, method: string, params: string[]) {
   const targetUrl = `${BASE_URL}/${params.join("/")}${req.nextUrl.search}`;
-  const body = method === "GET" ? undefined : await req.text();
+
+  let body: BodyInit | undefined = undefined;
 
   const newHeaders = new Headers(req.headers);
+
+  if (method !== "GET") {
+    const contentType = newHeaders.get("content-type") || "";
+
+    if (contentType.includes("multipart/form-data")) {
+      // formData유지
+      body = await req.formData();
+      newHeaders.delete("content-type");
+      newHeaders.delete("content-length");
+    } else {
+      // JSON 요청
+      body = await req.text();
+    }
+  }
 
   newHeaders.delete("accept-encoding"); // 디코딩 중복 방지
 

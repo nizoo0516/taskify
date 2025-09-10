@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import "@/styles/globals.css";
 import { ThemeProvider } from "next-themes";
-import QueryProvider from "./QueryProvider";
+import QueryProvider from "@/components/providers/QueryProvider";
 
 export const metadata: Metadata = {
   title: "Taskify",
@@ -16,17 +16,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <body className="bg-brand-gray-100 text-brand-gray-700 dark:bg-dark-900 dark:text-dark-200 min-h-screen">
-        <QueryProvider>
-          <ThemeProvider
-            attribute="data-theme"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-            storageKey="taskify-theme"
-          >
-            {children}
-          </ThemeProvider>
-        </QueryProvider>
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          storageKey="taskify-theme"
+        >
+          <QueryProvider>{children}</QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
