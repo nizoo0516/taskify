@@ -143,7 +143,9 @@ export default function SignupPage() {
       <Link href="/" className="mb-3 flex flex-col items-center gap-[5px]" aria-label="홈으로 이동">
         <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={300} height={60} />
       </Link>
-      <p className="mb-[30px] text-center text-xl text-[#333236]">첫 방문을 환영합니다!</p>
+      <p className="mb-[30px] text-center text-xl text-[var(--text-primary)]">
+        첫 방문을 환영합니다!
+      </p>
 
       <form ref={formRef} onSubmit={onSubmit} className="w-full space-y-8">
         <Field id="email" label="이메일" error={errors.email}>
@@ -223,7 +225,7 @@ export default function SignupPage() {
           </div>
         </Field>
 
-        <label className="flex items-center gap-2 text-[16px] text-[#333236]">
+        <label className="flex items-center gap-2 text-[16px] text-[var(--text-primary)]">
           <input
             type="checkbox"
             checked={values.agree}
@@ -245,7 +247,7 @@ export default function SignupPage() {
         </MyButton>
       </form>
 
-      <div className="mt-6 text-center text-[16px] text-[#333236]">
+      <div className="mt-6 text-center text-[16px] text-[var(--text-primary)]">
         이미 회원이신가요?
         <Link
           href="/login"
@@ -258,7 +260,7 @@ export default function SignupPage() {
       {dupModal && (
         <Modal open={true} isOpenModal={setDupModal} size="sm">
           <ModalContext>
-            <p className="text-center text-[#333236]">이미 사용중인 이메일입니다</p>
+            <p className="text-center text-[var(--text-primary)]">이미 사용중인 이메일입니다</p>
           </ModalContext>
           <ModalFooter>
             <MyButton
