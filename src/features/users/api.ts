@@ -17,7 +17,6 @@ export const signup = (data: SignupRequest) =>
 export const getMe = () =>
   apiRequest<SignupResponse>("/users/me", {
     method: "GET",
-    withAuth: true,
   });
 
 // 내 정보 수정
@@ -25,7 +24,6 @@ export const updateMe = (data: UpdateUserRequest) =>
   apiRequest<SignupResponse>("/users/me", {
     method: "PUT",
     data,
-    withAuth: true,
   });
 
 // 프로필 이미지 업로드
@@ -34,5 +32,4 @@ export const uploadProfileImage = (data: FormData) =>
     method: "POST",
     data,
     isFormData: true,
-    withAuth: true,
   });

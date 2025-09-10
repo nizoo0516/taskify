@@ -2,8 +2,8 @@
 import clsx from "clsx";
 import { useState } from "react";
 
-import DeleteColumnModal from "@/components/modal/columModal/DeleteColumnModal";
-import ManageColumnModal from "@/components/modal/columModal/ManageColumnModal";
+import DeleteColumnModal from "@/components/modal/columnModal/DeleteColumnModal";
+import ManageColumnModal from "@/components/modal/columnModal/ManageColumnModal";
 import Card from "@/components/card/Card";
 import Chip from "@/components/common/chip/Chip";
 import KebabModal from "@/components/modal/KebabModal";
