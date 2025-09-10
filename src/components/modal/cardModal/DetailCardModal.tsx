@@ -246,7 +246,7 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
           cardData={card}
           setColumns={setColumns}
           onModifyComplete={handleModifyComplete}
-          columnTitle={columnTitle}
+          columnTitle={columnIdData?.columnTitle ?? ""}
         />
       )}
     </div>
