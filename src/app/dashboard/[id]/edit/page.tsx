@@ -19,11 +19,13 @@ import {
   // inviteToDashboard,
 } from "@/features/dashboard/api";
 import { getMembers, deleteMember } from "@/features/members/api";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function DashboardIdEdit() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const dashboardId = Number(id);
+  const queryClient = useQueryClient();
 
   const [inviteOpen, setInviteOpen] = useState(false);
 
@@ -101,6 +103,9 @@ export default function DashboardIdEdit() {
       });
 
       alert("대시보드가 성공적으로 수정되었습니다.");
+
+      queryClient.invalidateQueries({ queryKey: ["dashboards"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard", dashboardId] });
 
       router.refresh();
     } catch (e) {
@@ -322,7 +327,7 @@ export default function DashboardIdEdit() {
           대시보드 삭제하기
         </MyButton>
 
-        {inviteOpen && dashboardId !== undefined && (
+        {dashboardId !== undefined && (
           <InviteModal
             isOpen={inviteOpen}
             onClose={() => setInviteOpen(false)}

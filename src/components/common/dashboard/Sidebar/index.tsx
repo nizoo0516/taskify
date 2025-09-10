@@ -1,16 +1,17 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { createDashboard, getDashboards } from "@/features/dashboard/api";
-import { useApiHandler } from "@/lib/useApiHandler";
 import { useDevice } from "@/lib/useDevice";
 
 import AddDashboard from "./AddDashboard";
 import DashboardList from "./DashboardList";
 import Logo from "../../Logo";
 import Pagination from "../../Pagination";
+import { useQuery } from "@tanstack/react-query";
+import { GetDashboardsResponse } from "@/features/dashboard/types";
 
 export type CreateData = {
   title: string;
@@ -24,6 +25,7 @@ export default function Sidebar() {
   const [direction, setDirection] = useState<"prev" | "next">("next");
   const prevPage = useRef(page);
 
+  // 페이지 버튼 방향 감지
   useEffect(() => {
     if (page > prevPage.current) {
       setDirection("next");
@@ -33,12 +35,13 @@ export default function Sidebar() {
     prevPage.current = page;
   }, [page]);
 
-  const { data, refetch } = useApiHandler(() => {
-    if (device === "mobile") {
-      return getDashboards("infiniteScroll", { size: 20 });
-    }
-    return getDashboards("pagination", { page, size: 15 });
-  }, [page, device]);
+  const { data, refetch } = useQuery<GetDashboardsResponse>({
+    queryKey: ["dashboards", page, device],
+    queryFn: () =>
+      device === "mobile"
+        ? getDashboards("infiniteScroll", { size: 20 })
+        : getDashboards("pagination", { page, size: 15 }),
+  });
 
   const dashboards = data?.dashboards ?? [];
   const totalCount = data?.totalCount ?? 0;
@@ -56,7 +59,7 @@ export default function Sidebar() {
 
   return (
     <>
-      <div>
+      <div className="w-full">
         {/* 로고 이미지 */}
         <div className="tablet:mb-14 pc:justify-start mb-8 flex h-full w-full items-center justify-center">
           <Logo />
@@ -65,8 +68,8 @@ export default function Sidebar() {
         {/*클릭 시 대시보드 생성 모달 열림*/}
         <AddDashboard handleCreate={handleCreate} />
 
-        <div className="grid">
-          <AnimatePresence mode="wait" initial={false}>
+        <div className="pc:grid-cols-[271px_1fr] tablet:grid-cols-[130px_1fr] grid">
+          <AnimatePresence mode="wait">
             <motion.div
               key={page}
               initial={{ x: isPrev ? "-23%" : "23%", opacity: 0 }}

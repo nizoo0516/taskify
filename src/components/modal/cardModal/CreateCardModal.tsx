@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 
 import DatePicker from "@/components/form/DatePicker";
 import Field from "@/components/form/Field";
 import ImgUpload from "@/components/form/ImgUpload";
 import Input from "@/components/form/Input";
-import Select from "@/components/form/Select";
+import Select, { Option } from "@/components/form/Select";
 import TagInput from "@/components/form/TagInput";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/common/Button";
@@ -14,6 +15,7 @@ import { createCard } from "@/features/cards/api";
 import { uploadCardImage } from "@/features/columns/api";
 import { useColumnId } from "@/features/columns/store";
 import { CardData, ColumnData } from "@/features/dashboard/types";
+import { getMembers } from "@/features/members/api";
 
 type ModalType = {
   isOpen: boolean;
@@ -22,11 +24,6 @@ type ModalType = {
   onCardCreated?: () => void;
 };
 
-const managerOpt = [
-  { value: "1", label: "배유철" },
-  { value: "2", label: "배동석" },
-];
-
 export default function CreateCardModal({
   isOpen,
   setIsOpen,
@@ -34,16 +31,19 @@ export default function CreateCardModal({
   onCardCreated,
 }: ModalType) {
   // Zustand에서 컬럼 정보 가져오기
-  const { columnIdData, setCardId } = useColumnId();
+  const { columnIdData, setCardId, setUserId, setMembersId } = useColumnId();
 
   // input 값들
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState<string>("");
+  const [dueDate, setDueDate] = useState<Date | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const [members, setMembers] = useState<Option[]>([]);
+  const [assigneeId, setAssigneeId] = useState<number | null>(null);
 
   // 필수 값 체크
   const isDisabled = title.trim() === "" || description.trim() === "";
@@ -51,14 +51,51 @@ export default function CreateCardModal({
   // Zustand에서 값 가져오기
   const dashboardId = columnIdData?.dashboardId ?? 0;
   const columnId = columnIdData?.columnId ?? 0;
-  const assigneeUserId = 6204;
+
+  useEffect(() => {
+    if (!isOpen || !dashboardId) return;
+
+    (async () => {
+      try {
+        const res = await getMembers(dashboardId, { page: 1, size: 20 });
+
+        const opts = res.members.map((m) => ({
+          value: String(m.userId),
+          label: m.nickname,
+          chip: (
+            <img
+              src={m.profileImageUrl}
+              alt={m.nickname}
+              className="h-[26px] w-[26px] rounded-full object-cover"
+            />
+          ),
+        }));
+
+        setMembers(opts);
+        // 모든 멤버를 저장하지 말고, 선택된 담당자만 저장하도록 변경
+      } catch (err) {
+        console.error("멤버 목록 불러오기 실패:", err);
+      }
+    })();
+  }, [isOpen, dashboardId]);
+
+  // 담당자 선택 시 호출되는 함수
+  const handleAssigneeSelect = (opt: Option) => {
+    const selectedId = Number(opt.value);
+    setAssigneeId(selectedId);
+
+    // 선택된 담당자만 Zustand에 저장
+    setMembersId([opt]);
+  };
 
   const handleCreate = async () => {
     if (isDisabled || isLoading) return;
-
-    // columnIdData가 없으면 에러
     if (!columnIdData) {
       alert("컬럼 정보가 없습니다.");
+      return;
+    }
+    if (!assigneeId) {
+      alert("담당자를 선택해주세요.");
       return;
     }
 
@@ -66,7 +103,7 @@ export default function CreateCardModal({
 
     try {
       // 이미지 업로드 처리
-      let finalImageUrl: string | undefined;
+      let updateImg: string | undefined;
 
       if (imageFile) {
         try {
@@ -81,24 +118,24 @@ export default function CreateCardModal({
           const url =
             typeof direct === "string" ? direct : typeof nested === "string" ? nested : undefined;
 
-          finalImageUrl = url;
+          updateImg = url;
         } catch (uploadError) {
           console.error("이미지 업로드 실패", uploadError);
         }
       } else if (imageUrl && !imageUrl.startsWith("blob:")) {
-        finalImageUrl = imageUrl;
+        updateImg = imageUrl;
       }
 
       // 카드 생성 데이터
       const cardData = {
-        assigneeUserId,
+        assigneeUserId: assigneeId,
         dashboardId,
         columnId,
         title: title.trim(),
         description: description.trim(),
-        dueDate: dueDate ? dueDate : "",
-        tags: tags.length > 0 ? tags : undefined,
-        imageUrl: finalImageUrl,
+        dueDate: dueDate ? dayjs(dueDate).format("YYYY-MM-DD HH:mm") : "",
+        tags: Array.isArray(tags) ? tags : [],
+        imageUrl: updateImg,
       };
 
       console.log("카드 생성 요청 데이터:", cardData);
@@ -114,6 +151,7 @@ export default function CreateCardModal({
       const createdCardId = createdCard as CardData & { id: number };
       if (createdCardId.id) {
         setCardId(createdCardId.id);
+        setUserId(assigneeId);
       }
 
       // 컬럼 상태 업데이트
@@ -136,7 +174,6 @@ export default function CreateCardModal({
 
       // 성공 시 모달 닫기 및 폼 초기화
       handleClose();
-      alert("카드가 생성되었습니다!");
     } catch (error) {
       console.error("카드 생성 오류:", error);
       alert((error as Error).message || "카드 생성 중 오류가 발생했습니다.");
@@ -149,10 +186,11 @@ export default function CreateCardModal({
     // 폼 초기화
     setTitle("");
     setDescription("");
-    setDueDate("");
+    setDueDate(null);
     setTags([]);
     setImageFile(null);
     setImageUrl("");
+    setAssigneeId(null);
 
     // 모달 닫기
     setIsOpen();
@@ -165,10 +203,10 @@ export default function CreateCardModal({
           <ModalHeader title="할 일 생성" />
           <ModalContext className="flex flex-col gap-7">
             <Field id="manager" label="담당자">
-              <Select options={managerOpt} placeholder="선택하기" />
+              <Select options={members} placeholder="선택하기" onSelect={handleAssigneeSelect} />
             </Field>
 
-            <Field id="title" label="제목">
+            <Field id="title" label="제목" essential>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.currentTarget.value)}
@@ -176,7 +214,7 @@ export default function CreateCardModal({
               />
             </Field>
 
-            <Field id="description" label="설명">
+            <Field id="description" label="설명" essential>
               <Textarea
                 className="resize-none"
                 value={description}
@@ -186,17 +224,7 @@ export default function CreateCardModal({
             </Field>
 
             <Field id="dueDate" label="마감일">
-              <DatePicker
-                value={dueDate ? new Date(dueDate) : null}
-                onChange={(date) => {
-                  if (date) {
-                    const formatted = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-                    setDueDate(formatted);
-                  } else {
-                    setDueDate("");
-                  }
-                }}
-              />
+              <DatePicker value={dueDate} onChange={(date) => setDueDate(date)} />
             </Field>
 
             <Field id="tag" label="태그">

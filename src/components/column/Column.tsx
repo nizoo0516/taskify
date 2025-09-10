@@ -10,6 +10,7 @@ import KebabModal from "@/components/modal/KebabModal";
 import MyButton from "@/components/common/Button";
 import Button from "@/components/common/Button";
 import { ColumnProps } from "@/features/dashboard/types";
+import { useColumnId } from "@/features/columns/store";
 
 export default function Column({
   status,
@@ -18,21 +19,26 @@ export default function Column({
   kebabIndex,
   isKebabOpen,
   columnId,
+  dashboardId,
   setColumns,
 }: ColumnProps) {
   const [modal, setModal] = useState<null | "manage" | "delete">(null);
-
+  const { setColumnIdData } = useColumnId();
+  const handleClickCard = (cardId: number) => {
+    if (dashboardId == null || columnId == null) return;
+    setColumnIdData(dashboardId, columnId, status, cardId);
+  };
   return (
     <div
       className={clsx(
         // 기본 (mobile)
-        "border-b border-[#D9D9D9] bg-[#FAFAFA] p-5",
+        "flex-shrink-0 border-b border-[#D9D9D9] bg-[#FAFAFA] p-5",
 
         // tablet
         "tablet:w-full",
 
         // pc
-        "pc:w-[354px] pc:border-r pc:border-b-0",
+        "pc:w-[354px] pc:flex-shrink-0 pc:border-r pc:border-b-0",
       )}
       onClick={() => console.log("컬럼클릭시 id 숫자", columnId)}
     >
@@ -76,8 +82,10 @@ export default function Column({
 
       {/* 카드 리스트 */}
       <div className="flex flex-col gap-[15px]">
-        {cards.map((card, index) => (
-          <Card key={index} {...card} />
+        {cards.map((card) => (
+          <div key={card.id} onClick={() => card.id !== undefined && handleClickCard(card.id)}>
+            <Card {...card} setColumns={setColumns} />
+          </div>
         ))}
       </div>
       {/* 수정하기, 삭제하기 모달 관리  */}

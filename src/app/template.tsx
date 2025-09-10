@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 
-import MotionLayout from "@/components/layout/MotionLayout";
 import ThemeToggle from "@/components/common/ThemeToggle";
+import PageMotion from "@/components/layout/PageMotion";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -12,7 +12,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const isHome = pathname === "/";
 
   if (isHome) {
-    return <MotionLayout>{children}</MotionLayout>;
+    return <PageMotion>{children}</PageMotion>;
   }
 
   if (isDashboard) {
@@ -25,9 +25,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <MotionLayout>
+    <PageMotion>
       {children}
       <ThemeToggle />
-    </MotionLayout>
+    </PageMotion>
   );
 }

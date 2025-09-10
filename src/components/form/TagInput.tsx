@@ -1,7 +1,7 @@
+"use client";
 import { useState } from "react";
 
 import Chip from "@/components/common/chip/Chip";
-import Input from "@/components/form/Input";
 
 type TagInputProps = {
   value: string[];
@@ -10,25 +10,27 @@ type TagInputProps = {
 
 export default function TagInput({ value, onChange }: TagInputProps) {
   const [inputValue, setInputValue] = useState("");
-  const [previewTags, setPreviewTags] = useState<string[]>([]);
+  const [skipChange, setSkipChange] = useState(false);
 
-  // 엔터 시 미리보기 추가
+  // 엔터 시 태그 확정
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;
+    e.preventDefault(); // 기본 submit 막기
 
-    const input = e.currentTarget;
-    const newTag = input.value.trim();
-    if (!newTag) return;
+    const newTag = inputValue.trim();
+    if (!newTag || value.includes(newTag)) return;
 
-    setPreviewTags((prev) => [...prev, newTag]);
+    onChange([...value, newTag]);
     setInputValue("");
-    input.value = "";
+    setSkipChange(true);
   };
 
-  // 미리보기 클릭 시 input에 들어감
-  const confirmTag = (tag: string, idx: number) => {
-    onChange([...value, tag]);
-    setPreviewTags((prev) => prev.filter((_, i) => i !== idx));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (skipChange) {
+      setSkipChange(false);
+      return;
+    }
+    setInputValue(e.currentTarget.value);
   };
 
   const removeTag = (idx: number) => {
@@ -36,40 +38,25 @@ export default function TagInput({ value, onChange }: TagInputProps) {
   };
 
   return (
-    <div className="relative">
-      <Input
+    <div className="flex min-h-[50px] w-full flex-wrap items-center gap-2 rounded-lg border border-gray-300 px-2 py-2">
+      {/* 확정된 태그들 */}
+      {value.map((tag, i) => (
+        <div key={i} className="flex items-center gap-1">
+          <Chip variant="category" label={tag} />
+          <button type="button" onClick={() => removeTag(i)} className="text-xs text-gray-500">
+            ×
+          </button>
+        </div>
+      ))}
+
+      {/* 공용 Input 컴포넌트 */}
+      <input
+        value={inputValue}
         onKeyDown={handleKeyDown}
-        onChange={(e) => setInputValue(e.currentTarget.value)}
-        placeholder="태그 입력 후 Enter"
+        onChange={handleChange}
+        placeholder={value.length === 0 ? "태그 입력 후 Enter" : ""}
+        className="flex-1 bg-transparent outline-none"
       />
-
-      <div className="absolute top-2.5 left-0 w-full">
-        {/* 미리보기 태그 */}
-        <div className="bg-brand-gray-200/80 absolute top-10 flex w-full gap-2 rounded-lg px-4 py-3">
-          {previewTags.map((tag, i) => (
-            <button
-              key={i}
-              onClick={() => confirmTag(tag, i)}
-              className={
-                "inline-flex h-7 min-w-[25px] items-center justify-center rounded px-[6px] text-sm " +
-                "bg-[#F9EEE3] text-[#D58D49]"
-              }
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-
-        {/* 확정된 태그 */}
-        <div className="absolute flex w-full gap-2 rounded-lg px-4">
-          {value.map((tag, i) => (
-            <div key={`tag-${i}`} className="flex items-center gap-1">
-              <Chip variant="category" label={tag} />
-              <button onClick={() => removeTag(i)}>x</button>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

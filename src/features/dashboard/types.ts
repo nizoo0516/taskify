@@ -70,6 +70,7 @@ export interface CardData {
   tags: string[];
   imageUrl?: string;
   author?: string;
+  id?: number;
 }
 // 컬럼 타입
 export interface ColumnData {
@@ -77,6 +78,7 @@ export interface ColumnData {
   title: string;
   cards?: CardData[];
 }
+
 // 컬럼 컴포넌트 타입
 export interface ColumnProps {
   status: string;
@@ -86,4 +88,5 @@ export interface ColumnProps {
   isKebabOpen?: () => void;
   columnId: number;
   setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>;
+  dashboardId?: number;
 }

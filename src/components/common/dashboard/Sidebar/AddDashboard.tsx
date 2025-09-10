@@ -45,13 +45,11 @@ export default function AddDashboard({
             }}
           />
         </MyButton>
-        {isOpen && (
-          <NewDashboardModal
-            open={isOpen}
-            onCreate={(name, selectedColor) => handleCreate({ title: name, color: selectedColor })}
-            onClose={() => setIsOpen(false)}
-          />
-        )}
+        <NewDashboardModal
+          open={isOpen}
+          onCreate={(name, selectedColor) => handleCreate({ title: name, color: selectedColor })}
+          onClose={() => setIsOpen(false)}
+        />
       </div>
     </>
   );

@@ -3,7 +3,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import Chip from "@/components/common/chip/Chip";
-import Field from "@/components/form/Field";
 import KebabModal from "@/components/modal/KebabModal";
 import Button from "@/components/common/Button";
 import { Modal, ModalHeader, ModalContext } from "@/components/modal/Modal";
@@ -13,23 +12,28 @@ import { cn } from "@/lib/utils/cn";
 
 import Comment from "./Comment";
 import ModifyCardModal from "./ModifyCardModal";
-import { CardData, ColumnData } from "@/features/dashboard/types";
+import { ColumnData } from "@/features/dashboard/types";
+import { Card } from "@/features/cards/types";
 
 type ModalType = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setColumns?: React.Dispatch<React.SetStateAction<ColumnData[]>>;
+  columnId?: number;
 };
 
-export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType) {
-  const [card, setCard] = useState<CardData | null>(null);
+export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: ModalType) {
+  const [card, setCard] = useState<Card | null>(null);
   const [isKebabOpen, setIsKebabOpen] = useState(false);
   const [isModifyModal, setIsModifyModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { columnIdData } = useColumnId();
+  const { columnIdData, setMembersId } = useColumnId();
   const cardId = columnIdData?.cardId;
   const columnId = columnIdData?.columnId;
+  const columnTitle = columnIdData?.columnTitle;
+
+  console.log("카드값!!!!!!!!!!!!!!!!!", card);
 
   // 카드 데이터 다시 불러오기 함수
   const fetchCardData = async () => {
@@ -37,12 +41,24 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
 
     setIsLoading(true);
     try {
-      console.log("카드 데이터 로딩 시작, cardId:", cardId);
       const res = await getCard(cardId);
       const data = (res as any)?.data ?? res;
-
-      console.log("받아온 카드 데이터:", data);
       setCard(data);
+
+      if (data?.assignee) {
+        const assigneeOption = {
+          value: String(data.assignee.id),
+          label: data.assignee.nickname,
+          chip: (
+            <img
+              src={data.assignee.profileImageUrl}
+              alt={data.assignee.nickname}
+              className="h-[26px] w-[26px] rounded-full object-cover"
+            />
+          ),
+        };
+        setMembersId([assigneeOption]);
+      }
     } catch (e) {
       console.error("카드 로딩 오류:", e);
       alert((e as Error)?.message || "카드 상세 불러오기 실패");
@@ -79,7 +95,7 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
             if (col.id === columnId) {
               return {
                 ...col,
-                cards: col.cards?.filter((c) => (c as any).id !== cardId) || [],
+                cards: col.cards?.filter((c) => c.id !== cardId) || [],
               };
             }
             return col;
@@ -91,7 +107,6 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
       setIsKebabOpen(false);
       setIsOpen(false);
     } catch (e) {
-      console.error("카드 삭제 오류:", e);
       alert((e as Error).message || "카드 삭제 오류");
     } finally {
       setIsLoading(false);
@@ -130,7 +145,7 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
     <div>
       {isOpen && (
         <Modal open={isOpen} size="xl" className="relative">
-          <ModalHeader title={card?.title || "카드 상세"} onClose={() => setIsOpen(false)}>
+          <ModalHeader title={card?.title || "카드 상세 모달"} onClose={() => setIsOpen(false)}>
             <Button
               onClick={() => setIsKebabOpen(!isKebabOpen)}
               className="mr-6 ml-auto border-0"
@@ -139,10 +154,35 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
               <Image src="/icons/icon-menu.svg" width={28} height={28} alt="더보기" />
             </Button>
           </ModalHeader>
-          <ModalContext className="flex items-start justify-between">
-            <div className="flex w-[450px] flex-col gap-4">
+          <ModalContext
+            className={cn(
+              "flex flex-col",
+              "pc:flex pc:items-start pc:justify-between pc:flex-row-reverse",
+              "tablet:flex tablet:items-start tablet:justify-between tablet:flex-row-reverse",
+            )}
+          >
+            <div
+              className={cn(
+                "mb-4 flex w-full justify-between gap-4 self-start rounded-lg border border-[#D9D9D9] p-4",
+                "tablet:w-[180px] tablet:flex-col tablet:mb-4",
+                "pc:w-[200px]",
+              )}
+            >
+              <div className="w-2/5">
+                <p className="font-bold">담당자</p>
+                <p className="text-sm">
+                  {/* 카드 데이터에서 직접 담당자 정보 표시 */}
+                  {card?.assignee?.nickname || "담당자 없음"}
+                </p>
+              </div>
+              <div className="w-3/5">
+                <p className="font-bold">마감일</p>
+                <p className="text-sm whitespace-nowrap">{card?.dueDate || "마감일 없음"}</p>
+              </div>
+            </div>
+            <div className={cn("flex w-full flex-col gap-4", "tablet:w-[420px]", "pc:w-[450px]")}>
               <div className="flex items-center gap-5">
-                <Chip variant="status" label="To Do" />
+                <Chip variant="status" label={columnTitle} />
                 <span className="bg-brand-gray-300 h-5 w-[1px]" />
                 <div className="flex gap-1.5">
                   {card?.tags?.map((tag, index) => (
@@ -158,15 +198,7 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
                     alt="이미지"
                     width={274}
                     height={160}
-                    className={cn(
-                      "rounded-md object-cover",
-                      // 기본 (mobile)
-                      "h-auto w-full object-cover",
-                      // tablet
-                      "tablet:h-auto tablet:w-[120px]",
-                      // pc
-                      "pc:h-[160px] pc:w-[274px]",
-                    )}
+                    className={cn("h-[168px] w-full rounded-md object-contain", "pc:h-[260px]")}
                   />
                 ) : (
                   <Image
@@ -174,27 +206,11 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
                     alt="기본 이미지"
                     width={274}
                     height={160}
-                    className={cn(
-                      "rounded-md object-cover",
-                      // 기본 (mobile)
-                      "h-auto w-full object-cover",
-                      // tablet
-                      "tablet:h-auto tablet:w-[120px]",
-                      // pc
-                      "pc:h-[160px] pc:w-[274px]",
-                    )}
+                    className={cn("rounded-mdobject-contain h-[168px] w-full", "pc:h-[260px]")}
                   />
                 )}
               </div>
               <Comment />
-            </div>
-            <div className="flex w-[200px] flex-col gap-4 rounded-lg border border-[#D9D9D9] p-4">
-              <Field id="manager" label="담당자">
-                <p>배문철</p>
-              </Field>
-              <Field id="dueDate" label="마감일">
-                <p>{card?.dueDate || "마감일 없음"}</p>
-              </Field>
             </div>
           </ModalContext>
 
@@ -229,7 +245,8 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
           setIsOpen={setIsModifyModal}
           cardData={card}
           setColumns={setColumns}
-          onModifyComplete={handleModifyComplete} // 수정 완료 콜백 추가
+          onModifyComplete={handleModifyComplete}
+          columnTitle={columnIdData?.columnTitle ?? ""}
         />
       )}
     </div>

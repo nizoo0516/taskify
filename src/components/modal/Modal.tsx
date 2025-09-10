@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils/cn";
+import { motion, AnimatePresence } from "framer-motion";
 
 type ModalProps = {
   open: boolean;
@@ -29,28 +30,46 @@ function Modal({ open, children, size = "lg", isOpenModal, className }: ModalPro
     (
       {
         sm: "min-w-[368px] max-w-sm p-6",
-        md: "min-w-[568px] max-w-md p-6",
-        lg: "min-w-[584px] max-w-lg p-8",
-        xl: "min-w-[730px] max-w-xl pt-[30px] pr-[38px] pb-[30px] pl-4",
+        md: cn("w-[327px] px-4 py-6", "tablet:w-[568px] tablet:p-8"),
+        lg: cn("w-[327px] px-4 py-6", "tablet:w-[584px] tablet:p-8"),
+        xl: cn(
+          "w-[327px] p-4",
+          "tablet:w-[678px] tablet:py-6 tablet:px-8",
+          "pc:w-[730px] pc:pt-[30px] pc:pr-[38px] pc:pb-[30px] pc:pl-4",
+        ),
       } as const
     )[size] ?? "min-w-[584px] max-w-lg";
 
   return (
-    <div
-      className="fixed top-0 left-0 z-50 h-screen w-screen overflow-hidden bg-black/40"
-      onClick={() => isOpenModal?.(false)}
-    >
-      <div
-        className={cn(
-          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white",
-          sizeClass,
-          className,
-        )}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {children}
-      </div>
-    </div>
+    <AnimatePresence mode="wait">
+      {open && (
+        <motion.div
+          key="modal-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2, ease: "easeIn" }}
+          className="fixed top-0 left-0 z-50 h-screen w-screen overflow-hidden bg-black/40"
+          onClick={() => isOpenModal?.(false)}
+        >
+          <motion.div
+            key="modal-content"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.7 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className={cn(
+              "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white",
+              sizeClass,
+              className,
+            )}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {children}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

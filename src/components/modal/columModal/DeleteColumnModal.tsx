@@ -12,7 +12,7 @@ type ModalType = {
   setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>;
 };
 
-export default function CreateColumnModal({ isOpen, setIsOpen, columnId, setColumns }: ModalType) {
+export default function DeleteColumnModal({ isOpen, setIsOpen, columnId, setColumns }: ModalType) {
   const handleDelete = async () => {
     alert("컬럼의 모든 카드가 삭제됩니다");
     try {
