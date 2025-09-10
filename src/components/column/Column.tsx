@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import DeleteColumnModal from "@/components/modal/columModal/DeleteColumnModal";
 import ManageColumnModal from "@/components/modal/columModal/ManageColumnModal";
-import CardList from "@/components/card/Card";
+import Card from "@/components/card/Card";
 import Chip from "@/components/common/chip/Chip";
 import KebabModal from "@/components/modal/KebabModal";
 import MyButton from "@/components/common/Button";
@@ -26,7 +26,7 @@ export default function Column({
   const { setColumnIdData } = useColumnId();
   const handleClickCard = (cardId: number) => {
     if (dashboardId == null || columnId == null) return;
-    setColumnIdData(dashboardId, columnId, cardId);
+    setColumnIdData(dashboardId, columnId, status, cardId);
   };
   return (
     <div
@@ -84,7 +84,7 @@ export default function Column({
       <div className="flex flex-col gap-[15px]">
         {cards.map((card) => (
           <div key={card.id} onClick={() => card.id !== undefined && handleClickCard(card.id)}>
-            <CardList {...card} setColumns={setColumns} />
+            <Card {...card} setColumns={setColumns} />
           </div>
         ))}
       </div>

@@ -24,16 +24,11 @@ const now = dayjs();
 type ModalType = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  cardData?: Card | null; // 기존 카드 데이터를 props로 받기
-  setColumns?: React.Dispatch<React.SetStateAction<ColumnData[]>>; // 컬럼 상태 업데이트용
-  onModifyComplete?: () => void; // 수정 완료 콜백 추가
+  cardData?: Card | null;
+  setColumns?: React.Dispatch<React.SetStateAction<ColumnData[]>>;
+  onModifyComplete?: () => void;
+  columnTitle: string;
 };
-
-const stateOpt = [
-  { value: "1", label: "To Do", chip: <Chip variant="status" label="To Do" /> },
-  { value: "2", label: "On Progress", chip: <Chip variant="status" label="On Progress" /> },
-  { value: "3", label: "Done", chip: <Chip variant="status" label="Done" /> },
-];
 
 export default function ModifyCardModal({
   isOpen,
@@ -41,6 +36,7 @@ export default function ModifyCardModal({
   cardData,
   setColumns,
   onModifyComplete,
+  columnTitle,
 }: ModalType) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -58,10 +54,22 @@ export default function ModifyCardModal({
   // 공백값 체크(필수 표시 붙은것만!)
   const isDisabled = title.trim() === "" || description.trim() === "";
 
-  const { columnIdData, setMembersId } = useColumnId();
+  const { columnIdData, setMembersId, columnStatusTitle } = useColumnId();
   const cardId = columnIdData?.cardId ?? 0;
   const dashboardId = columnIdData?.dashboardId ?? 0;
   const columnId = columnIdData?.columnId ?? 0;
+
+  // 상태 선택하기
+  console.log("상태 확인!!", columnStatusTitle);
+
+  //  상태 선택하기
+  const stateOpt = [
+    { value: "0", label: "To Do", chip: <Chip variant="status" label="To Do" /> },
+    { value: "1", label: "On Progress", chip: <Chip variant="status" label="On Progress" /> },
+    { value: "2", label: "Done", chip: <Chip variant="status" label="Done" /> },
+  ];
+
+  console.log("컬럼 타이틀 찍어보기!!", columnTitle);
 
   // 멤버 목록 가져오기
   useEffect(() => {
@@ -175,12 +183,10 @@ export default function ModifyCardModal({
         imageUrl: updateImg,
       };
 
-      console.log("카드 수정 요청 데이터:", updateData);
-
       // 카드 수정 API 호출
       const updateResult = await updateCard(cardId, updateData);
 
-      console.log("수정된 카드");
+      console.log("수정된 카드!!!!!!!!!!!", updateData);
 
       // 컬럼 상태 업데이트
       if (setColumns) {

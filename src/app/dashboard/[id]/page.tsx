@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
 import Chip from "@/components/common/chip/Chip";
-import ColumnList from "@/components/column/Column";
+import Column from "@/components/column/Column";
 import MyButton from "@/components/common/Button";
 import { getColumns } from "@/features/columns/api";
 import { getCards } from "@/features/cards/api";
@@ -11,37 +11,30 @@ import { useColumnId } from "@/features/columns/store";
 import CreateCardModal from "../../../components/modal/cardModal/CreateCardModal";
 import CreateColumnModal from "../../../components/modal/columModal/CreateColumnModal";
 import { ColumnData } from "@/features/dashboard/types";
-// import { Column } from "@/features/columns/types";
-// import { Card } from "@/features/cards/types";
-
-// export interface ColumnType extends Column {
-//   cards: Card[];
-// }
 
 export default function DashboardId() {
   const { id } = useParams();
   const dashboardId = Number(id);
 
-  // Zustand 스토어에서 함수 가져오기
-  const { setColumnIdData } = useColumnId();
-
   const [modal, setModal] = useState<null | "card" | "column">(null);
   const [isKebabOpen, setIsKebabOpen] = useState<number | null>(null);
   const [columns, setColumns] = useState<ColumnData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [userId, setUserId] = useState();
+  // Zustand 스토어에서 함수 가져오기
+  const { setColumnIdData, setStatus } = useColumnId();
 
+  console.log("컬럼값!!!", columns);
   useEffect(() => {
     if (!dashboardId) return;
 
     (async () => {
       try {
         setIsLoading(true);
-        // 1. 컬럼 목록 가져오기
+        // 컬럼 목록 가져오기
         const response = await getColumns(dashboardId);
         const columnsData = Array.isArray(response) ? response : response?.data || [];
 
-        // 2. 각 컬럼마다 카드 목록도 함께 가져오기 (이 부분이 빠져있었음)
+        // 컬럼마다 카드 목록 가져오기
         const columnsWithCards = await Promise.all(
           columnsData.map(async (col) => {
             try {
@@ -61,6 +54,9 @@ export default function DashboardId() {
           }),
         );
         setColumns(columnsWithCards);
+
+        const statusMap = Object.fromEntries(columnsWithCards.map((c) => [c.title, c.id]));
+        setStatus(statusMap);
       } catch (error) {
         console.error("컬럼 목록 조회 실패:", error);
         setColumns([]);
@@ -71,11 +67,11 @@ export default function DashboardId() {
   }, [dashboardId]);
 
   // 카드 추가 버튼 클릭 시 - zustand에 정보 저장하고 모달 열기
-  const handleAddCard = (columnId: number) => {
+  const handleAddCard = (columnId: number, columnTitle: string) => {
     console.log("카드 추가 클릭 - 컬럼 ID:", columnId, "대시보드 ID:", dashboardId);
 
     // Zustand에 현재 선택된 컬럼과 대시보드 정보 저장
-    setColumnIdData(dashboardId, columnId);
+    setColumnIdData(dashboardId, columnId, columnTitle);
 
     // 카드 생성 모달 열기
     setModal("card");
@@ -96,11 +92,11 @@ export default function DashboardId() {
   return (
     <main className="pc:flex-row bg-brand-gray-100 flex h-full flex-1 flex-col">
       {columns.map((item, i) => (
-        <ColumnList
+        <Column
           key={item.id}
           status={item.title}
           cards={item.cards ?? []}
-          onAddCard={() => handleAddCard(item.id)} // 여기서 컬럼 ID 전달
+          onAddCard={() => handleAddCard(item.id, item.title)} // 여기서 컬럼 ID 전달
           kebabIndex={isKebabOpen === i}
           isKebabOpen={() => setIsKebabOpen((prev) => (prev === i ? null : i))}
           dashboardId={dashboardId}

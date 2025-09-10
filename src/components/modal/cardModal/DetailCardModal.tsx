@@ -31,6 +31,9 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
   const { columnIdData, setMembersId } = useColumnId();
   const cardId = columnIdData?.cardId;
   const columnId = columnIdData?.columnId;
+  const columnTitle = columnIdData?.columnTitle;
+
+  console.log("카드값!!!!!!!!!!!!!!!!!", card);
 
   // 카드 데이터 다시 불러오기 함수
   const fetchCardData = async () => {
@@ -38,14 +41,10 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
 
     setIsLoading(true);
     try {
-      console.log("카드 데이터 로딩 시작, cardId:", cardId);
       const res = await getCard(cardId);
       const data = (res as any)?.data ?? res;
-
-      console.log("받아온 카드 데이터:", data);
       setCard(data);
 
-      // 카드 데이터에서 담당자 정보를 Zustand에 저장
       if (data?.assignee) {
         const assigneeOption = {
           value: String(data.assignee.id),
@@ -108,7 +107,6 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
       setIsKebabOpen(false);
       setIsOpen(false);
     } catch (e) {
-      console.error("카드 삭제 오류:", e);
       alert((e as Error).message || "카드 삭제 오류");
     } finally {
       setIsLoading(false);
@@ -184,7 +182,7 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
             </div>
             <div className={cn("flex w-full flex-col gap-4", "tablet:w-[420px]", "pc:w-[450px]")}>
               <div className="flex items-center gap-5">
-                <Chip variant="status" label="To Do" />
+                <Chip variant="status" label={columnTitle} />
                 <span className="bg-brand-gray-300 h-5 w-[1px]" />
                 <div className="flex gap-1.5">
                   {card?.tags?.map((tag, index) => (
@@ -247,7 +245,8 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
           setIsOpen={setIsModifyModal}
           cardData={card}
           setColumns={setColumns}
-          onModifyComplete={handleModifyComplete} // 수정 완료 콜백 추가
+          onModifyComplete={handleModifyComplete}
+          columnTitle={columnTitle}
         />
       )}
     </div>
