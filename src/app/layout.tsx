@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import "@/styles/globals.css";
 import { ThemeProvider } from "next-themes";
+import QueryProvider from "@/components/providers/QueryProvider";
 
 export const metadata: Metadata = {
   title: "Taskify",
