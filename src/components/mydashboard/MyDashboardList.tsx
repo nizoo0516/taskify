@@ -159,7 +159,7 @@ export default function MyDashboardList() {
   };
 
   return (
-    <div className="bg-[#fafafa] py-[40px]">
+    <div className="bg-brand-gray-100 py-[40px]">
       {/* 내 대시보드 */}
       <div className="pc:mx-0 pc:ml-[40px] mx-auto min-h-[204px] w-[95%] max-w-[1022px] overflow-hidden">
         <div className="tablet:grid-cols-2 pc:grid-cols-3 grid min-h-[156px] grid-cols-1 gap-4">

@@ -20,6 +20,7 @@ import {
 } from "@/features/dashboard/api";
 import { getMembers, deleteMember } from "@/features/members/api";
 import { useQueryClient } from "@tanstack/react-query";
+import { cn } from "@/lib/utils/cn";
 
 export default function DashboardIdEdit() {
   const { id } = useParams<{ id: string }>();
@@ -43,6 +44,8 @@ export default function DashboardIdEdit() {
   const [invites, setInvites] = useState<{ id: number; email: string }[]>([]);
   const [invitePage, setInvitePage] = useState(1);
   const [totalInvitePages, setTotalInvitePages] = useState(1);
+
+  const darkStyle = cn("dark:bg-dark-700");
 
   // 대시보드 초기 데이터 불러오기
   useEffect(() => {
@@ -199,7 +202,7 @@ export default function DashboardIdEdit() {
             <MyButton
               onClick={handleUpdateDashboard}
               color="buttonBlue"
-              className="tablet:text-base h-[54px] w-full text-sm font-semibold text-white"
+              className="tablet:text-base h-[54px] w-full text-sm font-semibold"
             >
               변경
             </MyButton>
@@ -246,7 +249,10 @@ export default function DashboardIdEdit() {
                 <MyButton
                   onClick={() => handleDeleteMember(m.id)}
                   color="buttonBasic"
-                  className="tablet:w-21 tablet:text-sm text-brand-blue-500 h-8 w-13 rounded-md px-3 py-1 text-xs font-medium"
+                  className={cn(
+                    "tablet:w-21 tablet:text-sm text-brand-blue-500 h-8 w-13 rounded-md px-3 py-1 text-xs font-medium",
+                    darkStyle,
+                  )}
                 >
                   삭제
                 </MyButton>
@@ -273,7 +279,7 @@ export default function DashboardIdEdit() {
               <MyButton
                 onClick={() => setInviteOpen(true)}
                 color="buttonBlue"
-                className="tablet:flex hidden h-8 w-[105px] items-center justify-center gap-2 rounded-md text-sm text-white"
+                className="tablet:flex hidden h-8 w-[105px] items-center justify-center gap-2 rounded-md text-sm"
               >
                 <img src="/icons/icon-box-add-white.svg" alt="초대하기" className="h-4 w-4" />
                 초대하기
@@ -302,14 +308,17 @@ export default function DashboardIdEdit() {
               <li
                 key={i.id}
                 className={`flex h-[70px] items-center justify-between py-3 ${
-                  idx !== invites.length - 1 ? "border-b border-gray-200" : ""
+                  idx !== invites.length - 1 ? "border-brand-gray-200 border-b" : ""
                 }`}
               >
                 <span className="text-sm">{i.email}</span>
                 <MyButton
                   onClick={() => handleCancelInvitation(i.id)}
                   color="buttonBasic"
-                  className="tablet:w-21 tablet:text-sm text-brand-blue-500 h-8 w-13 rounded-md px-3 py-1 text-xs font-medium"
+                  className={cn(
+                    "tablet:w-21 tablet:text-sm text-brand-blue-500 h-8 w-13 rounded-md px-3 py-1 text-xs font-medium",
+                    darkStyle,
+                  )}
                 >
                   취소
                 </MyButton>

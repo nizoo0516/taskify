@@ -11,7 +11,7 @@ export default function KebabModal({ children, className }: KebabProps) {
       className={cn(
         "absolute",
         "flex flex-col px-1.5 py-[7px]",
-        "rounded-md border border-[#D9D9D9] bg-white",
+        "border-brand-gray-300 rounded-md border bg-white",
         className,
       )}
     >

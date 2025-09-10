@@ -247,7 +247,7 @@ export default function CreateCardModal({
               취소
             </Button>
             <Button
-              className="text-brand-gray-100 h-[54px] w-64"
+              className="h-[54px] w-64"
               onClick={handleCreate}
               color={isDisabled ? "buttonGrey" : "buttonBlue"}
               disabled={isDisabled || isLoading}

@@ -155,7 +155,7 @@ export default function CommentList() {
     <div className="flex flex-col gap-4">
       {/* 댓글 입력 영역 */}
       <Field id="comment" label="댓글">
-        <div className="rounded-lg border border-[#D9D9D9] p-3">
+        <div className="dark:bg-dark-900 rounded-lg border border-[#D9D9D9] p-3">
           <Textarea
             placeholder="댓글 작성하기"
             className="resize-none rounded-none border-0 !p-0"
@@ -167,7 +167,7 @@ export default function CommentList() {
             <Button
               color="buttonBasic"
               onClick={handleCreate}
-              className="text-brand-blue-500 h-8 w-20"
+              className="text-brand-blue-500 dark:bg-dark-700 h-8 w-20"
               disabled={!input.trim() || isLoading}
             >
               {isLoading ? "작성 중..." : "입력"}

@@ -61,7 +61,7 @@ export default function Sidebar() {
     <>
       <div className="w-full">
         {/* 로고 이미지 */}
-        <div className="tablet:mb-14 pc:justify-start mb-8 flex h-full w-full items-center justify-center">
+        <div className="tablet:mb-14 tablet:justify-start mb-8 flex h-full w-full items-center justify-center">
           <Logo />
         </div>
 

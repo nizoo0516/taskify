@@ -32,13 +32,13 @@ export default function Field<P extends A11yProps>({
 
   return (
     <div className={["w-full space-y-2", className].filter(Boolean).join(" ")}>
-      <label htmlFor={id} className="block text-[18px] font-medium text-gray-800">
+      <label htmlFor={id} className="text-brand-gray-800 block text-[18px] font-medium">
         {label}
         {essential && <span className="text-brand-blue-500 pt-0.5 pl-0.5 text-lg">*</span>}
       </label>
       {clonedChild}
       {error && (
-        <p id={idError} role="alert" className="text-xs text-red-600">
+        <p id={idError} role="alert" className="text-brand-red text-xs">
           {error}
         </p>
       )}

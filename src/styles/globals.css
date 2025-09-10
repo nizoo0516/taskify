@@ -147,6 +147,8 @@
   --text-muted: #787486; /* 보조 텍스트 */
   --placeholder: #9fa6b2; /* 서브텍스트 */
   --input-bg: #ffffff; /* 인풋 내부 배경 */
+
+  --color-white: #ffffff;
 }
 [data-theme="dark"] {
   --surface-page: var(--color-dark-900);
@@ -157,4 +159,17 @@
   --text-muted: var(--color-dark-400);
   --placeholder: var(--color-dark-500);
   --input-bg: var(--color-dark-900);
+
+  --color-brand-blue-500: #3d75e8;
+  --color-brand-blue-50: var(--color-dark-700);
+  --color-brand-red: #e34a5c;
+
+  --color-brand-gray-100: var(--color-dark-900); /* 최상위 배경 */
+  --color-brand-gray-200: var(--color-dark-700); /* 호버 */
+  --color-brand-gray-300: var(--color-dark-600); /* 보더, 구분선 */
+  --color-brand-gray-400: var(--color-dark-400); /* 서브 텍스트 */
+  --color-brand-gray-700: var(--color-dark-200); /* 기본 텍스트 */
+  --color-brand-gray-800: var(--color-dark-300);
+
+  --color-white: var(--color-dark-800); /* 사이드바/카드 */
 }

@@ -75,16 +75,10 @@ export default function InviteModal({ isOpen, onClose, dashboardId }: InviteModa
         </ModalContext>
         <ModalFooter>
           <div className="flex h-[54px] w-full justify-center gap-2">
-            <MyButton
-              className="bg-brand-gray-200 text-brand-gray-700 border-brand-gray-200 flex-1 border-0 text-lg font-medium"
-              onClick={onClose}
-            >
+            <MyButton className="flex-1 text-lg font-medium" onClick={onClose}>
               취소
             </MyButton>
-            <MyButton
-              className="bg-brand-blue-500 flex-1 border-0 text-white"
-              onClick={handleInvite}
-            >
+            <MyButton className="flex-1" color="buttonBlue" onClick={handleInvite}>
               {loading ? "초대 중..." : "초대"}
             </MyButton>
           </div>

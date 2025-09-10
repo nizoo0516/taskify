@@ -16,14 +16,10 @@ export default function PaginationButton({
 
   const buttonStyle = cn(
     "border-brand-gray-300 border flex h-10 w-10 justify-center items-center px-2 py-1 disabled:opacity-50 disabled:cursor-default",
-    !disabled && "hover:bg-brand-gray-100 dark:hover:bg-dark-700",
+    !disabled && "hover:bg-brand-gray-100 dark:bg-dark-700",
     isPrev ? "rounded-l-[4px]" : "rounded-r-[4px]",
   );
-  const imgStyle = cn(
-    "bg-brand-gray-500 dark:bg-dark-200 h-5 w-5",
-    "dark:text-dark-200",
-    isPrev && "rotate-180",
-  );
+  const imgStyle = cn("bg-brand-gray-500 h-5 w-5", isPrev && "rotate-180");
 
   return (
     <>

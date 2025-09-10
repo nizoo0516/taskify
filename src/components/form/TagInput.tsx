@@ -38,7 +38,7 @@ export default function TagInput({ value, onChange }: TagInputProps) {
   };
 
   return (
-    <div className="flex min-h-[50px] w-full flex-wrap items-center gap-2 rounded-lg border border-gray-300 px-2 py-2">
+    <div className="border-brand-gray-200 dark:bg-dark-900 flex min-h-[50px] w-full flex-wrap items-center gap-2 rounded-lg border px-2 py-2">
       {/* 확정된 태그들 */}
       {value.map((tag, i) => (
         <div key={i} className="flex items-center gap-1">

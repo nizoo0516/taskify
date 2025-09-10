@@ -32,7 +32,7 @@ export default function Column({
     <div
       className={clsx(
         // 기본 (mobile)
-        "flex-shrink-0 border-b border-[#D9D9D9] bg-[#FAFAFA] p-5",
+        "border-brand-gray-300 bg-brand-gray-100 flex-shrink-0 border-b p-5",
 
         // tablet
         "tablet:w-full",
@@ -47,8 +47,8 @@ export default function Column({
         <div className="flex items-center gap-[12px]">
           {/* 컬럼 이름 */}
           <span className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[#2661E8]" />
-            <h2 className="text-2lg font-bold text-[#000000]">{status}</h2>
+            <span className="bg-brand-blue-500 h-2 w-2 rounded-full" />
+            <h2 className="text-2lg text-brand-gray-700 font-bold">{status}</h2>
           </span>
           {/* 숫자 칩 */}
           <Chip variant="badge" label={cards.length.toString()} />
@@ -70,7 +70,7 @@ export default function Column({
       </div>
 
       {/* 카드 추가 버튼 */}
-      <div className="mb-4">
+      <div className="dark:bg-dark-700 mb-4 bg-white">
         <MyButton
           onClick={onAddCard ?? (() => {})}
           color="buttonBasic"
