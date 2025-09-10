@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import "@/styles/globals.css";
-
+import { ThemeProvider } from "next-themes";
 import Providers from "./providers";
 
 export const metadata: Metadata = {
@@ -15,8 +15,18 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body>
-        <Providers>{children}</Providers>
+      <body className="bg-brand-gray-100 text-brand-gray-700 dark:bg-dark-900 dark:text-dark-200 min-h-screen">
+        <Providers>
+          <ThemeProvider
+            attribute="data-theme"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+            storageKey="taskify-theme"
+          >
+            {children}
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

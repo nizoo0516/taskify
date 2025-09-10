@@ -137,3 +137,24 @@
     cursor: pointer;
   }
 }
+
+:root {
+  --surface-page: #fafafa; /* 최상위 배경 */
+  --surface-card: #ffffff; /* 사이드바/카드 */
+  --surface-elev: #f3f4f6; /* 약간 띄운 표면 */
+  --border: #d9d9d9; /* 보더, 구분선 */
+  --text-primary: #333236; /* 기본 텍스트 */
+  --text-muted: #787486; /* 보조 텍스트 */
+  --placeholder: #9fa6b2; /* 서브텍스트 */
+  --input-bg: #ffffff; /* 인풋 내부 배경 */
+}
+[data-theme="dark"] {
+  --surface-page: var(--color-dark-900);
+  --surface-card: var(--color-dark-800);
+  --surface-elev: var(--color-dark-800);
+  --border: var(--color-dark-700);
+  --text-primary: var(--color-dark-200);
+  --text-muted: var(--color-dark-400);
+  --placeholder: var(--color-dark-500);
+  --input-bg: var(--color-dark-900);
+}

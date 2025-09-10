@@ -23,11 +23,13 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const onchange = (k: "email" | "password") => (e: React.ChangeEvent<HTMLInputElement>) => {
+    // 이전 상태(s)를 받아서 복사 후 [k] 자리에 덮어씀
     setValues((s) => ({ ...s, [k]: e.target.value }));
     setErrors((s) => ({ ...s, [k]: undefined }));
   };
-
+  // 블러 시 이메일 검사
   const validateEmailOnBlur = () => {
+    // 기존 에러 객체 s 복사 후 email 필드만 새로운 값으로 갱신
     setErrors((s) => ({
       ...s,
       email:
@@ -35,6 +37,7 @@ export default function LoginPage() {
     }));
   };
 
+  // 블러 시 비밀번호 검사
   const validatePwOnBlur = () => {
     setErrors((s) => ({
       ...s,
@@ -53,6 +56,7 @@ export default function LoginPage() {
     if (!canSubmit) return;
 
     try {
+      // 로그인 성공
       setSubmitting(true);
 
       const res = await fetch("/api/login", {
@@ -73,6 +77,7 @@ export default function LoginPage() {
 
       router.replace("/mydashboard");
     } catch (err: unknown) {
+      // 로그인 실패
       const message =
         err instanceof Error ? err.message : "로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.";
       window.alert(message);
@@ -86,7 +91,9 @@ export default function LoginPage() {
       <Link href="/" className="mb-3 flex flex-col items-center gap-[5px]" aria-label="홈으로 이동">
         <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={300} height={60} />
       </Link>
-      <p className="text-brand-gray-700 mb-[30px] text-center text-xl">오늘도 만나서 반가워요!</p>
+      <p className="mb-[30px] text-center text-xl text-[var(--text-primary)]">
+        오늘도 만나서 반가워요!
+      </p>
 
       <form ref={formRef} onSubmit={onSubmit} className="w-full space-y-8">
         <Field id="email" label="이메일" error={errors.email}>
@@ -138,7 +145,7 @@ export default function LoginPage() {
           {submitting ? "로그인 중" : "로그인"}
         </MyButton>
       </form>
-      <div className="text-brand-gray-700 mt-6 text-center text-[16px]">
+      <div className="mt-6 text-center text-[16px] text-[var(--text-primary)]">
         회원이 아니신가요?
         <Link
           href="/signup"
