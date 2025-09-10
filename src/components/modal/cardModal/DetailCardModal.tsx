@@ -18,6 +18,7 @@ type ModalType = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setColumns?: React.Dispatch<React.SetStateAction<ColumnData[]>>;
+  columnId?: number;
 };
 
 export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType) {
