@@ -15,7 +15,7 @@ type ModalType = {
   setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>;
 };
 
-export default function CreateColumnModal({ isOpen, setIsOpen, columnId, setColumns }: ModalType) {
+export default function ManageColumnModal({ isOpen, setIsOpen, columnId, setColumns }: ModalType) {
   const [modifyColumn, setModifyColumn] = useState("");
   const handleUpdate = async () => {
     try {

@@ -12,7 +12,8 @@ import { cn } from "@/lib/utils/cn";
 
 import Comment from "./Comment";
 import ModifyCardModal from "./ModifyCardModal";
-import { CardData, ColumnData } from "@/features/dashboard/types";
+import { ColumnData } from "@/features/dashboard/types";
+import { Card } from "@/features/cards/types";
 
 type ModalType = {
   isOpen: boolean;
@@ -21,13 +22,13 @@ type ModalType = {
   columnId?: number;
 };
 
-export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType) {
-  const [card, setCard] = useState<CardData | null>(null);
+export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: ModalType) {
+  const [card, setCard] = useState<Card | null>(null);
   const [isKebabOpen, setIsKebabOpen] = useState(false);
   const [isModifyModal, setIsModifyModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { columnIdData } = useColumnId();
+  const { columnIdData, setMembersId } = useColumnId();
   const cardId = columnIdData?.cardId;
   const columnId = columnIdData?.columnId;
 
@@ -43,6 +44,22 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
 
       console.log("받아온 카드 데이터:", data);
       setCard(data);
+
+      // 카드 데이터에서 담당자 정보를 Zustand에 저장
+      if (data?.assignee) {
+        const assigneeOption = {
+          value: String(data.assignee.id),
+          label: data.assignee.nickname,
+          chip: (
+            <img
+              src={data.assignee.profileImageUrl}
+              alt={data.assignee.nickname}
+              className="h-[26px] w-[26px] rounded-full object-cover"
+            />
+          ),
+        };
+        setMembersId([assigneeOption]);
+      }
     } catch (e) {
       console.error("카드 로딩 오류:", e);
       alert((e as Error)?.message || "카드 상세 불러오기 실패");
@@ -155,7 +172,10 @@ export default function BoardsModal({ isOpen, setIsOpen, setColumns }: ModalType
             >
               <div className="w-2/5">
                 <p className="font-bold">담당자</p>
-                <p className="text-sm">배문철</p>
+                <p className="text-sm">
+                  {/* 카드 데이터에서 직접 담당자 정보 표시 */}
+                  {card?.assignee?.nickname || "담당자 없음"}
+                </p>
               </div>
               <div className="w-3/5">
                 <p className="font-bold">마감일</p>

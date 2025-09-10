@@ -7,7 +7,7 @@ import DatePicker from "@/components/form/DatePicker";
 import Field from "@/components/form/Field";
 import ImgUpload from "@/components/form/ImgUpload";
 import Input from "@/components/form/Input";
-import Select from "@/components/form/Select";
+import Select, { Option } from "@/components/form/Select";
 import TagInput from "@/components/form/TagInput";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/common/Button";
@@ -15,14 +15,16 @@ import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/moda
 import { updateCard } from "@/features/cards/api";
 import { uploadCardImage } from "@/features/columns/api";
 import { useColumnId } from "@/features/columns/store";
-import { CardData, ColumnData } from "@/features/dashboard/types";
+import { ColumnData } from "@/features/dashboard/types";
+import { getMembers } from "@/features/members/api";
+import { Card } from "@/features/cards/types";
 
 const now = dayjs();
 
 type ModalType = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  cardData?: CardData | null; // 기존 카드 데이터를 props로 받기
+  cardData?: Card | null; // 기존 카드 데이터를 props로 받기
   setColumns?: React.Dispatch<React.SetStateAction<ColumnData[]>>; // 컬럼 상태 업데이트용
   onModifyComplete?: () => void; // 수정 완료 콜백 추가
 };
@@ -32,12 +34,8 @@ const stateOpt = [
   { value: "2", label: "On Progress", chip: <Chip variant="status" label="On Progress" /> },
   { value: "3", label: "Done", chip: <Chip variant="status" label="Done" /> },
 ];
-const managerOpt = [
-  { value: "1", label: "배유철" },
-  { value: "2", label: "배동석" },
-];
 
-export default function ModifyModal({
+export default function ModifyCardModal({
   isOpen,
   setIsOpen,
   cardData,
@@ -52,26 +50,80 @@ export default function ModifyModal({
   const [imageUrl, setImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // 멤버 관련
+  const [members, setMembers] = useState<Option[]>([]);
+  const [selectedMember, setSelectedMember] = useState<Option | null>(null);
+  const [assigneeId, setAssigneeId] = useState<number | null>(null);
+
   // 공백값 체크(필수 표시 붙은것만!)
   const isDisabled = title.trim() === "" || description.trim() === "";
 
-  const { columnIdData } = useColumnId();
+  const { columnIdData, setMembersId } = useColumnId();
   const cardId = columnIdData?.cardId ?? 0;
   const dashboardId = columnIdData?.dashboardId ?? 0;
   const columnId = columnIdData?.columnId ?? 0;
-  const assigneeUserId = 6212;
+
+  // 멤버 목록 가져오기
+  useEffect(() => {
+    if (!isOpen || !dashboardId) return;
+
+    (async () => {
+      try {
+        const res = await getMembers(dashboardId, { page: 1, size: 20 });
+
+        const opts = res.members.map((m) => ({
+          value: String(m.userId),
+          label: m.nickname,
+          chip: (
+            <img
+              src={m.profileImageUrl}
+              alt={m.nickname}
+              className="h-[26px] w-[26px] rounded-full object-cover"
+            />
+          ),
+        }));
+
+        setMembers(opts);
+      } catch (err) {
+        console.error("멤버 목록 불러오기 실패:", err);
+      }
+    })();
+  }, [isOpen, dashboardId]);
+
+  // 담당자 선택 시 호출되는 함수
+  const handleAssigneeSelect = (opt: Option) => {
+    const selectedId = Number(opt.value);
+    setAssigneeId(selectedId);
+    setSelectedMember(opt);
+
+    // 선택된 담당자만 Zustand에 저장
+    setMembersId([opt]);
+  };
 
   // 기존 카드 데이터로 폼 초기화
   useEffect(() => {
-    if (cardData && isOpen) {
+    if (cardData && isOpen && members.length > 0) {
       setTitle(cardData.title || "");
       setDescription(cardData.description || "");
       setDueDate(cardData.dueDate ? new Date(cardData.dueDate) : null);
       setTags(cardData.tags || []);
       setImageUrl(cardData.imageUrl || "");
       setImageFile(null);
+
+      // 기존 담당자 정보 설정
+      if (cardData.assignee) {
+        const currentAssigneeId = cardData.assignee.id;
+        setAssigneeId(currentAssigneeId);
+
+        // 멤버 목록에서 해당 담당자 찾기
+        const currentMember = members.find((m) => Number(m.value) === currentAssigneeId);
+        if (currentMember) {
+          setSelectedMember(currentMember);
+          setMembersId([currentMember]);
+        }
+      }
     }
-  }, [cardData, isOpen]);
+  }, [cardData, isOpen, members]);
 
   const handleUpdate = async () => {
     if (isDisabled || isLoading) return;
@@ -79,6 +131,11 @@ export default function ModifyModal({
     // cardId 있는지
     if (!cardId) {
       alert("카드 확인 실패");
+      return;
+    }
+
+    if (!assigneeId) {
+      alert("담당자를 선택해주세요.");
       return;
     }
 
@@ -108,14 +165,14 @@ export default function ModifyModal({
 
       // 카드 수정 데이터 준비
       const updateData = {
-        assigneeUserId: assigneeUserId,
+        assigneeUserId: assigneeId,
         dashboardId: dashboardId,
-        columnId: columnId,
+        columnId,
         title: title.trim(),
-        description: description.trim(),
+        description,
         dueDate: dueDate ? dayjs(dueDate).format("YYYY-MM-DD HH:mm") : "",
-        tags, // string[]
-        imageUrl: updateImg, // string | undefined
+        tags: Array.isArray(tags) ? tags : [],
+        imageUrl: updateImg,
       };
 
       console.log("카드 수정 요청 데이터:", updateData);
@@ -168,6 +225,8 @@ export default function ModifyModal({
     setTags([]);
     setImageFile(null);
     setImageUrl("");
+    setAssigneeId(null);
+    setSelectedMember(null);
 
     // 모달 닫기
     setIsOpen(false);
@@ -184,7 +243,7 @@ export default function ModifyModal({
                 <Select options={stateOpt} placeholder="선택하기" labelNone={true} />
               </Field>
               <Field id="manager" label="담당자">
-                <Select options={managerOpt} placeholder="선택하기" />
+                <Select options={members} placeholder="선택하기" onSelect={handleAssigneeSelect} />
               </Field>
             </div>
             <Field id="title" label="제목" essential>

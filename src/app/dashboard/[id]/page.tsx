@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
 import Chip from "@/components/common/chip/Chip";
-import Column from "@/components/column/Column";
+import ColumnList from "@/components/column/Column";
 import MyButton from "@/components/common/Button";
 import { getColumns } from "@/features/columns/api";
 import { getCards } from "@/features/cards/api";
@@ -11,6 +11,12 @@ import { useColumnId } from "@/features/columns/store";
 import CreateCardModal from "../../../components/modal/cardModal/CreateCardModal";
 import CreateColumnModal from "../../../components/modal/columModal/CreateColumnModal";
 import { ColumnData } from "@/features/dashboard/types";
+// import { Column } from "@/features/columns/types";
+// import { Card } from "@/features/cards/types";
+
+// export interface ColumnType extends Column {
+//   cards: Card[];
+// }
 
 export default function DashboardId() {
   const { id } = useParams();
@@ -23,6 +29,7 @@ export default function DashboardId() {
   const [isKebabOpen, setIsKebabOpen] = useState<number | null>(null);
   const [columns, setColumns] = useState<ColumnData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userId, setUserId] = useState();
 
   useEffect(() => {
     if (!dashboardId) return;
@@ -30,7 +37,6 @@ export default function DashboardId() {
     (async () => {
       try {
         setIsLoading(true);
-
         // 1. 컬럼 목록 가져오기
         const response = await getColumns(dashboardId);
         const columnsData = Array.isArray(response) ? response : response?.data || [];
@@ -88,9 +94,9 @@ export default function DashboardId() {
   }
 
   return (
-    <main className="pc:flex-row bg-brand-gray-100 flex flex-1 flex-col">
+    <main className="pc:flex-row bg-brand-gray-100 flex h-full flex-1 flex-col">
       {columns.map((item, i) => (
-        <Column
+        <ColumnList
           key={item.id}
           status={item.title}
           cards={item.cards ?? []}
