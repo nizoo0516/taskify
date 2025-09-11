@@ -1,5 +1,6 @@
 "use client";
 import dayjs from "dayjs";
+
 import { useState, useEffect, useCallback } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -43,6 +44,7 @@ export default function CommentList() {
         setComments((prev) => (reset ? newComments : [...prev, ...newComments]));
         setCursorId(nextCursor);
         setHasMore(!!nextCursor && newComments.length > 0);
+        console.log("새로운 시간", newComments);
       } catch (error) {
         console.error("댓글 불러오기 실패:", error);
         if (reset) {
@@ -190,7 +192,7 @@ export default function CommentList() {
                 <div className="flex items-center gap-2">
                   <span className="font-bold">{comment.author?.nickname || "익명"}</span>
                   <span className="text-xs text-gray-400">
-                    {dayjs(comment.createdAt).format("MM-DD HH:mm")}
+                    {dayjs(comment.createdAt).subtract(9, "hour").format("MM-DD A h:mm")}
                   </span>
                 </div>
 

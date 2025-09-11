@@ -77,8 +77,9 @@ type ModalHeaderProps = {
   title?: string;
   children?: React.ReactNode;
   onClose?: () => void;
+  className?: string;
 };
-function ModalHeader({ title, children, onClose }: ModalHeaderProps) {
+function ModalHeader({ title, children, onClose, className }: ModalHeaderProps) {
   return (
     <div className="mb-3 flex justify-between">
       <h3 className="text-2xl font-bold">{title}</h3>

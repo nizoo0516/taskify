@@ -33,8 +33,6 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
   const columnId = columnIdData?.columnId;
   const columnTitle = columnIdData?.columnTitle;
 
-  console.log("카드값!!!!!!!!!!!!!!!!!", card);
-
   // 카드 데이터 다시 불러오기 함수
   const fetchCardData = async () => {
     if (!cardId) return;
@@ -145,10 +143,14 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
     <div>
       {isOpen && (
         <Modal open={isOpen} size="xl" className="relative">
-          <ModalHeader title={card?.title || "카드 상세 모달"} onClose={() => setIsOpen(false)}>
+          <ModalHeader
+            title={card?.title || "카드 상세 모달"}
+            onClose={() => setIsOpen(false)}
+            className="tablet:items-center items-start"
+          >
             <Button
               onClick={() => setIsKebabOpen(!isKebabOpen)}
-              className="mr-6 ml-auto border-0"
+              className="mr-6 ml-auto h-9 w-9 border-0"
               disabled={isLoading}
             >
               <Image src="/icons/icon-menu.svg" width={28} height={28} alt="더보기" />
