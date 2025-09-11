@@ -1,7 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { createDashboard, getDashboards } from "@/features/dashboard/api";
 import { useDevice } from "@/lib/useDevice";
@@ -12,8 +12,9 @@ import Logo from "../../Logo";
 import Pagination from "../../Pagination";
 import { useQuery } from "@tanstack/react-query";
 import { GetDashboardsResponse } from "@/features/dashboard/types";
-import { useDashboardStore } from "@/components/mydashboard/useDashboardStore";
+import { sortDashboards } from "@/lib/sortDashboard";
 import { loadAcceptedMap } from "@/lib/utils/localStorage";
+import { useSidebarStore } from "./useSidebarStore";
 
 export type CreateData = {
   title: string;
@@ -26,8 +27,9 @@ export default function Sidebar() {
   const [page, setPage] = useState<number>(1);
   const [direction, setDirection] = useState<"prev" | "next">("next");
   const prevPage = useRef(page);
+  const pageSize = 15;
 
-  const { dashboards, setDashboards, addDashboard } = useDashboardStore();
+  const { dashboards, setDashboards } = useSidebarStore();
 
   // 페이지 버튼 방향 감지
   useEffect(() => {
@@ -40,29 +42,35 @@ export default function Sidebar() {
   }, [page]);
 
   const { data } = useQuery<GetDashboardsResponse>({
-    queryKey: ["dashboards"],
+    queryKey: ["dashboards", "sidebar", page, device],
     queryFn: () =>
       device === "mobile"
-        ? getDashboards("infiniteScroll", { size: 20 })
-        : getDashboards("pagination", { page, size: 15 }),
+        ? getDashboards("infiniteScroll", { size: 40 })
+        : getDashboards("pagination", { page: 1, size: 9999 }),
   });
 
   useEffect(() => {
     if (data?.dashboards) {
-      const acceptedMap = typeof window !== "undefined" ? loadAcceptedMap() : {};
+      const acceptedMap = loadAcceptedMap();
       const merged = data.dashboards.map((d) => ({
         ...d,
         acceptedAt: acceptedMap[d.id] ?? null,
       }));
-      setDashboards(merged);
+      setDashboards(sortDashboards(merged));
     }
   }, [data, setDashboards]);
 
-  const totalCount = data?.totalCount ?? 0;
-  const totalPages = Math.ceil(totalCount / 15);
+  const totalCount = dashboards.length;
+  const totalPages = Math.ceil(totalCount / pageSize);
 
   const isPage = totalPages > 1;
   const isPrev = direction === "prev";
+
+  // 대시보드 리스트 자르기
+  const pagedDashboards = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return dashboards.slice(start, start + pageSize);
+  }, [dashboards, page]);
 
   const handleCreate = async (form: CreateData) => {
     const created = await createDashboard(form); // dash보드 페이지에서 id 값 가지고 오려고 변경
@@ -86,11 +94,11 @@ export default function Sidebar() {
               key={page}
               initial={{ x: isPrev ? "-23%" : "23%", opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: isPrev ? "-23%" : "23%", opacity: 0 }}
+              exit={{ x: isPrev ? "23%" : "-23%", opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="col-start-1 row-start-1"
             >
-              <DashboardList dashboards={dashboards} />
+              <DashboardList dashboards={pagedDashboards} />
             </motion.div>
           </AnimatePresence>
         </div>

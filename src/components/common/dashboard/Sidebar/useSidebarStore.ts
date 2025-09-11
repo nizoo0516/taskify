@@ -1,18 +1,16 @@
 import { DashboardWithAccepted } from "@/lib/sortDashboard";
 import { create } from "zustand";
 
-type MyDashboardState = {
+type SidebarDashboardState = {
   dashboards: DashboardWithAccepted[];
   page: number;
   setDashboards: (list: DashboardWithAccepted[]) => void;
   setPage: (page: number) => void;
-  addDashboard: (dashboard: DashboardWithAccepted) => void;
 };
 
-export const useMyDashboardStore = create<MyDashboardState>((set) => ({
+export const useSidebarStore = create<SidebarDashboardState>((set) => ({
   dashboards: [],
   page: 1,
   setDashboards: (list) => set({ dashboards: list }),
   setPage: (page) => set({ page }),
-  addDashboard: (dashboard) => set((state) => ({ dashboards: [dashboard, ...state.dashboards] })),
 }));
