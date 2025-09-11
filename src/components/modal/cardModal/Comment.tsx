@@ -1,6 +1,8 @@
 "use client";
+import dayjs from "dayjs";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import Field from "@/components/form/Field";
 import Textarea from "@/components/form/Textarea";
@@ -12,9 +14,11 @@ import { createComment, updateComment, deleteComment, getComments } from "@/feat
 export default function CommentList() {
   const [input, setInput] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
-  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [editingContent, setEditingContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [cursorId, setCursorId] = useState<number | null>(null);
 
   const { columnIdData } = useColumnId();
   const cardId = columnIdData?.cardId ?? 0;
@@ -22,34 +26,48 @@ export default function CommentList() {
   const columnId = columnIdData?.columnId ?? 0;
 
   // 댓글 목록 불러오기
-  const fetchComments = async () => {
-    if (!cardId) return;
+  const fetchComments = useCallback(
+    async (reset = false) => {
+      if (!cardId) return;
 
-    try {
-      const response = await getComments(cardId, { size: 10 });
-      const commentsData = "data" in (response as any) ? (response as any).data : response;
+      try {
+        setIsLoading(true);
+        const response = await getComments(cardId, {
+          size: 10,
+          cursorId: reset ? undefined : (cursorId ?? undefined),
+        });
 
-      // API 응답 구조에 따른 처리
-      if (commentsData && typeof commentsData === "object") {
-        if ("comments" in commentsData) {
-          setComments(commentsData.comments);
-        } else if (Array.isArray(commentsData)) {
-          setComments(commentsData);
-        } else {
+        const data = "data" in (response as any) ? (response as any).data : response;
+        const newComments = data?.comments || data || [];
+        const nextCursor = data?.cursorId ?? null;
+
+        setComments((prev) => (reset ? newComments : [...prev, ...newComments]));
+        setCursorId(nextCursor);
+        setHasMore(!!nextCursor && newComments.length > 0);
+        console.log("새로운 시간", newComments);
+      } catch (error) {
+        console.error("댓글 불러오기 실패:", error);
+        if (reset) {
           setComments([]);
+          setHasMore(false);
         }
+      } finally {
+        setIsLoading(false);
       }
-      console.log("댓글목록!!!!", commentsData);
-    } catch (error) {
-      console.error("댓글 목록 불러오기 실패:", error);
-      setComments([]);
-    }
-  };
+    },
+    [cardId, cursorId],
+  );
 
-  // 컴포넌트 마운트 시 댓글 목록 불러오기
+  const fetchMore = useCallback(() => {
+    if (hasMore && !isLoading && cardId) fetchComments(false);
+  }, [hasMore, isLoading, cardId, fetchComments]);
+
   useEffect(() => {
     if (cardId) {
-      fetchComments();
+      setComments([]);
+      setCursorId(null);
+      setHasMore(true);
+      fetchComments(true);
     }
   }, [cardId]);
 
@@ -65,193 +83,175 @@ export default function CommentList() {
         columnId,
         dashboardId,
       });
-
-      const newComment =
-        "data" in response ? (response as { data: Comment }).data : (response as Comment);
-
-      // 새 댓글을 목록에 추가
+      const newComment = ("data" in response ? response.data : response) as Comment;
       setComments((prev) => [newComment, ...prev]);
-      setInput(""); // 입력창 초기화
+      setInput("");
     } catch (error) {
       console.error("댓글 생성 실패:", error);
-      alert((error as Error).message || "댓글 생성 실패");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 댓글 수정 시작
-  const handleEditStart = (commentId: number, content: string) => {
-    setEditingCommentId(commentId);
-    setEditingContent(content);
-  };
-
-  // 댓글 수정 완료
-  const handleEditComplete = async (commentId: number) => {
+  // 댓글 수정
+  const handleEdit = async (commentId: number) => {
     if (!editingContent.trim() || isLoading) return;
 
     setIsLoading(true);
     try {
       const response = await updateComment(commentId, { content: editingContent.trim() });
-      const updatedComment =
-        "data" in response ? (response as { data: Comment }).data : (response as Comment);
-
-      // 댓글 목록에서 해당 댓글 업데이트
-      setComments((prev) =>
-        prev.map((comment) => (comment.id === commentId ? updatedComment : comment)),
-      );
-
-      setEditingCommentId(null);
+      const updated = ("data" in response ? response.data : response) as Comment;
+      setComments((prev) => prev.map((c) => (c.id === commentId ? updated : c)));
+      setEditingId(null);
       setEditingContent("");
     } catch (error) {
       console.error("댓글 수정 실패:", error);
-      alert((error as Error).message || "댓글 수정 실패");
     } finally {
       setIsLoading(false);
     }
-  };
-
-  // 댓글 수정 취소
-  const handleEditCancel = () => {
-    setEditingCommentId(null);
-    setEditingContent("");
   };
 
   // 댓글 삭제
   const handleDelete = async (commentId: number) => {
-    if (!confirm("이 댓글을 삭제하시겠습니까?")) return;
+    if (!confirm("댓글을 삭제하시겠습니까?")) return;
 
     setIsLoading(true);
     try {
       await deleteComment(commentId);
-
-      // 댓글 목록에서 해당 댓글 제거
-      setComments((prev) => prev.filter((comment) => comment.id !== commentId));
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
     } catch (error) {
       console.error("댓글 삭제 실패:", error);
-      alert((error as Error).message || "댓글 삭제 실패");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 날짜 포맷팅 함수
-  const formatDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleString("ko-KR", {
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch {
-      return dateString;
-    }
-  };
+  if (!cardId) {
+    return <div className="py-4 text-center text-gray-500">카드 정보를 불러오는 중...</div>;
+  }
 
   return (
     <div className="flex flex-col gap-4">
-      {/* 댓글 입력 영역 */}
+      {/* 댓글 입력 */}
       <Field id="comment" label="댓글">
-        <div className="rounded-lg border border-[#D9D9D9] p-3">
+        <div className="dark:bg-dark-900 rounded-lg border border-[#D9D9D9] p-3">
           <Textarea
             placeholder="댓글 작성하기"
             className="resize-none rounded-none border-0 !p-0"
             value={input}
-            onChange={(e) => setInput(e.currentTarget.value)}
+            onChange={(e) => setInput(e.target.value)}
             disabled={isLoading}
           />
           <div className="mt-1 flex justify-end">
             <Button
               color="buttonBasic"
               onClick={handleCreate}
-              className="text-brand-blue-500 h-8 w-20"
+              className="text-brand-blue-500 dark:bg-dark-700 h-8 w-20"
               disabled={!input.trim() || isLoading}
             >
-              {isLoading ? "작성 중..." : "입력"}
+              입력
             </Button>
           </div>
         </div>
       </Field>
 
       {/* 댓글 목록 */}
-      <div className="flex max-h-80 flex-col gap-4 overflow-y-auto">
-        {comments.map((comment) => (
-          <div key={comment.id} className="flex gap-2.5">
-            <div className="bg-brand-orange flex h-[34px] w-[34px] flex-shrink-0 items-center justify-center rounded-full font-bold text-white">
-              {comment.author?.profileImageUrl ? (
-                <img
-                  src={comment.author.profileImageUrl}
-                  alt="프로필"
-                  className="h-full w-full rounded-full object-cover"
-                />
-              ) : (
-                comment.author?.nickname?.charAt(0)?.toUpperCase() || "U"
-              )}
-            </div>
-
-            <div className="flex-1 text-sm">
-              <div className="flex items-end gap-2">
-                <p className="font-bold">{comment.author?.nickname || "익명"}</p>
-                <span className="text-brand-gray-400 text-xs">{formatDate(comment.createdAt)}</span>
+      <div className="max-h-80 overflow-y-auto" id="comments-scroll">
+        <InfiniteScroll
+          dataLength={comments.length}
+          next={fetchMore}
+          hasMore={hasMore}
+          loader={<div className="py-2 text-center text-sm text-gray-500">로딩중...</div>}
+          endMessage={
+            comments.length > 0 && (
+              <div className="py-2 text-center text-sm text-gray-400">
+                모든 댓글을 불러왔습니다.
+              </div>
+            )
+          }
+          scrollableTarget="comments-scroll"
+          className="space-y-4"
+        >
+          {comments.map((comment) => (
+            <div key={comment.id} className="flex gap-2.5">
+              {/* 프로필 */}
+              <div className="bg-brand-orange flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white">
+                {comment.author?.profileImageUrl ? (
+                  <img
+                    src={comment.author.profileImageUrl}
+                    alt="프로필"
+                    className="h-full w-full rounded-full object-cover"
+                  />
+                ) : (
+                  comment.author?.nickname?.charAt(0)?.toUpperCase() || "U"
+                )}
               </div>
 
-              {/* 수정 중인 댓글 */}
-              {editingCommentId === comment.id ? (
-                <div className="mt-2">
-                  <Textarea
-                    value={editingContent}
-                    onChange={(e) => setEditingContent(e.currentTarget.value)}
-                    className="w-full resize-none rounded border border-gray-300 p-2 text-sm"
-                    rows={2}
-                    disabled={isLoading}
-                  />
-                  <div className="mt-2 flex gap-2">
-                    <button
-                      onClick={() => handleEditComplete(comment.id)}
-                      className="text-xs text-blue-500 underline underline-offset-2"
-                      disabled={!editingContent.trim() || isLoading}
-                    >
-                      {isLoading ? "수정 중..." : "완료"}
-                    </button>
-                    <button
-                      onClick={handleEditCancel}
-                      className="text-xs text-gray-500 underline underline-offset-2"
-                      disabled={isLoading}
-                    >
-                      취소
-                    </button>
-                  </div>
+              {/* 댓글 내용 */}
+              <div className="flex-1 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold">{comment.author?.nickname || "익명"}</span>
+                  <span className="text-xs text-gray-400">
+                    {dayjs(comment.createdAt).subtract(9, "hour").format("MM-DD A h:mm")}
+                  </span>
                 </div>
-              ) : (
-                <>
-                  <p className="mt-1">{comment.content}</p>
-                  <div className="text-brand-gray-400 mt-2 flex justify-start gap-3.5 underline underline-offset-2">
-                    <button
-                      onClick={() => handleEditStart(comment.id, comment.content)}
-                      disabled={isLoading}
-                      className="text-xs hover:text-gray-600"
-                    >
-                      수정
-                    </button>
-                    <button
-                      onClick={() => handleDelete(comment.id)}
-                      disabled={isLoading}
-                      className="text-xs hover:text-gray-600"
-                    >
-                      삭제
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        ))}
 
-        {comments.length === 0 && (
-          <div className="text-brand-gray-400 py-4 text-center">아직 댓글이 없습니다.</div>
+                {editingId === comment.id ? (
+                  <div className="mt-1">
+                    <Textarea
+                      value={editingContent}
+                      onChange={(e) => setEditingContent(e.target.value)}
+                      className="w-full resize-none text-sm"
+                      rows={2}
+                    />
+                    <div className="mt-1 flex gap-2">
+                      <button
+                        onClick={() => handleEdit(comment.id)}
+                        className="text-xs text-blue-500 hover:underline"
+                        disabled={!editingContent.trim()}
+                      >
+                        완료
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEditingId(null);
+                          setEditingContent("");
+                        }}
+                        className="text-xs text-gray-500 hover:underline"
+                      >
+                        취소
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="mt-1">{comment.content}</p>
+                    <div className="mt-1 flex gap-2 text-xs text-gray-400">
+                      <button
+                        onClick={() => {
+                          setEditingId(comment.id);
+                          setEditingContent(comment.content);
+                        }}
+                        className="hover:text-gray-600 hover:underline"
+                      >
+                        수정
+                      </button>
+                      <button
+                        onClick={() => handleDelete(comment.id)}
+                        className="hover:text-gray-600 hover:underline"
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </InfiniteScroll>
+
+        {comments.length === 0 && !isLoading && (
+          <div className="py-8 text-center text-gray-400">아직 댓글이 없습니다.</div>
         )}
       </div>
     </div>

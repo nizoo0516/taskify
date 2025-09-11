@@ -140,13 +140,13 @@ export default function AccountPage() {
       <button
         type="button"
         onClick={() => router.back()}
-        className="mb-[5px] flex items-center gap-[3px] text-lg text-[#333236]"
+        className="text-brand-gray-700 mb-[5px] flex items-center gap-[3px] text-lg"
       >
         <Image src="/icons/icon-arrow-left.svg" alt="돌아가기 아이콘" width={20} height={20} />
         돌아가기
       </button>
       <section className="w-full rounded-2xl bg-white p-6">
-        <h2 className="mb-6 text-2xl font-bold text-[#333236]">프로필</h2>
+        <h2 className="text-brand-gray-700 mb-6 text-2xl font-bold">프로필</h2>
         <div className="tablet:flex-row pc:flew-row flex flex-col gap-[42px]">
           <div className="w-[182px] flex-shrink-0">
             <button
@@ -185,7 +185,7 @@ export default function AccountPage() {
             <Field
               id="email"
               label="이메일"
-              className="[&_input]:text-lg [&_input]:read-only:!text-[#9FA6B2] [&>label]:text-lg [&>label]:text-[#333236]"
+              className="[&>label]:text-brand-gray-700 [&_input]:text-lg [&_input]:read-only:!text-[#9FA6B2] [&>label]:text-lg"
             >
               <Input value={myData?.email ?? ""} readOnly />
             </Field>
@@ -193,7 +193,7 @@ export default function AccountPage() {
             <Field
               id="nickname"
               label="닉네임"
-              className="[&>label]:text-lg [&>label]:text-[#333236]"
+              className="[&>label]:text-brand-gray-700 [&>label]:text-lg"
             >
               <Input
                 value={nickname}
@@ -205,7 +205,7 @@ export default function AccountPage() {
             <MyButton
               onClick={onSaveProfile}
               color={canSaveProfile && !saving ? "buttonBlue" : "buttonGrey"}
-              className={`mt-6 h-[54px] w-full text-white`}
+              className={`mt-6 h-[54px] w-full`}
             >
               {saving ? "저장 중" : "저장"}
             </MyButton>
@@ -214,13 +214,13 @@ export default function AccountPage() {
       </section>
 
       <section className="rounded-2xl bg-white p-6">
-        <h2 className="mb-6 text-2xl font-bold text-[#333236]">비밀번호 변경</h2>
+        <h2 className="text-brand-gray-700 mb-6 text-2xl font-bold">비밀번호 변경</h2>
 
         <div className="space-y-4">
           <Field
             id="currentPw"
             label="현재 비밀번호"
-            className="[&>label]:text-lg [&>label]:text-[#333236]"
+            className="[&>label]:text-brand-gray-700 [&>label]:text-lg"
           >
             <Input
               type="password"
@@ -234,7 +234,7 @@ export default function AccountPage() {
           <Field
             id="newPw"
             label="새 비밀번호"
-            className="[&>label]:text-lg [&>label]:text-[#333236]"
+            className="[&>label]:text-brand-gray-700 [&>label]:text-lg"
           >
             <Input
               type="password"
@@ -249,7 +249,7 @@ export default function AccountPage() {
             id="confirmPw"
             label="새 비밀번호 확인"
             error={error}
-            className="[&>label]:text-lg [&>label]:text-[#333236]"
+            className="[&>label]:text-brand-gray-700 [&>label]:text-lg"
           >
             <Input
               type="password"
@@ -270,7 +270,7 @@ export default function AccountPage() {
           <MyButton
             onClick={onChangePw}
             color={canChange && !changing ? "buttonBlue" : "buttonGrey"}
-            className={`mt-6 h-[54px] w-full text-white`}
+            className={`mt-6 h-[54px] w-full`}
           >
             {changing ? "변경 중" : "변경"}
           </MyButton>

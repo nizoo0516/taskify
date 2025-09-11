@@ -7,8 +7,12 @@ import { useState } from "react";
 import DetailCardModal from "@/components/modal/cardModal/DetailCardModal";
 import Chip from "@/components/common/chip/Chip";
 import { CardData, ColumnData } from "@/features/dashboard/types";
+import { getColorForTag } from "@/lib/utils/tagColor";
 
-type CardWithAssignee = CardData & {
+type TagType = string | { label: string; color?: { bg: string; text: string } };
+
+type CardWithAssignee = Omit<CardData, "tags"> & {
+  tags?: TagType[];
   assignee?: {
     id: number;
     nickname: string;
@@ -28,9 +32,11 @@ export default function Card({
   columnId,
 }: CardWithAssignee) {
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div
       className={clsx(
+        "relative",
         // 기본 (mobile)
         "border-brand-gray-300 flex w-full cursor-pointer flex-col gap-4 rounded-md border bg-white p-5",
 
@@ -65,9 +71,9 @@ export default function Card({
         />
       )}
 
-      <div className="tablet:gap-4 pc:gap-2 flex w-full flex-1 flex-col items-start gap-2">
+      <div className="tablet:gap-4 pc:gap-2 flex w-full flex-1 flex-col items-start gap-2 bg-transparent">
         {/* 제목 */}
-        <h3 className="text-base font-medium text-black">{title}</h3>
+        <h3 className="text-brand-gray-700 text-base font-medium">{title}</h3>
 
         <div
           className={clsx(
@@ -82,13 +88,16 @@ export default function Card({
           )}
         >
           {/* 태그 영역 */}
-          {tags && tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag, index) => (
-                <Chip key={index} variant="category" label={tag} />
-              ))}
-            </div>
-          )}
+          <div className="flex min-h-[24px] flex-wrap gap-2">
+            {tags &&
+              tags.length > 0 &&
+              tags.map((tag, index) => {
+                const label = typeof tag === "string" ? tag : tag.label;
+                const color = getColorForTag(label);
+
+                return <Chip key={index} variant="category" label={label} color={color} />;
+              })}
+          </div>
 
           {/* 날짜 + 작성자 */}
           <div className="tablet:justify-start tablet:gap-4 pc:justify-between pc:w-full flex items-center justify-between text-xs text-gray-500">
@@ -114,7 +123,14 @@ export default function Card({
         </div>
       </div>
       {isOpen && (
-        <DetailCardModal isOpen setIsOpen={setIsOpen} setColumns={setColumns} columnId={columnId} />
+        <div className="absolute top-0 left-0 z-50">
+          <DetailCardModal
+            isOpen
+            setIsOpen={setIsOpen}
+            setColumns={setColumns}
+            columnId={columnId}
+          />
+        </div>
       )}
     </div>
   );
