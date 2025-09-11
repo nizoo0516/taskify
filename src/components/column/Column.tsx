@@ -53,7 +53,7 @@ export default function Column({
                       cards: [
                         ...(col.cards ?? []),
                         ...newCards.filter((nc) => !(col.cards ?? []).some((c) => c.id === nc.id)),
-                      ].sort((a, b) => b.id! - a.id!),
+                      ],
                     }
                   : col,
               ),
