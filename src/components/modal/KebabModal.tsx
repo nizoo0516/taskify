@@ -10,7 +10,8 @@ export default function KebabModal({ children, className }: KebabProps) {
     <div
       className={cn(
         "absolute",
-        "flex flex-col px-1.5 py-[7px]",
+        "flex flex-col px-0.5 py-1",
+        "tablet:px-1.5 tablet:py-[7px]",
         "border-brand-gray-300 rounded-md border bg-white",
         className,
       )}

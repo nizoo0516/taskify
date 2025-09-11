@@ -68,7 +68,7 @@ export default function DashboardId() {
   }
 
   return (
-    <main className="pc:flex-row pc:min-h-screen bg-brand-gray-100 flex flex-1 flex-col">
+    <main className="pc:flex-row pc:min-h-full bg-brand-gray-100 flex flex-1 flex-col">
       {columns.map((item, i) => (
         <Column
           key={item.id}

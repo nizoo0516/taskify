@@ -87,7 +87,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="pc:max-w-[520px] tablet:max-w-[520px] mx-auto flex min-h-screen w-full max-w-[351px] flex-col items-center justify-center">
+    <main className="pc:max-w-[520px] tablet:max-w-[520px] mx-auto flex h-screen w-full max-w-[351px] flex-col items-center justify-center">
       <Link href="/" className="mb-3 flex flex-col items-center gap-[5px]" aria-label="홈으로 이동">
         <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={300} height={60} />
       </Link>
