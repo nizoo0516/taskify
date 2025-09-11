@@ -27,7 +27,7 @@ export default function MyButton({
 
   return (
     <button
-      type="button"
+      type="submit"
       onClick={onClick}
       className={`cursor-pointer rounded-lg text-sm ${className} ${colorClasses[color]}`}
       disabled={false}
