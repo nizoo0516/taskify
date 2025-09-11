@@ -15,7 +15,6 @@ export const createDashboard = (data: CreateDashboardRequest) =>
   apiRequest<Dashboard>("/dashboards", {
     method: "POST",
     data,
-    withAuth: true,
   });
 
 // 대시보드 목록 조회
@@ -38,7 +37,6 @@ export const getDashboards = (
 
   return apiRequest<GetDashboardsResponse>(url, {
     method: "GET",
-    withAuth: true,
   });
 };
 
@@ -46,7 +44,6 @@ export const getDashboards = (
 export const getDashboardById = (dashboardId: number) =>
   apiRequest<Dashboard>(`/dashboards/${dashboardId}`, {
     method: "GET",
-    withAuth: true,
   });
 
 // 대시보드 수정
@@ -54,14 +51,12 @@ export const updateDashboard = (dashboardId: number, data: CreateDashboardReques
   apiRequest<Dashboard>(`/dashboards/${dashboardId}`, {
     method: "PUT",
     data,
-    withAuth: true,
   });
 
 // 대시보드 삭제
 export const deleteDashboard = (dashboardId: number) =>
   apiRequest<DeleteDashboardResponse>(`/dashboards/${dashboardId}`, {
     method: "DELETE",
-    withAuth: true,
   });
 
 // 대시보드 초대하기
@@ -69,7 +64,6 @@ export const inviteToDashboard = (dashboardId: number, data: InvitationRequest) 
   apiRequest<Invitation>(`/dashboards/${dashboardId}/invitations`, {
     method: "POST",
     data,
-    withAuth: true,
   });
 
 // 대시보드 초대 불러오기
@@ -83,7 +77,6 @@ export const getDashboardInvitations = (
 
   return apiRequest<GetInvitationResponse>(url, {
     method: "GET",
-    withAuth: true,
   });
 };
 
@@ -91,5 +84,4 @@ export const getDashboardInvitations = (
 export const cancelDashboardInvitation = (dashboardId: number, invitationId: number) =>
   apiRequest<DeleteInvitationResponse>(`/dashboards/${dashboardId}/invitations/${invitationId}`, {
     method: "DELETE",
-    withAuth: true,
   });

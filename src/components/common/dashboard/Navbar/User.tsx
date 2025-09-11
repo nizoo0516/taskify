@@ -36,8 +36,7 @@ export default function User() {
         isOpen={isMenu}
         onClose={() => setIsMenu(false)}
         className={cn(
-          "tablet:right-[-28px] absolute top-2 right-0 w-[128px] overflow-hidden rounded-[6px] border bg-white p-1.5 shadow-md",
-          "dark:bg-dark-800 dark:border-dark-600",
+          "tablet:right-[-28px] border-brand-gray-300 absolute top-2 right-0 w-[128px] overflow-hidden rounded-[6px] border bg-white p-1.5 shadow-md",
         )}
       >
         <UserMenu />

@@ -14,7 +14,9 @@ function Input({ className, leftIcon, rightIcon, ...props }: InputProps) {
     <div className={`relative w-full ${className ?? ""}`}>
       {leftIcon && (
         // 좌측에 위치한 아이콘
-        <span className="absolute top-1/2 left-4 -translate-y-1/2 text-[#9FA6B2]">{leftIcon}</span>
+        <span className="text-brand-gray-400 absolute top-1/2 left-4 -translate-y-1/2">
+          {leftIcon}
+        </span>
       )}
       <input
         className={[base, asInput, leftIcon ? "pl-[46px]" : "", rightIcon ? "pr-[46px]" : ""].join(
@@ -24,7 +26,9 @@ function Input({ className, leftIcon, rightIcon, ...props }: InputProps) {
       />
       {/* 우측에 위치한 아이콘 */}
       {rightIcon && (
-        <div className="absolute top-1/2 right-4 -translate-y-1/2 text-[#9FA6B2]">{rightIcon}</div>
+        <div className="text-brand-gray-400 absolute top-1/2 right-4 -translate-y-1/2">
+          {rightIcon}
+        </div>
       )}
     </div>
   );

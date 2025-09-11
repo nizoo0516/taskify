@@ -8,9 +8,9 @@ import MyButton from "@/components/common/Button";
 import { getColumns } from "@/features/columns/api";
 import { getCards } from "@/features/cards/api";
 import { useColumnId } from "@/features/columns/store";
-import CreateCardModal from "../../../components/modal/cardModal/CreateCardModal";
-import CreateColumnModal from "../../../components/modal/columModal/CreateColumnModal";
 import { ColumnData } from "@/features/dashboard/types";
+import CreateCardModal from "@/components/modal/cardModal/CreateCardModal";
+import CreateColumnModal from "@/components/modal/columnModal/CreateColumnModal";
 
 export default function DashboardId() {
   const { id } = useParams();
@@ -90,7 +90,7 @@ export default function DashboardId() {
   }
 
   return (
-    <main className="pc:flex-row bg-brand-gray-100 flex h-full flex-1 flex-col">
+    <main className="pc:flex-row pc:min-h-screen bg-brand-gray-100 flex flex-1 flex-col">
       {columns.map((item, i) => (
         <Column
           key={item.id}
@@ -106,10 +106,10 @@ export default function DashboardId() {
       ))}
 
       {/* 새로운 컬럼 추가 버튼 */}
-      <div className="pc:pt-17 pc:w-[354px] mx-5 py-5">
+      <div className="pc:pt-17 pc:w-[354px] mx-5 flex flex-shrink-0 py-5">
         <MyButton
           onClick={handleAddColumn}
-          className="border-brand-gray-300 flex h-[70px] w-full items-center justify-center border bg-white"
+          className="border-brand-gray-300 dark:bg-dark-700 flex h-[70px] w-full items-center justify-center border bg-white"
         >
           <span className="mr-3 text-lg font-bold">새로운 컬럼 추가하기</span>
           <Chip variant="add" />

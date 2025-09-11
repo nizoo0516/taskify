@@ -42,8 +42,8 @@ export default function Select({
   const btnClass = [
     "relative w-full",
     "h-12 px-4",
-    "rounded-lg border bg-white",
-    "text-[16px] text-[#333236] text-left",
+    "rounded-lg border bg-white border-brand-gray-200",
+    "text-[16px] text-brand-gray-700 text-left",
     className,
   ].join(" ");
 
@@ -68,7 +68,7 @@ export default function Select({
       </button>
 
       {isOpen && (
-        <ul className="absolute top-full left-0 z-10 mt-0.5 w-full rounded-md border bg-white shadow">
+        <ul className="border-brand-gray-200 absolute top-full left-0 z-10 mt-0.5 w-full rounded-md border bg-white shadow">
           {options.map((item) => (
             <li
               key={item.value}
@@ -77,7 +77,7 @@ export default function Select({
                 setIsOpen(false);
                 onSelect?.(item);
               }}
-              className="flex h-12 cursor-pointer items-center gap-2 px-4 hover:bg-gray-100"
+              className="hover:bg-brand-gray-200 flex h-12 cursor-pointer items-center gap-2 px-4"
             >
               {selected?.value === item.value && (
                 <Image

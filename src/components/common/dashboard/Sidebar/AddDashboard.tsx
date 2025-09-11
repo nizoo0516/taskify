@@ -36,7 +36,7 @@ export default function AddDashboard({
           </div>
           {/* 이미지 색상 바꾸기 위해서 svg라이브러리 설치해도 좋았을거같다. */}
           <span
-            className={cn("bg-brand-gray-500 h-5 w-5", "dark:bg-brand-gray-200")}
+            className={cn("bg-brand-gray-500 h-5 w-5")}
             style={{
               mask: `url(${addIconSrc}) no-repeat center`,
               WebkitMask: `url(${addIconSrc}) no-repeat center`,

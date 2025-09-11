@@ -65,9 +65,9 @@ export default function Card({
         />
       )}
 
-      <div className="tablet:gap-4 pc:gap-2 flex w-full flex-1 flex-col items-start gap-2">
+      <div className="tablet:gap-4 pc:gap-2 flex w-full flex-1 flex-col items-start gap-2 bg-transparent">
         {/* 제목 */}
-        <h3 className="text-base font-medium text-black">{title}</h3>
+        <h3 className="text-brand-gray-700 text-base font-medium">{title}</h3>
 
         <div
           className={clsx(

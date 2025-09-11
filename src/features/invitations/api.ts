@@ -18,7 +18,6 @@ export const getInvitations = ({
 
   return apiRequest<InvitationsResponse>(url, {
     method: "GET",
-    withAuth: true,
   });
 };
 
@@ -27,5 +26,4 @@ export const respondInvitation = (invitationId: number, inviteAccepted: boolean)
   apiRequest<Invitation>(`/invitations/${invitationId}`, {
     method: "PUT",
     data: { inviteAccepted },
-    withAuth: true,
   });
