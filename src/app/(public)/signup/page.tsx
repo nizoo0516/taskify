@@ -241,7 +241,7 @@ export default function SignupPage() {
             formRef.current?.requestSubmit();
           }}
           color={canSubmit ? "buttonBlue" : "buttonGrey"}
-          className={`h-[50px] w-full ${!canSubmit ? "pointer-events-none" : ""} text-white`}
+          className={`h-[50px] w-full ${!canSubmit ? "pointer-events-none" : ""}`}
         >
           {submitting ? "가입 중" : "가입하기"}
         </MyButton>

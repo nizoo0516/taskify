@@ -268,7 +268,7 @@ export default function MyDashboardList() {
           <div className="pc:block tablet:block hidden pb-[28px]">
             <div className="h-[458px] overflow-y-auto">
               <table className="w-full border-collapse text-left text-sm">
-                <thead className="sticky top-0 z-10 border-b">
+                <thead className="bg-brand-gray-100 border-brand-gray-300 sticky top-0 z-10 border-b">
                   <tr>
                     <th className="w-1/3 px-[28px] py-2 text-lg font-normal text-gray-500">이름</th>
                     <th className="w-1/3 px-[28px] py-2 text-lg font-normal text-gray-500">
@@ -295,7 +295,7 @@ export default function MyDashboardList() {
                     </tr>
                   ) : (
                     visibleInvitations.map((invite) => (
-                      <tr key={invite.id} className="border-b last:border-0">
+                      <tr key={invite.id} className="border-brand-gray-300 border-b last:border-0">
                         <td className="w-1/3 truncate overflow-hidden px-[28px] py-[23px] text-lg whitespace-nowrap">
                           {invite.dashboard.title}
                         </td>
@@ -305,7 +305,7 @@ export default function MyDashboardList() {
                         <td className="w-1/3 truncate overflow-hidden px-[28px] py-[23px] text-lg whitespace-nowrap">
                           <div className="flex gap-2">
                             <MyButton
-                              className="tablet:px-[19px] pc:px-[29.5px] py-[4px] text-white"
+                              className="tablet:px-[19px] pc:px-[29.5px] py-[4px]"
                               color="buttonBlue"
                               onClick={() =>
                                 handleAcceptInvite(
