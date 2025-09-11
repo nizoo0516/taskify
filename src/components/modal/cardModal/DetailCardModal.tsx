@@ -33,8 +33,6 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
   const columnId = columnIdData?.columnId;
   const columnTitle = columnIdData?.columnTitle;
 
-  console.log("카드값!!!!!!!!!!!!!!!!!", card);
-
   // 카드 데이터 다시 불러오기 함수
   const fetchCardData = async () => {
     if (!cardId) return;
@@ -145,10 +143,14 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
     <div>
       {isOpen && (
         <Modal open={isOpen} size="xl" className="relative">
-          <ModalHeader title={card?.title || "카드 상세 모달"} onClose={() => setIsOpen(false)}>
+          <ModalHeader
+            title={card?.title || "카드 상세 모달"}
+            onClose={() => setIsOpen(false)}
+            className="tablet:items-center items-start"
+          >
             <Button
               onClick={() => setIsKebabOpen(!isKebabOpen)}
-              className="mr-6 ml-auto border-0"
+              className="mr-6 ml-auto h-9 w-9 border-0"
               disabled={isLoading}
             >
               <Image src="/icons/icon-menu.svg" width={28} height={28} alt="더보기" />
@@ -163,21 +165,28 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
           >
             <div
               className={cn(
-                "mb-4 flex w-full justify-between gap-4 self-start rounded-lg border border-[#D9D9D9] p-4",
-                "tablet:w-[180px] tablet:flex-col tablet:mb-4",
+                "border-brand-gray-200 mb-4 flex w-full justify-between gap-4 self-start rounded-lg border px-4 py-2",
+                "tablet:w-[180px] tablet:flex-col tablet:mb-4 tablet:py-4",
                 "pc:w-[200px]",
               )}
             >
-              <div className="w-2/5">
-                <p className="font-bold">담당자</p>
-                <p className="text-sm">
+              <div>
+                <p className="tablet:text-sm mb-1.5 text-xs font-bold">담당자</p>
+                <p className="tablet:text-sm flex items-center gap-2 text-xs whitespace-nowrap">
                   {/* 카드 데이터에서 직접 담당자 정보 표시 */}
+                  <img
+                    src={card?.assignee?.profileImageUrl}
+                    alt={card?.assignee?.nickname}
+                    className="tablet:size-8 tablet:text-sm size-6 rounded-full object-cover text-xs"
+                  />
                   {card?.assignee?.nickname || "담당자 없음"}
                 </p>
               </div>
-              <div className="w-3/5">
-                <p className="font-bold">마감일</p>
-                <p className="text-sm whitespace-nowrap">{card?.dueDate || "마감일 없음"}</p>
+              <div>
+                <p className="tablet:text-sm mb-1.5 text-xs font-bold">마감일</p>
+                <p className="tablet:text-sm text-xs whitespace-nowrap">
+                  {card?.dueDate || "마감일 없음"}
+                </p>
               </div>
             </div>
             <div className={cn("flex w-full flex-col gap-4", "tablet:w-[420px]", "pc:w-[450px]")}>
@@ -200,15 +209,7 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
                     height={160}
                     className={cn("h-[168px] w-full rounded-md object-contain", "pc:h-[260px]")}
                   />
-                ) : (
-                  <Image
-                    src="/images/img-card-pink.svg"
-                    alt="기본 이미지"
-                    width={274}
-                    height={160}
-                    className={cn("rounded-mdobject-contain h-[168px] w-full", "pc:h-[260px]")}
-                  />
-                )}
+                ) : null}
               </div>
               <Comment />
             </div>
