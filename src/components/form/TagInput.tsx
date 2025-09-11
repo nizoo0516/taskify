@@ -3,10 +3,22 @@ import { useState } from "react";
 
 import Chip from "@/components/common/chip/Chip";
 
-type TagInputProps = {
-  value: string[];
-  onChange: (tags: string[]) => void;
+export type Tag = {
+  label: string;
+  color: { bg: string; text: string };
 };
+
+type TagInputProps = {
+  value: Tag[];
+  onChange: (tags: Tag[]) => void;
+};
+
+const colorVariants = [
+  { bg: "bg-[#F9EEE3]", text: "text-[#D58D49]" },
+  { bg: "bg-[#E9F3E1]", text: "text-[#5A8F2F]" },
+  { bg: "bg-[#DBE6F7]", text: "text-[#4981D5]" },
+  { bg: "bg-[#F7DBF0]", text: "text-[#D549B6]" },
+];
 
 export default function TagInput({ value, onChange }: TagInputProps) {
   const [inputValue, setInputValue] = useState("");
@@ -15,12 +27,13 @@ export default function TagInput({ value, onChange }: TagInputProps) {
   // 엔터 시 태그 확정
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;
-    e.preventDefault(); // 기본 submit 막기
+    e.preventDefault();
 
-    const newTag = inputValue.trim();
-    if (!newTag || value.includes(newTag)) return;
+    const newLabel = inputValue.trim();
+    if (!newLabel || value.some((tag) => tag.label === newLabel)) return;
 
-    onChange([...value, newTag]);
+    const randomColor = colorVariants[Math.floor(Math.random() * colorVariants.length)];
+    onChange([...value, { label: newLabel, color: randomColor }]);
     setInputValue("");
     setSkipChange(true);
   };
@@ -42,14 +55,14 @@ export default function TagInput({ value, onChange }: TagInputProps) {
       {/* 확정된 태그들 */}
       {value.map((tag, i) => (
         <div key={i} className="flex items-center gap-1">
-          <Chip variant="category" label={tag} />
+          <Chip variant="category" label={tag.label} color={tag.color} />
           <button type="button" onClick={() => removeTag(i)} className="text-xs text-gray-500">
             ×
           </button>
         </div>
       ))}
 
-      {/* 공용 Input 컴포넌트 */}
+      {/* 입력창 */}
       <input
         value={inputValue}
         onKeyDown={handleKeyDown}

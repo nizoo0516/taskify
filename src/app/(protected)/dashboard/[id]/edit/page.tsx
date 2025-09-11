@@ -20,7 +20,6 @@ import {
 } from "@/features/dashboard/api";
 import { getMembers, deleteMember } from "@/features/members/api";
 import { useQueryClient } from "@tanstack/react-query";
-import { cn } from "@/lib/utils/cn";
 
 export default function DashboardIdEdit() {
   const { id } = useParams<{ id: string }>();
@@ -36,7 +35,14 @@ export default function DashboardIdEdit() {
   const [selectedColor, setSelectedColor] = useState("#7AC555");
 
   const [members, setMembers] = useState<
-    { id: number; userId: number; email: string; nickname: string; profileImageUrl?: string }[]
+    {
+      id: number;
+      userId: number;
+      email: string;
+      nickname: string;
+      profileImageUrl?: string;
+      isOwner?: boolean;
+    }[]
   >([]);
   const [memberPage, setMemberPage] = useState(1);
   const [totalMemberPages, setTotalMemberPages] = useState(1);
@@ -44,8 +50,6 @@ export default function DashboardIdEdit() {
   const [invites, setInvites] = useState<{ id: number; email: string }[]>([]);
   const [invitePage, setInvitePage] = useState(1);
   const [totalInvitePages, setTotalInvitePages] = useState(1);
-
-  const darkStyle = cn("dark:bg-dark-700");
 
   // 대시보드 초기 데이터 불러오기
   useEffect(() => {
@@ -202,7 +206,7 @@ export default function DashboardIdEdit() {
             <MyButton
               onClick={handleUpdateDashboard}
               color="buttonBlue"
-              className="tablet:text-base h-[54px] w-full text-sm font-semibold"
+              className="tablet:text-base h-[54px] w-full text-sm font-semibold text-white"
             >
               변경
             </MyButton>
@@ -231,33 +235,36 @@ export default function DashboardIdEdit() {
             <Label className="text-brand-gray-400 text-sm">이름</Label>
           </div>
           <ul>
-            {members.map((m, idx) => (
-              <li
-                key={m.id}
-                className={`flex h-[70px] items-center justify-between py-3 ${
-                  idx !== members.length - 1 ? "border-b border-gray-200" : ""
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <img
-                    src={m.profileImageUrl || "/images/img-profile-sample.svg"}
-                    alt={m.nickname}
-                    className="h-[38px] w-[38px] rounded-full object-cover"
-                  />
-                  <span className="text-sm">{m.nickname}</span>
-                </div>
-                <MyButton
-                  onClick={() => handleDeleteMember(m.id)}
-                  color="buttonBasic"
-                  className={cn(
-                    "tablet:w-21 tablet:text-sm text-brand-blue-500 h-8 w-13 rounded-md px-3 py-1 text-xs font-medium",
-                    darkStyle,
-                  )}
+            {members.map((m, idx) => {
+              const isOwner = m?.isOwner;
+
+              return (
+                <li
+                  key={m.id}
+                  className={`flex h-[70px] items-center justify-between py-3 ${
+                    idx !== members.length - 1 ? "border-b border-gray-200" : ""
+                  }`}
                 >
-                  삭제
-                </MyButton>
-              </li>
-            ))}
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={m.profileImageUrl || "/images/img-profile-sample.svg"}
+                      alt={m.nickname}
+                      className="h-[38px] w-[38px] rounded-full object-cover"
+                    />
+                    <span className="text-sm">{m.nickname}</span>
+                  </div>
+                  {!isOwner && (
+                    <MyButton
+                      onClick={() => handleDeleteMember(m.id)}
+                      color="buttonBasic"
+                      className="tablet:w-21 tablet:text-sm text-brand-blue-500 h-8 w-13 rounded-md px-3 py-1 text-xs font-medium"
+                    >
+                      삭제
+                    </MyButton>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </section>
 
@@ -279,7 +286,7 @@ export default function DashboardIdEdit() {
               <MyButton
                 onClick={() => setInviteOpen(true)}
                 color="buttonBlue"
-                className="tablet:flex hidden h-8 w-[105px] items-center justify-center gap-2 rounded-md text-sm"
+                className="tablet:flex hidden h-8 w-[105px] items-center justify-center gap-2 rounded-md text-sm text-white"
               >
                 <img src="/icons/icon-box-add-white.svg" alt="초대하기" className="h-4 w-4" />
                 초대하기
@@ -308,17 +315,14 @@ export default function DashboardIdEdit() {
               <li
                 key={i.id}
                 className={`flex h-[70px] items-center justify-between py-3 ${
-                  idx !== invites.length - 1 ? "border-brand-gray-200 border-b" : ""
+                  idx !== invites.length - 1 ? "border-b border-gray-200" : ""
                 }`}
               >
                 <span className="text-sm">{i.email}</span>
                 <MyButton
                   onClick={() => handleCancelInvitation(i.id)}
                   color="buttonBasic"
-                  className={cn(
-                    "tablet:w-21 tablet:text-sm text-brand-blue-500 h-8 w-13 rounded-md px-3 py-1 text-xs font-medium",
-                    darkStyle,
-                  )}
+                  className="tablet:w-21 tablet:text-sm text-brand-blue-500 h-8 w-13 rounded-md px-3 py-1 text-xs font-medium"
                 >
                   취소
                 </MyButton>

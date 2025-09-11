@@ -33,13 +33,13 @@ export default function NewDashboardModal({
   };
 
   return (
-    <Modal open={open} size="lg" className="w-[90%] h-[334px] pc:w-[584px]">
+    <Modal open={open} size="lg" className="pc:w-[584px] h-[334px] w-[90%]">
       <ModalHeader title="새로운 대시보드" />
       <ModalContext>
         <span>대시보드 이름</span>
         <input
           type="text"
-          className="border-brand-gray-200 dark:bg-dark-900 w-full rounded border p-2 mt-[10px]"
+          className="border-brand-gray-200 dark:bg-dark-900 mt-[10px] w-full rounded border p-2"
           placeholder="대시보드 이름을 입력해주세요."
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -60,7 +60,7 @@ export default function NewDashboardModal({
         <MyButton color="buttonBasic" className="h-[54px] w-[50%]" onClick={onClose}>
           취소
         </MyButton>
-        <MyButton color="buttonBlue" className="h-[54px] w-[256px]" onClick={handleCreate}>
+        <MyButton color="buttonBlue" className="h-[54px] w-[50%]" onClick={handleCreate}>
           생성
         </MyButton>
       </ModalFooter>
