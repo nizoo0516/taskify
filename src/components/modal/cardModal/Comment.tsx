@@ -156,7 +156,7 @@ export default function CommentList() {
       </Field>
 
       {/* 댓글 목록 */}
-      <div className="max-h-80 overflow-y-auto" id="comments-scroll">
+      <div className="max-h-[228px] overflow-y-auto" id="comments-scroll">
         <InfiniteScroll
           dataLength={comments.length}
           next={fetchMore}

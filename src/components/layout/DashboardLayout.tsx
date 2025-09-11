@@ -15,7 +15,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const darkStyle = cn("dark:bg-dark-800 dark:border-dark-700 dark:text-dark-200");
 
   return (
-    <div className="flex h-screen">
+    <div className="tablet:h-screen flex">
       <aside
         className={cn(
           scrollbarStyle,
