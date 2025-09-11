@@ -70,9 +70,6 @@ export default function ModifyCardModal({
       }))
     : [];
 
-  console.log("컬럼 타이틀 찍어보기!!", columnTitle);
-  console.log("생성된 stateOpt:", stateOpt);
-
   // 멤버 목록 가져오기
   useEffect(() => {
     if (!isOpen || !dashboardId) return;
@@ -114,7 +111,6 @@ export default function ModifyCardModal({
   const handleStatusSelect = (opt: Option) => {
     const newColumnId = Number(opt.value);
     setSelectedColumnId(newColumnId);
-    console.log("선택된 컬럼 ID:", newColumnId);
   };
 
   useEffect(() => {
@@ -202,8 +198,6 @@ export default function ModifyCardModal({
 
       // 카드 수정 API 호출
       const updateResult = await updateCard(cardId, updateData);
-
-      console.log("수정된 카드!!!!!!!!!!!", updateData);
 
       // 컬럼 상태 업데이트
       if (setColumns) {

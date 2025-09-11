@@ -78,11 +78,12 @@ type ModalHeaderProps = {
   children?: React.ReactNode;
   onClose?: () => void;
   className?: string;
+  titleStyle?: string;
 };
-function ModalHeader({ title, children, onClose, className }: ModalHeaderProps) {
+function ModalHeader({ title, children, onClose, className, titleStyle }: ModalHeaderProps) {
   return (
-    <div className="mb-3 flex justify-between">
-      <h3 className="text-2xl font-bold">{title}</h3>
+    <div className={cn("mb-3 flex justify-between", className)}>
+      <h3 className={cn("text-2xl font-bold", titleStyle)}>{title}</h3>
       {children}
       {onClose && (
         <button onClick={onClose}>
@@ -99,7 +100,17 @@ type ModalContextProps = {
 };
 
 function ModalContext({ children, className }: ModalContextProps) {
-  return <div className={cn("py-3", className)}>{children}</div>;
+  return (
+    <div
+      className={cn(
+        "py-3",
+        "tablet:max-h-[570px] tablet:overflow-x-hidden [&::-webkit-scrollbar]:hidden",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
 }
 
 type ModalFooterProps = {
