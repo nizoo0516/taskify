@@ -33,7 +33,7 @@ export default function CommentList() {
       try {
         setIsLoading(true);
         const response = await getComments(cardId, {
-          size: 10,
+          size: 5,
           cursorId: reset ? undefined : (cursorId ?? undefined),
         });
 
@@ -156,7 +156,7 @@ export default function CommentList() {
       </Field>
 
       {/* 댓글 목록 */}
-      <div className="max-h-80 overflow-y-auto" id="comments-scroll">
+      <div className="max-h-[228px] overflow-y-auto" id="comments-scroll">
         <InfiniteScroll
           dataLength={comments.length}
           next={fetchMore}
@@ -175,7 +175,7 @@ export default function CommentList() {
           {comments.map((comment) => (
             <div key={comment.id} className="flex gap-2.5">
               {/* 프로필 */}
-              <div className="bg-brand-orange flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white">
+              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white">
                 {comment.author?.profileImageUrl ? (
                   <img
                     src={comment.author.profileImageUrl}
