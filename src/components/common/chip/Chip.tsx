@@ -8,7 +8,7 @@ import plusIcon from "./icon-plus.svg";
 type ChipProps = {
   variant: "status" | "category" | "color" | "badge" | "add";
   label?: string;
-  color?: string;
+  color?: string | { bg: string; text: string }; // <-- 수정된 부분
   onClick?: () => void;
   className?: string;
   size?: "sm" | "md";
@@ -44,17 +44,26 @@ export default function Chip({
       );
 
     /** 카테고리 칩 (프로젝트, 일반, 백엔드 등) */
-    case "category":
+    case "category": {
+      if (typeof color === "object" && color?.bg && color?.text) {
+        return (
+          <span
+            className={`inline-flex h-7 min-w-[25px] items-center justify-center rounded px-[6px] text-sm ${color.bg} ${color.text} ${className}`}
+          >
+            {label}
+          </span>
+        );
+      }
+
       return (
         <span
-          className={
-            "inline-flex h-7 min-w-[25px] items-center justify-center rounded px-[6px] text-sm " +
-            className
-          }
+          className={`inline-flex h-7 min-w-[25px] items-center justify-center rounded px-[6px] text-sm ${className}`}
+          style={{ backgroundColor: typeof color === "string" ? color : undefined }}
         >
           {label}
         </span>
       );
+    }
 
     /** 색상 칩 (원형 색 선택) */
     case "color": {
@@ -66,7 +75,7 @@ export default function Chip({
           aria-label={`color ${color}`}
           onClick={onClick}
           className={`relative flex items-center justify-center rounded-full ${colorSizeClasses} ${className}`}
-          style={{ backgroundColor: color }}
+          style={{ backgroundColor: typeof color === "string" ? color : undefined }}
         >
           {selected && (
             <Image src={checkIcon} alt="선택됨" width={24} height={24} className={checkIconSize} />

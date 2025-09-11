@@ -33,7 +33,6 @@ export default function TagInput({ value, onChange }: TagInputProps) {
     if (!newLabel || value.some((tag) => tag.label === newLabel)) return;
 
     const randomColor = colorVariants[Math.floor(Math.random() * colorVariants.length)];
-
     onChange([...value, { label: newLabel, color: randomColor }]);
     setInputValue("");
     setSkipChange(true);
@@ -56,11 +55,7 @@ export default function TagInput({ value, onChange }: TagInputProps) {
       {/* 확정된 태그들 */}
       {value.map((tag, i) => (
         <div key={i} className="flex items-center gap-1">
-          <Chip
-            variant="category"
-            label={tag.label}
-            className={`${tag.color.bg} ${tag.color.text}`}
-          />
+          <Chip variant="category" label={tag.label} color={tag.color} />
           <button type="button" onClick={() => removeTag(i)} className="text-xs text-gray-500">
             ×
           </button>

@@ -18,6 +18,8 @@ import type { Card } from "@/features/cards/types";
 import { ColumnData } from "@/features/dashboard/types";
 import { getMembers } from "@/features/members/api";
 
+import { getColorForTag } from "@/lib/utils/tagColor";
+
 type CardWithTags = Card & { tags: Tag[] };
 
 type ModalType = {
@@ -157,17 +159,16 @@ export default function CreateCardModal({
       }
 
       // 컬럼 상태 업데이트
-      setColumns((prevColumns) => {
-        return prevColumns.map((col) => {
-          if (col.id === columnId) {
-            return {
-              ...col,
-              cards: [...(col.cards ?? []), { ...createdCard, tags } as CardWithTags],
-            };
-          }
-          return col;
-        });
-      });
+      setColumns((prevColumns) =>
+        prevColumns.map((col) =>
+          col.id === columnId
+            ? {
+                ...col,
+                cards: [{ ...createdCard, tags } as CardWithTags, ...(col.cards ?? [])],
+              }
+            : col,
+        ),
+      );
 
       if (onCardCreated) {
         onCardCreated();
@@ -229,7 +230,17 @@ export default function CreateCardModal({
             </Field>
 
             <Field id="tag" label="태그">
-              <TagInput value={tags} onChange={setTags} />
+              <TagInput
+                value={tags}
+                onChange={(newTags) =>
+                  setTags(
+                    newTags.map((t) => ({
+                      label: t.label,
+                      color: getColorForTag(t.label),
+                    })),
+                  )
+                }
+              />
             </Field>
 
             <Field id="image" label="이미지">
