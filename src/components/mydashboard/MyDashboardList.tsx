@@ -10,18 +10,25 @@ import Input from "@/components/form/Input";
 import MyButton from "@/components/common/Button";
 import Pagination from "@/components/common/Pagination";
 
-import { getDashboards, createDashboard as apiCreateDashboard } from "@/features/dashboard/api";
+import {
+  getDashboards,
+  createDashboard as apiCreateDashboard,
+  createDashboard,
+} from "@/features/dashboard/api";
 import { getInvitations, respondInvitation } from "@/features/invitations/api";
 import type { Invitation } from "@/features/invitations/types";
 
-import { useDashboardStore } from "./useDashboardStore";
 import { loadAcceptedMap, saveAcceptedAt } from "@/lib/utils/localStorage";
+import { useQueryClient } from "@tanstack/react-query";
+import { useMyDashboardStore } from "./useDashboardStore";
+import { sortDashboards } from "@/lib/sortDashboard";
 
 export default function MyDashboardList() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   // Zustand 대시보드 상태
-  const { dashboards, setDashboards, addDashboard } = useDashboardStore();
+  const { dashboards, setDashboards, addDashboard, page, setPage } = useMyDashboardStore();
 
   // 로컬 상태
   const [invitations, setInvitations] = useState<Invitation[]>([]);
@@ -41,22 +48,47 @@ export default function MyDashboardList() {
 
   // 대시보드 + 초대 데이터 불러오기
   useEffect(() => {
-    getDashboards("pagination", { page: 1, size: 100 })
-      .then((res) => {
+    const fetchDashboardsAndInvites = async () => {
+      try {
+        const [dashboardRes, invitationRes] = await Promise.all([
+          getDashboards("pagination", { page: 1, size: 100 }),
+          getInvitations({ cursorId: 0, size: 100 }),
+        ]);
+
+        setInvitations(invitationRes.invitations);
+
         const acceptedMap = loadAcceptedMap();
-        const merged = res.dashboards.map((d) => ({
+
+        const myDashboards = dashboardRes.dashboards.map((d) => ({
           ...d,
           acceptedAt: acceptedMap[d.id] ?? null,
         }));
-        setDashboards(merged);
-        setCurrentPage(1);
-      })
-      .catch((err) => console.error("대시보드 조회 실패:", err));
 
-    getInvitations({ size: 100 })
-      .then((res) => setInvitations(res.invitations))
-      .catch((err) => console.error("초대 조회 실패:", err));
-  }, [setDashboards]);
+        // 초대받은 대시보드 가공
+        const invitedDashboards = invitationRes.invitations
+          .filter((inv) => inv.inviteAccepted) // 수락된 초대만 추가
+          .map((inv) => ({
+            id: inv.dashboard.id,
+            title: inv.dashboard.title,
+            color: "#7AC555", // 초대된 대시보드는 색 정보 없을 수 있음
+            createdAt: inv.createdAt,
+            updatedAt: inv.updatedAt,
+            createdByMe: false,
+            userId: inv.inviter.id,
+            acceptedAt: acceptedMap[inv.dashboard.id] ?? null,
+          }));
+
+        const mergedDashboards = [...myDashboards, ...invitedDashboards];
+
+        setDashboards(sortDashboards(mergedDashboards));
+        setPage(1);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchDashboardsAndInvites();
+  }, [setDashboards, setPage]);
 
   // 초대 필터링
   const filteredInvitations = useMemo(
@@ -117,27 +149,26 @@ export default function MyDashboardList() {
     title: string,
     inviterId: number,
   ) => {
-    try {
-      await respondInvitation(inviteId, true);
+    await respondInvitation(inviteId, true);
+    // 초대 수락한 시간
+    const now = new Date().toISOString();
+    addDashboard({
+      id: dashboardId,
+      title,
+      color: "#7AC555",
+      createdAt: now,
+      updatedAt: now,
+      createdByMe: false,
+      userId: inviterId,
+      acceptedAt: now,
+    });
+    saveAcceptedAt(dashboardId, now);
 
-      const now = new Date().toISOString();
-      addDashboard({
-        id: dashboardId,
-        title,
-        color: selectedColor,
-        createdAt: now,
-        updatedAt: now,
-        createdByMe: false,
-        userId: inviterId,
-        acceptedAt: now,
-      });
+    // 사이드 반영
+    queryClient.invalidateQueries({ queryKey: ["dashboards", "sidebar"] });
 
-      saveAcceptedAt(dashboardId, now);
-      setInvitations((prev) => prev.filter((inv) => inv.id !== inviteId));
-      setCurrentPage(1);
-    } catch (err) {
-      console.error("초대 수락 실패:", err);
-    }
+    // 초대 목록 다시 반영
+    setInvitations((prev) => prev.filter((inv) => inv.id !== inviteId));
   };
 
   // 초대 거절
@@ -151,21 +182,11 @@ export default function MyDashboardList() {
   };
 
   // 대시보드 생성
-  const handleCreateDashboard = async (name: string, color: string) => {
-    try {
-      const newDashboard = await apiCreateDashboard({ title: name, color });
-      const now = new Date().toISOString();
-
-      addDashboard({
-        ...newDashboard,
-        acceptedAt: now,
-      });
-
-      saveAcceptedAt(newDashboard.id, now);
-      setCurrentPage(1);
-    } catch (err) {
-      console.error("대시보드 생성 실패:", err);
-    }
+  const handleCreateDashboard = async (title: string, color: string) => {
+    const newDashboard = await createDashboard({ title, color });
+    const now = new Date().toISOString();
+    addDashboard({ ...newDashboard, acceptedAt: now });
+    saveAcceptedAt(newDashboard.id, now);
   };
 
   return (
@@ -247,7 +268,7 @@ export default function MyDashboardList() {
           <div className="pc:block tablet:block hidden pb-[28px]">
             <div className="h-[458px] overflow-y-auto">
               <table className="w-full border-collapse text-left text-sm">
-                <thead className="sticky top-0 z-10 border-b">
+                <thead className="bg-brand-gray-100 border-brand-gray-300 sticky top-0 z-10 border-b">
                   <tr>
                     <th className="w-1/3 px-[28px] py-2 text-lg font-normal text-gray-500">이름</th>
                     <th className="w-1/3 px-[28px] py-2 text-lg font-normal text-gray-500">
@@ -274,7 +295,7 @@ export default function MyDashboardList() {
                     </tr>
                   ) : (
                     visibleInvitations.map((invite) => (
-                      <tr key={invite.id} className="border-b last:border-0">
+                      <tr key={invite.id} className="border-brand-gray-300 border-b last:border-0">
                         <td className="w-1/3 truncate overflow-hidden px-[28px] py-[23px] text-lg whitespace-nowrap">
                           {invite.dashboard.title}
                         </td>
@@ -284,7 +305,7 @@ export default function MyDashboardList() {
                         <td className="w-1/3 truncate overflow-hidden px-[28px] py-[23px] text-lg whitespace-nowrap">
                           <div className="flex gap-2">
                             <MyButton
-                              className="tablet:px-[19px] pc:px-[29.5px] py-[4px] text-white"
+                              className="tablet:px-[19px] pc:px-[29.5px] py-[4px]"
                               color="buttonBlue"
                               onClick={() =>
                                 handleAcceptInvite(

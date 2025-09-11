@@ -6,7 +6,7 @@ export default function Features() {
       point: "Point 1",
       desc: (
         <>
-          일의 <span className="text-brand-gray-300">우선순위</span>를
+          일의 <span className="text-[#d9d9d9]">우선순위</span>를
           <br />
           관리하세요
         </>
@@ -35,10 +35,7 @@ export default function Features() {
       {pointList.map((item) => (
         <div
           key={item.point}
-          className={cn(
-            item.cardStyle,
-            "bg-brand-gray-800 pc:pt-24 mb-[90px] flex flex-col rounded-lg",
-          )}
+          className={cn(item.cardStyle, "pc:pt-24 mb-[90px] flex flex-col rounded-lg bg-[#171717]")}
         >
           <div className="tablet:items-start tablet:mb-56 tablet:text-left pc:mb-0 tablet:pl-14 mb-48 flex flex-1 flex-col items-center text-center">
             <span className="text-2lg text-brand-gray-400 tablet:pb-24 pc:pt-5 block py-14 font-medium">

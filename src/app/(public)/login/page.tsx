@@ -140,7 +140,7 @@ export default function LoginPage() {
             formRef.current?.requestSubmit();
           }}
           color={disabledSubmit ? "buttonGrey" : "buttonBlue"}
-          className={`h-[50px] w-full ${disabledSubmit ? "pointer-events-none" : ""} text-white`}
+          className={`h-[50px] w-full ${disabledSubmit ? "pointer-events-none" : ""}`}
         >
           {submitting ? "로그인 중" : "로그인"}
         </MyButton>

@@ -32,7 +32,7 @@ export default function ExtraFeatures() {
             <div className="bg-brand-gray-600 tablet:h-[260px] tablet:px-[39px] flex h-[236px] items-center justify-center rounded-t-lg px-[42px]">
               <img src={item.src} alt="페이지 기능 이미지" />
             </div>
-            <div className="tablet:py-8 bg-brand-gray-800 rounded-b-lg px-8 py-7">
+            <div className="tablet:py-8 rounded-b-lg bg-[#171717] px-8 py-7">
               <div className="text-2lg mb-4 font-bold">{item.title}</div>
               <div className="text-lg font-medium">{item.desc}</div>
             </div>
