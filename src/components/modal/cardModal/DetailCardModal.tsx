@@ -147,11 +147,12 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
           <ModalHeader
             title={card?.title || "카드 상세 모달"}
             onClose={() => setIsOpen(false)}
-            className="tablet:items-center items-start"
+            className="tablet:items-center items-start justify-start"
+            titleStyle="pt-12 tablet:pt-0"
           >
             <Button
               onClick={() => setIsKebabOpen(!isKebabOpen)}
-              className="mr-6 ml-auto h-9 w-9 border-0"
+              className="mr-3 ml-auto h-9 w-9 border-0"
               disabled={isLoading}
             >
               <Image src="/icons/icon-menu.svg" width={28} height={28} alt="더보기" />
@@ -159,15 +160,15 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
           </ModalHeader>
           <ModalContext
             className={cn(
-              "flex flex-col",
+              "relative flex flex-col py-0",
               "pc:flex pc:items-start pc:justify-between pc:flex-row-reverse",
-              "tablet:flex tablet:items-start tablet:justify-between tablet:flex-row-reverse",
+              "tablet:flex tablet:items-start tablet:justify-between tablet:flex-row-reverse tablet:py-3",
             )}
           >
             <div
               className={cn(
                 "border-brand-gray-200 mb-4 flex w-full justify-between gap-4 self-start rounded-lg border px-4 py-2",
-                "tablet:w-[180px] tablet:flex-col tablet:mb-4 tablet:py-4",
+                "tablet:w-[180px] tablet:flex-col tablet:mb-4 tablet:py-4 tablet:sticky tablet:top-0",
                 "pc:w-[200px]",
               )}
             >
@@ -185,7 +186,7 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
               </div>
               <div>
                 <p className="tablet:text-sm mb-1.5 text-xs font-bold">마감일</p>
-                <p className="tablet:text-sm text-xs whitespace-nowrap">
+                <p className="tablet:text-sm tablet:pt-0 pt-0.5 text-xs whitespace-nowrap">
                   {card?.dueDate || "마감일 없음"}
                 </p>
               </div>
@@ -228,7 +229,7 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
 
           {/* 케밥 메뉴 */}
           {isKebabOpen && (
-            <KebabModal className="top-16 right-24 bg-white">
+            <KebabModal className="tablet:top-16 tablet:right-24 top-14 right-6 bg-white">
               <Button
                 onClick={handleModify}
                 className="h-8 w-20"

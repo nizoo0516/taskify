@@ -166,7 +166,7 @@ export default function DashboardIdEdit() {
   };
 
   return (
-    <div className="bg-brand-gray-100 min-h-screen p-6">
+    <div className="bg-brand-gray-100 h-full p-6">
       {/* 전체 컨테이너 */}
       <div className="pc:max-w-155 flex w-full min-w-71 flex-col gap-[15px]">
         {/* 돌아가기 버튼 */}

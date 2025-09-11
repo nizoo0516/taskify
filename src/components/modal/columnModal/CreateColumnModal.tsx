@@ -27,7 +27,6 @@ export default function CreateColumnModal({ isOpen, setIsOpen, setColumns }: Mod
 
   const handleCreate = async () => {
     if (isDisabled) return;
-    console.log(dashboardId);
 
     try {
       const res = await createColumn({

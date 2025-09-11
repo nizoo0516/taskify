@@ -100,6 +100,24 @@ export default function SignupPage() {
 
   const canSubmit = activeButton && values.agree && !submitting;
 
+  const pwToggle = (controlsId: string) => (
+    <button
+      type="button"
+      onClick={() => setShowPw((s) => !s)}
+      aria-pressed={showPw}
+      aria-controls={controlsId}
+      aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
+      className="top 1/2 itmes-center absolute right-0.5 flex h-6 w-6 -translate-y-1/2 justify-center text-gray-500"
+    >
+      <Image
+        src={showPw ? "/icons/icon-eye-close.svg" : "/icons/icon-eye-open.svg"}
+        alt="눈 아이콘"
+        width={24}
+        height={24}
+      />
+    </button>
+  );
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     onBlurEmail();
@@ -139,7 +157,7 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="pc:max-w-[520px] tablet:max-w-[520px] mx-auto flex min-h-screen w-full max-w-[351px] flex-col items-center justify-center">
+    <main className="pc:max-w-[520px] tablet:max-w-[520px] mx-auto flex h-screen w-full max-w-[351px] flex-col items-center justify-center">
       <Link href="/" className="mb-3 flex flex-col items-center gap-[5px]" aria-label="홈으로 이동">
         <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={300} height={60} />
       </Link>
@@ -176,22 +194,7 @@ export default function SignupPage() {
               value={values.password}
               onChange={onChange("password")}
               onBlur={onBlurPw}
-              rightIcon={
-                <button
-                  type="button"
-                  onClick={() => setShowPw((s) => !s)}
-                  aria-controls="password"
-                  aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
-                  className="absolute top-1/2 right-0.5 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-gray-500"
-                >
-                  <Image
-                    src={showPw ? "/icons/icon-eye-close.svg" : "/icons/icon-eye-open.svg"}
-                    alt="눈 아이콘"
-                    width={24}
-                    height={24}
-                  />
-                </button>
-              }
+              rightIcon={pwToggle("password")}
             />
           </div>
         </Field>
@@ -205,22 +208,7 @@ export default function SignupPage() {
               value={values.confirm}
               onChange={onChange("confirm")}
               onBlur={onBlurConfirm}
-              rightIcon={
-                <button
-                  type="button"
-                  onClick={() => setShowPw((s) => !s)}
-                  aria-controls="password"
-                  aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
-                  className="absolute top-1/2 right-0.5 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-gray-500"
-                >
-                  <Image
-                    src={showPw ? "/icons/icon-eye-close.svg" : "/icons/icon-eye-open.svg"}
-                    alt="눈 아이콘"
-                    width={24}
-                    height={24}
-                  />
-                </button>
-              }
+              rightIcon={pwToggle("confirm")}
             />
           </div>
         </Field>
@@ -241,7 +229,7 @@ export default function SignupPage() {
             formRef.current?.requestSubmit();
           }}
           color={canSubmit ? "buttonBlue" : "buttonGrey"}
-          className={`h-[50px] w-full ${!canSubmit ? "pointer-events-none" : ""} text-white`}
+          className={`h-[50px] w-full ${!canSubmit ? "pointer-events-none" : ""}`}
         >
           {submitting ? "가입 중" : "가입하기"}
         </MyButton>

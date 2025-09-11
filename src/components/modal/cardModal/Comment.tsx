@@ -33,7 +33,7 @@ export default function CommentList() {
       try {
         setIsLoading(true);
         const response = await getComments(cardId, {
-          size: 10,
+          size: 5,
           cursorId: reset ? undefined : (cursorId ?? undefined),
         });
 
@@ -44,7 +44,6 @@ export default function CommentList() {
         setComments((prev) => (reset ? newComments : [...prev, ...newComments]));
         setCursorId(nextCursor);
         setHasMore(!!nextCursor && newComments.length > 0);
-        console.log("새로운 시간", newComments);
       } catch (error) {
         console.error("댓글 불러오기 실패:", error);
         if (reset) {
@@ -131,7 +130,7 @@ export default function CommentList() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       {/* 댓글 입력 */}
       <Field id="comment" label="댓글">
         <div className="dark:bg-dark-900 rounded-lg border border-[#D9D9D9] p-3">
@@ -142,7 +141,7 @@ export default function CommentList() {
             onChange={(e) => setInput(e.target.value)}
             disabled={isLoading}
           />
-          <div className="mt-1 flex justify-end">
+          <div className="flex justify-end">
             <Button
               color="buttonBasic"
               onClick={handleCreate}
@@ -156,7 +155,7 @@ export default function CommentList() {
       </Field>
 
       {/* 댓글 목록 */}
-      <div className="max-h-80 overflow-y-auto" id="comments-scroll">
+      <div className="max-h-[268px] overflow-y-auto" id="comments-scroll">
         <InfiniteScroll
           dataLength={comments.length}
           next={fetchMore}
@@ -170,12 +169,12 @@ export default function CommentList() {
             )
           }
           scrollableTarget="comments-scroll"
-          className="space-y-4"
+          className="space-y-3"
         >
           {comments.map((comment) => (
             <div key={comment.id} className="flex gap-2.5">
               {/* 프로필 */}
-              <div className="bg-brand-orange flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white">
+              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white">
                 {comment.author?.profileImageUrl ? (
                   <img
                     src={comment.author.profileImageUrl}
@@ -197,14 +196,15 @@ export default function CommentList() {
                 </div>
 
                 {editingId === comment.id ? (
-                  <div className="mt-1">
+                  <div>
                     <Textarea
                       value={editingContent}
                       onChange={(e) => setEditingContent(e.target.value)}
                       className="w-full resize-none text-sm"
                       rows={2}
+                      placeholder="댓글 작성하기"
                     />
-                    <div className="mt-1 flex gap-2">
+                    <div className="flex gap-2">
                       <button
                         onClick={() => handleEdit(comment.id)}
                         className="text-xs text-blue-500 hover:underline"
@@ -225,8 +225,8 @@ export default function CommentList() {
                   </div>
                 ) : (
                   <>
-                    <p className="mt-1">{comment.content}</p>
-                    <div className="mt-1 flex gap-2 text-xs text-gray-400">
+                    <p>{comment.content}</p>
+                    <div className="flex gap-2 text-xs text-gray-400">
                       <button
                         onClick={() => {
                           setEditingId(comment.id);
