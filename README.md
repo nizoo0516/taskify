@@ -75,7 +75,7 @@ taskify/
 
 ```bash
 # 레포지토리 클론
-git clone https://github.com/codeit-fe-17-team4/Taskify.git
+git clone https://github.com/Jiii-Eun/taskify.git
 
 # 의존성 설치
 npm install
@@ -123,10 +123,66 @@ npm start
 
 ## 👥 팀 구성 및 역할
 
-| 이름 | 담당 업무 |
+| 깃``
+
+## 🚀 시작하기
+
+### 설치 및 실행
+
+```bash
+# 레포지토리 클론
+git clone https://github.com/Jiii-Eun/taskify.git
+
+# 의존성 설치
+npm install
+
+# 개발 서버 실행
+npm run dev
+
+# 빌드
+npm run build
+
+# 프로덕션 실행
+npm start
+```
+
+### 환경 설정
+프로젝트 루트에 `.env.local` 파일을 생성하고 필요한 환경변수를 설정하세요.
+
+## 📈 개발 프로세스
+
+### 1️⃣ 사전 기획
+- 프로젝트 주제 확정
+- 선정 배경 분석
+- 기획 의도 설정
+
+### 2️⃣ 계획 수립
+- 개발 환경/도구 선정
+- 프로젝트 구조 설계
+- WBS 및 스프린트 관리
+
+### 3️⃣ 구현
+- UI/UX 구현 (Tailwind + Motion)
+- 핵심 기능 개발
+- API 연동 및 상태 관리
+- 품질 관리 (Lint, 타입 검사, 포맷팅)
+
+### 4️⃣ 검증/통제
+- 기능별 단위/통합 테스트
+- GitHub PR을 통한 코드 리뷰
+- 리팩토링 (코드 최적화, 구조 개선)
+
+### 5️⃣ 완료/종료
+- Vercel 배포
+- 산출물 문서화
+- 피드백 반영 및 유지보수 계획
+
+## 👥 팀 구성 및 역할
+
+| GitHub 아이디 | 담당 업무 |
 |------|-----------|
 | **지은** | navbar, sidebar 담당, API 구성, 인증 방식 개선 |
-| **유선** | 공통 모달 구현, 할 일 카드 상세 모달, 컬럼 추가/관리 모달 |
+| **hanyousun** | 공통 모달 구현, 할 일 카드 상세 모달, 컬럼 추가/관리 모달 |
 | **지원** | 공통 버튼 구현, 내 대시보드 구현, 초대 받은 대시보드 |
 | **수빈** | 인증 페이지 구현, 계정관리 페이지, 검증 및 에러 처리, 기본 아바타 생성 |
 | **희수** | 공용 컴포넌트 제작, 대시보드 상세/수정 페이지, 태그 관련 기능 |
@@ -161,8 +217,8 @@ npm start
 
 ## 🔗 링크
 
-- **배포 사이트**: [Taskify 바로가기](https://taskify-example.vercel.app)
-- **GitHub**: [Repository](https://github.com/codeit-fe-17-team4/Taskify)
+- **배포 사이트**: [Taskify 바로가기](https://taskify-pi-coral.vercel.app/)
+- **GitHub**: [Repository](https://github.com/Jiii-Eun/taskify.git)
 
 ## 📝 라이선스
 
@@ -171,5 +227,6 @@ This project is licensed under the MIT License.
 ---
 
 <div align="center">
-  <strong>🚀 더 나은 협업을 위한 Taskify 🚀</strong>
+  <strong>🚀 더 나은 업무 공유를 위한 Taskify 🚀</strong>
 </div>
+
