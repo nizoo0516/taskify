@@ -48,17 +48,46 @@ export default function MyDashboardList() {
 
   // 대시보드 + 초대 데이터 불러오기
   useEffect(() => {
-    getDashboards("pagination", { page: 1, size: 100 })
-      .then((res) => {
+    const fetchDashboardsAndInvites = async () => {
+      try {
+        const [dashboardRes, invitationRes] = await Promise.all([
+          getDashboards("pagination", { page: 1, size: 100 }),
+          getInvitations({ cursorId: 0, size: 100 }),
+        ]);
+
+        setInvitations(invitationRes.invitations);
+
         const acceptedMap = loadAcceptedMap();
-        const merged = res.dashboards.map((d) => ({
+
+        const myDashboards = dashboardRes.dashboards.map((d) => ({
           ...d,
           acceptedAt: acceptedMap[d.id] ?? null,
         }));
-        setDashboards(sortDashboards(merged));
+
+        // 초대받은 대시보드 가공
+        const invitedDashboards = invitationRes.invitations
+          .filter((inv) => inv.inviteAccepted) // 수락된 초대만 추가
+          .map((inv) => ({
+            id: inv.dashboard.id,
+            title: inv.dashboard.title,
+            color: "#7AC555", // 초대된 대시보드는 색 정보 없을 수 있음
+            createdAt: inv.createdAt,
+            updatedAt: inv.updatedAt,
+            createdByMe: false,
+            userId: inv.inviter.id,
+            acceptedAt: acceptedMap[inv.dashboard.id] ?? null,
+          }));
+
+        const mergedDashboards = [...myDashboards, ...invitedDashboards];
+
+        setDashboards(sortDashboards(mergedDashboards));
         setPage(1);
-      })
-      .catch(console.error);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchDashboardsAndInvites();
   }, [setDashboards, setPage]);
 
   // 초대 필터링
@@ -121,6 +150,7 @@ export default function MyDashboardList() {
     inviterId: number,
   ) => {
     await respondInvitation(inviteId, true);
+    // 초대 수락한 시간
     const now = new Date().toISOString();
     addDashboard({
       id: dashboardId,
@@ -133,6 +163,12 @@ export default function MyDashboardList() {
       acceptedAt: now,
     });
     saveAcceptedAt(dashboardId, now);
+
+    // 사이드 반영
+    queryClient.invalidateQueries({ queryKey: ["dashboards", "sidebar"] });
+
+    // 초대 목록 다시 반영
+    setInvitations((prev) => prev.filter((inv) => inv.id !== inviteId));
   };
 
   // 초대 거절
