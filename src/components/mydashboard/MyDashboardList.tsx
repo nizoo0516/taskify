@@ -171,7 +171,7 @@ export default function MyDashboardList() {
   return (
     <div className="bg-brand-gray-100 py-[40px]">
       {/* 내 대시보드 */}
-      <div className="pc:mx-0 pc:ml-[40px] mx-auto min-h-[204px] w-[95%] max-w-[1022px] overflow-hidden">
+      <div className="pc-[95%] tablet-[95%] pc:mx-0 pc:ml-[40px] mx-auto min-h-[204px] w-[90%] max-w-[1022px] overflow-hidden">
         <div className="tablet:grid-cols-2 pc:grid-cols-3 grid min-h-[156px] grid-cols-1 gap-4">
           {/* 새 대시보드 버튼 */}
           <MyButton
@@ -182,10 +182,10 @@ export default function MyDashboardList() {
             새로운 대시보드 &nbsp; <Chip variant="add" size="sm" />
           </MyButton>
 
-          {currentItems.map((dashboard) => (
+          {currentItems.map((dashboard, index) => (
             <MyButton
-              key={dashboard.id}
-              className="h-[70px] p-4 text-left font-semibold"
+              key={`${dashboard.id}-${index}`}
+              className="pc:text-lg tablet:text-lg h-[70px] p-4 text-left text-sm font-semibold"
               color="buttonBasic"
               onClick={() => router.push(`/dashboard/${dashboard.id}`)}
             >
@@ -225,10 +225,12 @@ export default function MyDashboardList() {
       </div>
 
       {/* 초대 받은 대시보드 */}
-      <div className="pc:mx-0 pc:ml-[40px] mx-auto mt-8 w-[95%] max-w-[1022px] rounded-lg bg-white">
-        <h2 className="px-[28px] py-[32px] text-2xl font-bold">초대 받은 대시보드</h2>
+      <div className="pc-[95%] tablet-[95%] pc:mx-0 pc:ml-[40px] mx-auto mt-8 w-[90%] max-w-[1022px] rounded-lg">
+        <h2 className="pc:px-[28px] tablet:px-[28px] px-4 py-[32px] text-2xl font-bold">
+          초대 받은 대시보드
+        </h2>
         {invitations.length > 0 && (
-          <div className="px-[28px] pb-[16px]">
+          <div className="pc:px-[28px] tablet:px-[28px] px-4 pb-[16px]">
             <Input
               placeholder="검색"
               value={searchKeyword}
@@ -242,14 +244,18 @@ export default function MyDashboardList() {
 
         {/* PC/태블릿 - 테이블 */}
         {invitations.length > 0 && (
-          <div className="pc:block tablet:block hidden px-[28px] pb-[28px]">
-            <div className="h-[458px] overflow-y-auto rounded-md border">
+          <div className="pc:block tablet:block hidden pb-[28px]">
+            <div className="h-[458px] overflow-y-auto">
               <table className="w-full border-collapse text-left text-sm">
-                <thead className="sticky top-0 z-10 border-b bg-white">
+                <thead className="sticky top-0 z-10 border-b">
                   <tr>
-                    <th className="w-1/3 px-[28px] py-2">이름</th>
-                    <th className="w-1/3 px-[28px] py-2">초대자</th>
-                    <th className="w-1/3 px-[28px] py-2">수락 여부</th>
+                    <th className="w-1/3 px-[28px] py-2 text-lg font-normal text-gray-500">이름</th>
+                    <th className="w-1/3 px-[28px] py-2 text-lg font-normal text-gray-500">
+                      초대자
+                    </th>
+                    <th className="w-1/3 px-[28px] py-2 text-lg font-normal text-gray-500">
+                      수락 여부
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -269,13 +275,13 @@ export default function MyDashboardList() {
                   ) : (
                     visibleInvitations.map((invite) => (
                       <tr key={invite.id} className="border-b last:border-0">
-                        <td className="w-1/3 truncate overflow-hidden px-[28px] py-[23px] whitespace-nowrap">
+                        <td className="w-1/3 truncate overflow-hidden px-[28px] py-[23px] text-lg whitespace-nowrap">
                           {invite.dashboard.title}
                         </td>
                         <td className="w-1/3 truncate overflow-hidden px-[28px] py-[23px] whitespace-nowrap">
                           {invite.inviter.nickname}
                         </td>
-                        <td className="w-1/3 px-[28px] py-[23px]">
+                        <td className="w-1/3 truncate overflow-hidden px-[28px] py-[23px] text-lg whitespace-nowrap">
                           <div className="flex gap-2">
                             <MyButton
                               className="tablet:px-[19px] pc:px-[29.5px] py-[4px] text-white"
@@ -331,7 +337,7 @@ export default function MyDashboardList() {
         )}
 
         {/* 모바일 - 카드 리스트 */}
-        <div className="pc:hidden tablet:hidden block px-[28px] pb-[28px]">
+        <div className="pc:hidden tablet:hidden block pb-[28px]">
           {visibleInvitations.length === 0 ? (
             <div className="py-8 text-center text-gray-400">
               검색 결과가 없습니다.
@@ -350,17 +356,23 @@ export default function MyDashboardList() {
                 <div
                   key={invite.id}
                   ref={isLast ? loadMoreRefMobile : null}
-                  className="mb-4 rounded-md border px-4 py-3 shadow-sm"
+                  className="border-b px-4 py-3"
                 >
-                  <div className="truncate overflow-hidden text-lg font-semibold whitespace-nowrap">
+                  <span className="inline-block w-[40px] truncate overflow-hidden text-sm whitespace-nowrap text-gray-500">
+                    이름
+                  </span>
+                  <span className="inline-block truncate overflow-hidden text-sm whitespace-nowrap">
                     {invite.dashboard.title}
-                  </div>
-                  <div className="truncate overflow-hidden text-sm whitespace-nowrap text-gray-500">
-                    초대자: {invite.inviter.nickname}
-                  </div>
+                  </span>
+                  <span className="inline-block w-[40px] truncate overflow-hidden text-sm whitespace-nowrap text-gray-500">
+                    초대자
+                  </span>
+                  <span className="inline-block truncate overflow-hidden text-sm whitespace-nowrap">
+                    {invite.inviter.nickname}
+                  </span>
                   <div className="mt-3 flex gap-2">
                     <MyButton
-                      className="w-full px-[29.5px] py-[4px] text-white"
+                      className="w-full px-[29.5px] py-[8px] text-white"
                       color="buttonBlue"
                       onClick={() =>
                         handleAcceptInvite(
