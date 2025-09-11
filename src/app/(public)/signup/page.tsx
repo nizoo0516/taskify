@@ -100,6 +100,24 @@ export default function SignupPage() {
 
   const canSubmit = activeButton && values.agree && !submitting;
 
+  const pwToggle = (controlsId: string) => (
+    <button
+      type="button"
+      onClick={() => setShowPw((s) => !s)}
+      aria-pressed={showPw}
+      aria-controls={controlsId}
+      aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
+      className="top 1/2 itmes-center absolute right-0.5 flex h-6 w-6 -translate-y-1/2 justify-center text-gray-500"
+    >
+      <Image
+        src={showPw ? "/icons/icon-eye-close.svg" : "/icons/icon-eye-open.svg"}
+        alt="눈 아이콘"
+        width={24}
+        height={24}
+      />
+    </button>
+  );
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     onBlurEmail();
@@ -176,22 +194,7 @@ export default function SignupPage() {
               value={values.password}
               onChange={onChange("password")}
               onBlur={onBlurPw}
-              rightIcon={
-                <button
-                  type="button"
-                  onClick={() => setShowPw((s) => !s)}
-                  aria-controls="password"
-                  aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
-                  className="absolute top-1/2 right-0.5 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-gray-500"
-                >
-                  <Image
-                    src={showPw ? "/icons/icon-eye-close.svg" : "/icons/icon-eye-open.svg"}
-                    alt="눈 아이콘"
-                    width={24}
-                    height={24}
-                  />
-                </button>
-              }
+              rightIcon={pwToggle("password")}
             />
           </div>
         </Field>
@@ -205,22 +208,7 @@ export default function SignupPage() {
               value={values.confirm}
               onChange={onChange("confirm")}
               onBlur={onBlurConfirm}
-              rightIcon={
-                <button
-                  type="button"
-                  onClick={() => setShowPw((s) => !s)}
-                  aria-controls="password"
-                  aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
-                  className="absolute top-1/2 right-0.5 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-gray-500"
-                >
-                  <Image
-                    src={showPw ? "/icons/icon-eye-close.svg" : "/icons/icon-eye-open.svg"}
-                    alt="눈 아이콘"
-                    width={24}
-                    height={24}
-                  />
-                </button>
-              }
+              rightIcon={pwToggle("confirm")}
             />
           </div>
         </Field>
