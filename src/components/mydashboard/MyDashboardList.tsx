@@ -2,109 +2,113 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 
 import Chip from "@/components/common/chip/Chip";
 import CreateDashboardModal from "@/components/modal/CreateDashboardModal";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/common/Button";
 import Pagination from "@/components/common/Pagination";
-import type { Dashboard } from "@/features/dashboard/types";
+
 import { getDashboards, createDashboard as apiCreateDashboard } from "@/features/dashboard/api";
-import type { Invitation } from "@/features/invitations/types";
 import { getInvitations, respondInvitation } from "@/features/invitations/api";
+import type { Invitation } from "@/features/invitations/types";
+
+import { useDashboardStore } from "./useDashboardStore";
+import { loadAcceptedMap, saveAcceptedAt } from "@/lib/utils/localStorage";
 
 export default function MyDashboardList() {
   const router = useRouter();
 
-  // 상태
-  const [dashboardList, setDashboardList] = useState<Dashboard[]>([]);
+  // Zustand 대시보드 상태
+  const { dashboards, setDashboards, addDashboard } = useDashboardStore();
+
+  // 로컬 상태
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedColor] = useState("#7AC555");
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  // 무한스크롤 관련 상태
+  // 초대 무한스크롤
   const [visibleCount, setVisibleCount] = useState(6);
   const loadMoreRefPc = useRef<HTMLTableRowElement>(null);
   const loadMoreRefMobile = useRef<HTMLDivElement>(null);
 
-  // 필터링된 초대 목록
-  const filteredInvitations = invitations.filter((invite) =>
-    invite.dashboard.title.toLowerCase().includes(searchKeyword.toLowerCase()),
-  );
-
-  // 현재 보여줄 초대 리스트 (무한스크롤 적용)
-  const visibleInvitations = filteredInvitations.slice(0, visibleCount);
-
-  // 대시보드 페이징 처리 (기존 방식 유지)
+  // 페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
-  const totalPages = Math.ceil(dashboardList.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = dashboardList.slice(startIndex, startIndex + itemsPerPage);
+  const itemsPerPage = 5;
+  const totalPages = Math.max(1, Math.ceil(dashboards.length / itemsPerPage));
 
-  // 데이터 불러오기 (처음에만)
+  // 대시보드 + 초대 데이터 불러오기
   useEffect(() => {
     getDashboards("pagination", { page: 1, size: 100 })
-      .then((res) => setDashboardList(res.dashboards))
+      .then((res) => {
+        const acceptedMap = loadAcceptedMap();
+        const merged = res.dashboards.map((d) => ({
+          ...d,
+          acceptedAt: acceptedMap[d.id] ?? null,
+        }));
+        setDashboards(merged);
+        setCurrentPage(1);
+      })
       .catch((err) => console.error("대시보드 조회 실패:", err));
 
     getInvitations({ size: 100 })
-      .then((res) => {
-        setInvitations(res.invitations);
-      })
+      .then((res) => setInvitations(res.invitations))
       .catch((err) => console.error("초대 조회 실패:", err));
-  }, []);
+  }, [setDashboards]);
 
-  // 무한스크롤 IntersectionObserver 설정
+  // 초대 필터링
+  const filteredInvitations = useMemo(
+    () =>
+      invitations.filter((invite) =>
+        invite.dashboard.title.toLowerCase().includes(searchKeyword.toLowerCase()),
+      ),
+    [invitations, searchKeyword],
+  );
+  const visibleInvitations = useMemo(
+    () => filteredInvitations.slice(0, visibleCount),
+    [filteredInvitations, visibleCount],
+  );
+
+  // 무한스크롤 (PC)
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          setVisibleCount((prev) => {
-            if (prev >= filteredInvitations.length) return prev; // 최대치 이상은 증가 금지
-            return prev + 6; // 5개씩 더 보여주기
-          });
+          setVisibleCount((prev) => (prev >= filteredInvitations.length ? prev : prev + 6));
         }
       },
       { threshold: 1 },
     );
-
-    if (loadMoreRefPc.current) {
-      observer.observe(loadMoreRefPc.current);
-    }
-
+    if (loadMoreRefPc.current) observer.observe(loadMoreRefPc.current);
     return () => {
-      if (loadMoreRefPc.current) {
-        observer.unobserve(loadMoreRefPc.current);
-      }
+      if (loadMoreRefPc.current) observer.unobserve(loadMoreRefPc.current);
     };
   }, [filteredInvitations.length]);
 
+  // 무한스크롤 (모바일)
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          setVisibleCount((prev) => {
-            if (prev >= filteredInvitations.length) return prev;
-            return prev + 6;
-          });
+          setVisibleCount((prev) => (prev >= filteredInvitations.length ? prev : prev + 6));
         }
       },
       { threshold: 1 },
     );
-
-    if (loadMoreRefMobile.current) {
-      observer.observe(loadMoreRefMobile.current);
-    }
-
+    if (loadMoreRefMobile.current) observer.observe(loadMoreRefMobile.current);
     return () => {
-      if (loadMoreRefMobile.current) {
-        observer.unobserve(loadMoreRefMobile.current);
-      }
+      if (loadMoreRefMobile.current) observer.unobserve(loadMoreRefMobile.current);
     };
   }, [filteredInvitations.length]);
+
+  // 페이지 아이템
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = useMemo(
+    () => dashboards.slice(startIndex, startIndex + itemsPerPage),
+    [dashboards, startIndex, itemsPerPage],
+  );
 
   // 초대 수락
   const handleAcceptInvite = async (
@@ -116,23 +120,21 @@ export default function MyDashboardList() {
     try {
       await respondInvitation(inviteId, true);
 
-      setDashboardList((prev) => {
-        if (prev.some((d) => d.id === dashboardId)) return prev;
-
-        const newDashboard: Dashboard = {
-          id: dashboardId,
-          title,
-          color: selectedColor,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          createdByMe: false,
-          userId: inviterId,
-        };
-
-        return [newDashboard, ...prev];
+      const now = new Date().toISOString();
+      addDashboard({
+        id: dashboardId,
+        title,
+        color: selectedColor,
+        createdAt: now,
+        updatedAt: now,
+        createdByMe: false,
+        userId: inviterId,
+        acceptedAt: now,
       });
 
+      saveAcceptedAt(dashboardId, now);
       setInvitations((prev) => prev.filter((inv) => inv.id !== inviteId));
+      setCurrentPage(1);
     } catch (err) {
       console.error("초대 수락 실패:", err);
     }
@@ -152,7 +154,15 @@ export default function MyDashboardList() {
   const handleCreateDashboard = async (name: string, color: string) => {
     try {
       const newDashboard = await apiCreateDashboard({ title: name, color });
-      setDashboardList((prev) => [newDashboard, ...prev]);
+      const now = new Date().toISOString();
+
+      addDashboard({
+        ...newDashboard,
+        acceptedAt: now,
+      });
+
+      saveAcceptedAt(newDashboard.id, now);
+      setCurrentPage(1);
     } catch (err) {
       console.error("대시보드 생성 실패:", err);
     }
@@ -163,6 +173,7 @@ export default function MyDashboardList() {
       {/* 내 대시보드 */}
       <div className="pc:mx-0 pc:ml-[40px] mx-auto min-h-[204px] w-[95%] max-w-[1022px] overflow-hidden">
         <div className="tablet:grid-cols-2 pc:grid-cols-3 grid min-h-[156px] grid-cols-1 gap-4">
+          {/* 새 대시보드 버튼 */}
           <MyButton
             className="h-[70px] p-4 text-center font-semibold"
             color="buttonBasic"
@@ -171,9 +182,9 @@ export default function MyDashboardList() {
             새로운 대시보드 &nbsp; <Chip variant="add" size="sm" />
           </MyButton>
 
-          {currentItems.map((dashboard, index) => (
+          {currentItems.map((dashboard) => (
             <MyButton
-              key={`${dashboard.id}-${index}`}
+              key={dashboard.id}
               className="h-[70px] p-4 text-left font-semibold"
               color="buttonBasic"
               onClick={() => router.push(`/dashboard/${dashboard.id}`)}
@@ -204,6 +215,7 @@ export default function MyDashboardList() {
             </MyButton>
           ))}
         </div>
+
         <div className="float-right flex">
           <div className="mt-4 mr-4">
             {totalPages} 페이지 중 {currentPage}
@@ -228,7 +240,7 @@ export default function MyDashboardList() {
           </div>
         )}
 
-        {/* PC/태블릿 - 테이블 스크롤 영역 */}
+        {/* PC/태블릿 - 테이블 */}
         {invitations.length > 0 && (
           <div className="pc:block tablet:block hidden px-[28px] pb-[28px]">
             <div className="h-[458px] overflow-y-auto rounded-md border">
@@ -241,20 +253,7 @@ export default function MyDashboardList() {
                   </tr>
                 </thead>
                 <tbody>
-                  {invitations.length === 0 ? (
-                    <tr>
-                      <td colSpan={3} className="py-6 text-center text-gray-400">
-                        아직 초대받은 대시보드가 없어요.
-                        <Image
-                          src="/images/img-no-dashboard.svg"
-                          alt="없음"
-                          width={100}
-                          height={100}
-                          className="mx-auto mt-4 block"
-                        />
-                      </td>
-                    </tr>
-                  ) : visibleInvitations.length === 0 ? (
+                  {visibleInvitations.length === 0 ? (
                     <tr>
                       <td colSpan={3} className="py-6 text-center text-gray-400">
                         검색 결과가 없습니다.
@@ -305,7 +304,6 @@ export default function MyDashboardList() {
                     ))
                   )}
 
-                  {/* 무한스크롤 관찰 요소 */}
                   {visibleInvitations.length < filteredInvitations.length && (
                     <tr ref={loadMoreRefPc}>
                       <td colSpan={3} className="py-4 text-center text-gray-400">
@@ -334,18 +332,7 @@ export default function MyDashboardList() {
 
         {/* 모바일 - 카드 리스트 */}
         <div className="pc:hidden tablet:hidden block px-[28px] pb-[28px]">
-          {invitations.length === 0 ? (
-            <div className="py-8 text-center text-gray-400">
-              아직 초대받은 대시보드가 없어요.
-              <Image
-                src="/images/img-no-dashboard.svg"
-                alt="없음"
-                width={100}
-                height={100}
-                className="mx-auto mt-4 block"
-              />
-            </div>
-          ) : visibleInvitations.length === 0 ? (
+          {visibleInvitations.length === 0 ? (
             <div className="py-8 text-center text-gray-400">
               검색 결과가 없습니다.
               <Image
