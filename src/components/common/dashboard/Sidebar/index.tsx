@@ -1,7 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { createDashboard, getDashboards } from "@/features/dashboard/api";
 import { useDevice } from "@/lib/useDevice";
@@ -27,6 +27,7 @@ export default function Sidebar() {
   const [page, setPage] = useState<number>(1);
   const [direction, setDirection] = useState<"prev" | "next">("next");
   const prevPage = useRef(page);
+  const pageSize = 15;
 
   const { dashboards, setDashboards } = useSidebarStore();
 
@@ -44,8 +45,8 @@ export default function Sidebar() {
     queryKey: ["dashboards", "sidebar", page, device],
     queryFn: () =>
       device === "mobile"
-        ? getDashboards("infiniteScroll", { size: 20 })
-        : getDashboards("pagination", { page, size: 15 }),
+        ? getDashboards("infiniteScroll", { size: 40 })
+        : getDashboards("pagination", { page: 1, size: 9999 }),
   });
 
   useEffect(() => {
@@ -59,11 +60,17 @@ export default function Sidebar() {
     }
   }, [data, setDashboards]);
 
-  const totalCount = data?.totalCount ?? 0;
-  const totalPages = Math.ceil(totalCount / 15);
+  const totalCount = dashboards.length;
+  const totalPages = Math.ceil(totalCount / pageSize);
 
   const isPage = totalPages > 1;
   const isPrev = direction === "prev";
+
+  // 대시보드 리스트 자르기
+  const pagedDashboards = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return dashboards.slice(start, start + pageSize);
+  }, [dashboards, page]);
 
   const handleCreate = async (form: CreateData) => {
     const created = await createDashboard(form); // dash보드 페이지에서 id 값 가지고 오려고 변경
@@ -91,7 +98,7 @@ export default function Sidebar() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="col-start-1 row-start-1"
             >
-              <DashboardList dashboards={dashboards} />
+              <DashboardList dashboards={pagedDashboards} />
             </motion.div>
           </AnimatePresence>
         </div>
