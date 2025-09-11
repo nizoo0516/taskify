@@ -12,6 +12,8 @@ import Logo from "../../Logo";
 import Pagination from "../../Pagination";
 import { useQuery } from "@tanstack/react-query";
 import { GetDashboardsResponse } from "@/features/dashboard/types";
+import { useDashboardStore } from "@/components/mydashboard/useDashboardStore";
+import { loadAcceptedMap } from "@/lib/utils/localStorage";
 
 export type CreateData = {
   title: string;
@@ -25,6 +27,8 @@ export default function Sidebar() {
   const [direction, setDirection] = useState<"prev" | "next">("next");
   const prevPage = useRef(page);
 
+  const { dashboards, setDashboards, addDashboard } = useDashboardStore();
+
   // 페이지 버튼 방향 감지
   useEffect(() => {
     if (page > prevPage.current) {
@@ -35,15 +39,25 @@ export default function Sidebar() {
     prevPage.current = page;
   }, [page]);
 
-  const { data, refetch } = useQuery<GetDashboardsResponse>({
-    queryKey: ["dashboards", page, device],
+  const { data } = useQuery<GetDashboardsResponse>({
+    queryKey: ["dashboards"],
     queryFn: () =>
       device === "mobile"
         ? getDashboards("infiniteScroll", { size: 20 })
         : getDashboards("pagination", { page, size: 15 }),
   });
 
-  const dashboards = data?.dashboards ?? [];
+  useEffect(() => {
+    if (data?.dashboards) {
+      const acceptedMap = typeof window !== "undefined" ? loadAcceptedMap() : {};
+      const merged = data.dashboards.map((d) => ({
+        ...d,
+        acceptedAt: acceptedMap[d.id] ?? null,
+      }));
+      setDashboards(merged);
+    }
+  }, [data, setDashboards]);
+
   const totalCount = data?.totalCount ?? 0;
   const totalPages = Math.ceil(totalCount / 15);
 
@@ -52,8 +66,6 @@ export default function Sidebar() {
 
   const handleCreate = async (form: CreateData) => {
     const created = await createDashboard(form); // dash보드 페이지에서 id 값 가지고 오려고 변경
-    await refetch();
-
     router.push(`/dashboard/${created.id}`); // dash보드 페이지에서 id 값 가지고 오려고 추가
   };
 
@@ -61,7 +73,7 @@ export default function Sidebar() {
     <>
       <div className="w-full">
         {/* 로고 이미지 */}
-        <div className="tablet:mb-14 pc:justify-start mb-8 flex h-full w-full items-center justify-center">
+        <div className="tablet:mb-14 tablet:justify-start mb-8 flex h-full w-full items-center justify-center">
           <Logo />
         </div>
 

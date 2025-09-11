@@ -15,7 +15,7 @@ export default function Select({ options, placeholder, className = "", ...rest }
     "block w-full appearance-none",
     "h-[48px] px-[16px]",
     "rounded-lg border bg-white",
-    "text-[16px] text-[#333236]",
+    "text-[16px] text-brand-gray-700",
     "[&[aria-invalid='true']]:border-red-500 [&[aria-invalid='true']]:focus:border-red-500 [&[aria-invalid='true']]:focus:ring-red-500",
     className,
   ].join(" ");
@@ -40,7 +40,7 @@ export default function Select({ options, placeholder, className = "", ...rest }
         aria-hidden
         className="absolute inset-y-0 right-4 flex w-[26px] items-center justify-center"
       >
-        <ArrowDropIcon className="w-[26px] pr-[10px] text-[#333236]" />
+        <ArrowDropIcon className="w-[26px] pr-[10px] text-brand-gray-700" />
       </span> */}
     </div>
   );

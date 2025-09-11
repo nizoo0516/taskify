@@ -12,7 +12,6 @@ export const getMembers = (
 
   return apiRequest<GetMembersResponse>(url, {
     method: "GET",
-    withAuth: true,
   });
 };
 
@@ -20,5 +19,4 @@ export const getMembers = (
 export const deleteMember = (dashboardId: number, memberId: number) =>
   apiRequest<DeleteMemberResponse>(`/members/${memberId}?dashboardId=${dashboardId}`, {
     method: "DELETE",
-    withAuth: true,
   });

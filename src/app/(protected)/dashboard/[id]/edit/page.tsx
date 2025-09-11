@@ -35,7 +35,14 @@ export default function DashboardIdEdit() {
   const [selectedColor, setSelectedColor] = useState("#7AC555");
 
   const [members, setMembers] = useState<
-    { id: number; userId: number; email: string; nickname: string; profileImageUrl?: string }[]
+    {
+      id: number;
+      userId: number;
+      email: string;
+      nickname: string;
+      profileImageUrl?: string;
+      isOwner?: boolean;
+    }[]
   >([]);
   const [memberPage, setMemberPage] = useState(1);
   const [totalMemberPages, setTotalMemberPages] = useState(1);
@@ -159,7 +166,7 @@ export default function DashboardIdEdit() {
   };
 
   return (
-    <div className="bg-brand-gray-100 min-h-screen p-6">
+    <div className="bg-brand-gray-100 h-full p-6">
       {/* 전체 컨테이너 */}
       <div className="pc:max-w-155 flex w-full min-w-71 flex-col gap-[15px]">
         {/* 돌아가기 버튼 */}
@@ -228,30 +235,36 @@ export default function DashboardIdEdit() {
             <Label className="text-brand-gray-400 text-sm">이름</Label>
           </div>
           <ul>
-            {members.map((m, idx) => (
-              <li
-                key={m.id}
-                className={`flex h-[70px] items-center justify-between py-3 ${
-                  idx !== members.length - 1 ? "border-b border-gray-200" : ""
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <img
-                    src={m.profileImageUrl || "/images/img-profile-sample.svg"}
-                    alt={m.nickname}
-                    className="h-[38px] w-[38px] rounded-full object-cover"
-                  />
-                  <span className="text-sm">{m.nickname}</span>
-                </div>
-                <MyButton
-                  onClick={() => handleDeleteMember(m.id)}
-                  color="buttonBasic"
-                  className="tablet:w-21 tablet:text-sm text-brand-blue-500 h-8 w-13 rounded-md px-3 py-1 text-xs font-medium"
+            {members.map((m, idx) => {
+              const isOwner = m?.isOwner;
+
+              return (
+                <li
+                  key={m.id}
+                  className={`flex h-[70px] items-center justify-between py-3 ${
+                    idx !== members.length - 1 ? "border-b border-gray-200" : ""
+                  }`}
                 >
-                  삭제
-                </MyButton>
-              </li>
-            ))}
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={m.profileImageUrl || "/images/img-profile-sample.svg"}
+                      alt={m.nickname}
+                      className="h-[38px] w-[38px] rounded-full object-cover"
+                    />
+                    <span className="text-sm">{m.nickname}</span>
+                  </div>
+                  {!isOwner && (
+                    <MyButton
+                      onClick={() => handleDeleteMember(m.id)}
+                      color="buttonBasic"
+                      className="tablet:w-21 tablet:text-sm text-brand-blue-500 h-8 w-13 rounded-md px-3 py-1 text-xs font-medium"
+                    >
+                      삭제
+                    </MyButton>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </section>
 

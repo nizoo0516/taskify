@@ -8,7 +8,6 @@ import { useRef, useState } from "react";
 import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/common/Button";
-import { login } from "@/features/auth/api";
 import { profileAvatar } from "@/features/users/profileAvatar";
 
 type Errors = { email?: string; password?: string };
@@ -18,10 +17,7 @@ export default function LoginPage() {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [values, setValues] = useState({
-    email: "",
-    password: "",
-  });
+  const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [showPw, setShowPw] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -31,7 +27,6 @@ export default function LoginPage() {
     setValues((s) => ({ ...s, [k]: e.target.value }));
     setErrors((s) => ({ ...s, [k]: undefined }));
   };
-
   // 블러 시 이메일 검사
   const validateEmailOnBlur = () => {
     // 기존 에러 객체 s 복사 후 email 필드만 새로운 값으로 갱신
@@ -63,12 +58,23 @@ export default function LoginPage() {
     try {
       // 로그인 성공
       setSubmitting(true);
-      await login({ email: values.email, password: values.password });
+
+      const res = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify(values),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) throw new Error("로그인 실패");
+
+      await res.json();
+
       try {
         await profileAvatar();
       } catch (e) {
         console.warn("프로필 기본 이미지 적용 실패:", e);
       }
+
       router.replace("/mydashboard");
     } catch (err: unknown) {
       // 로그인 실패
@@ -81,7 +87,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="pc:max-w-[520px] tablet:max-w-[520px] mx-auto flex min-h-screen w-full max-w-[351px] flex-col items-center justify-center">
+    <main className="pc:max-w-[520px] tablet:max-w-[520px] mx-auto flex h-full w-full max-w-[351px] flex-col items-center justify-center">
       <Link href="/" className="mb-3 flex flex-col items-center gap-[5px]" aria-label="홈으로 이동">
         <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={300} height={60} />
       </Link>
@@ -143,7 +149,7 @@ export default function LoginPage() {
         회원이 아니신가요?
         <Link
           href="/signup"
-          className="ml-1 text-[#2661E8] underline decoration-1 underline-offset-2"
+          className="text-brand-blue-500 ml-1 underline decoration-1 underline-offset-2"
         >
           회원가입하기
         </Link>

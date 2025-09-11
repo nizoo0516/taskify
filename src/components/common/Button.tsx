@@ -19,9 +19,9 @@ export default function MyButton({
   color = "buttonBasic",
 }: MyButtonProps) {
   const colorClasses = {
-    buttonBasic: "bg-[#ffffff] border border-[#d9d9d9]",
-    buttonBlue: "bg-[#4276EC] border border-[#4276EC] text-white",
-    buttonGrey: "bg-[#9FA6B2] border border-[#9FA6B2]",
+    buttonBasic: "border border-brand-gray-300",
+    buttonBlue: "bg-brand-blue-500 border border-brand-blue-500 text-[#ffffff]",
+    buttonGrey: "bg-[#9fa6b2] border border-brand-gray-400 text-[#ffffff]",
     buttonWhite: "bg-white border border-white hover:bg-brand-blue-50",
   };
 
