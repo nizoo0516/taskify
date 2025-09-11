@@ -8,7 +8,7 @@ import Field from "@/components/form/Field";
 import ImgUpload from "@/components/form/ImgUpload";
 import Input from "@/components/form/Input";
 import Select, { Option } from "@/components/form/Select";
-import TagInput from "@/components/form/TagInput";
+import TagInput, { Tag } from "@/components/form/TagInput";
 import Textarea from "@/components/form/Textarea";
 import Button from "@/components/common/Button";
 import { Modal, ModalHeader, ModalContext, ModalFooter } from "@/components/modal/Modal";
@@ -18,6 +18,7 @@ import { useColumnId } from "@/features/columns/store";
 import { ColumnData } from "@/features/dashboard/types";
 import { getMembers } from "@/features/members/api";
 import { Card } from "@/features/cards/types";
+import { getColorForTag } from "@/lib/utils/tagColor";
 
 const now = dayjs();
 
@@ -41,7 +42,7 @@ export default function ModifyCardModal({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | null>(null);
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -116,25 +117,27 @@ export default function ModifyCardModal({
     console.log("선택된 컬럼 ID:", newColumnId);
   };
 
-  // 기존 카드 데이터로 폼 초기화
   useEffect(() => {
     if (cardData && isOpen && members.length > 0) {
       setTitle(cardData.title || "");
       setDescription(cardData.description || "");
       setDueDate(cardData.dueDate ? new Date(cardData.dueDate) : null);
-      setTags(cardData.tags || []);
+
+      // string[] → Tag[]
+      setTags(
+        (cardData.tags || []).map((t) => ({
+          label: t,
+          color: getColorForTag(t),
+        })),
+      );
+
       setImageUrl(cardData.imageUrl || "");
       setImageFile(null);
-
-      // 현재 카드의 컬럼 ID 설정
       setSelectedColumnId(columnId);
 
-      // 기존 담당자 정보 설정
       if (cardData.assignee) {
         const currentAssigneeId = cardData.assignee.id;
         setAssigneeId(currentAssigneeId);
-
-        // 멤버 목록에서 해당 담당자 찾기
         const currentMember = members.find((m) => Number(m.value) === currentAssigneeId);
         if (currentMember) {
           setSelectedMember(currentMember);
@@ -193,7 +196,7 @@ export default function ModifyCardModal({
         title: title.trim(),
         description,
         dueDate: dueDate ? dayjs(dueDate).format("YYYY-MM-DD HH:mm") : "",
-        tags: Array.isArray(tags) ? tags : [],
+        tags: tags.map((t) => t.label),
         imageUrl: updateImg,
       };
 
@@ -209,24 +212,17 @@ export default function ModifyCardModal({
 
         setColumns((prevColumns) => {
           return prevColumns.map((col) => {
-            // 기존 컬럼에서 카드 제거
             if (col.id === columnId && targetColumnId !== columnId) {
+              // 기존 컬럼에서 제거
               return {
                 ...col,
                 cards: col.cards?.filter((card) => (card as any).id !== cardId) || [],
               };
-            }
-            // 새 컬럼에 카드 추가 또는 기존 컬럼에서 카드 업데이트
-            else if (col.id === targetColumnId) {
-              // 컬럼이 변경된 경우 카드 추가
+            } else if (col.id === targetColumnId) {
+              // 새 컬럼에 추가 or 기존 카드 업데이트
               if (targetColumnId !== columnId) {
-                return {
-                  ...col,
-                  cards: [...(col.cards || []), updatedCard],
-                };
-              }
-              // 같은 컬럼 내에서 카드 업데이트
-              else {
+                return { ...col, cards: [...(col.cards || []), updatedCard] };
+              } else {
                 return {
                   ...col,
                   cards:
@@ -240,7 +236,7 @@ export default function ModifyCardModal({
         });
       }
 
-      alert("수정 완료");
+      alert("수정되었습니다.");
       handleClose();
 
       // 수정 완료
@@ -310,7 +306,17 @@ export default function ModifyCardModal({
               <DatePicker value={dueDate} onChange={(date) => setDueDate(date)} />
             </Field>
             <Field id="tag" label="태그">
-              <TagInput value={tags} onChange={setTags} />
+              <TagInput
+                value={tags}
+                onChange={(newTags) =>
+                  setTags(
+                    newTags.map((t) => ({
+                      label: t.label,
+                      color: getColorForTag(t.label),
+                    })),
+                  )
+                }
+              />
             </Field>
             <Field id="image" label="이미지">
               <ImgUpload

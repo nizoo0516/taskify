@@ -14,6 +14,7 @@ import Comment from "./Comment";
 import ModifyCardModal from "./ModifyCardModal";
 import { ColumnData } from "@/features/dashboard/types";
 import { Card } from "@/features/cards/types";
+import { getColorForTag } from "@/lib/utils/tagColor";
 
 type ModalType = {
   isOpen: boolean;
@@ -32,8 +33,6 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
   const cardId = columnIdData?.cardId;
   const columnId = columnIdData?.columnId;
   const columnTitle = columnIdData?.columnTitle;
-
-  console.log("카드값!!!!!!!!!!!!!!!!!", card);
 
   // 카드 데이터 다시 불러오기 함수
   const fetchCardData = async () => {
@@ -185,9 +184,19 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
                 <Chip variant="status" label={columnTitle} />
                 <span className="bg-brand-gray-300 h-5 w-[1px]" />
                 <div className="flex gap-1.5">
-                  {card?.tags?.map((tag, index) => (
-                    <Chip key={`${tag}-${index}`} variant="category" label={tag} />
-                  ))}
+                  {card?.tags?.map((tag: any, index: number) => {
+                    const label = typeof tag === "string" ? tag : tag.label;
+                    const color = getColorForTag(label);
+
+                    return (
+                      <Chip
+                        key={`${label}-${index}`}
+                        variant="category"
+                        label={label}
+                        color={color}
+                      />
+                    );
+                  })}
                 </div>
               </div>
               <div>
