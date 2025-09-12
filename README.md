@@ -121,10 +121,6 @@ npm start
 - 산출물 문서화
 - 피드백 반영 및 유지보수 계획
 
-## 👥 팀 구성 및 역할
-
-| 깃``
-
 ## 🚀 시작하기
 
 ### 설치 및 실행
@@ -229,4 +225,5 @@ This project is licensed under the MIT License.
 <div align="center">
   <strong>🚀 더 나은 업무 공유를 위한 Taskify 🚀</strong>
 </div>
+
 
