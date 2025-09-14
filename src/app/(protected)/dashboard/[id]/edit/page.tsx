@@ -242,7 +242,7 @@ export default function DashboardIdEdit() {
                 <li
                   key={m.id}
                   className={`flex h-[70px] items-center justify-between py-3 ${
-                    idx !== members.length - 1 ? "border-b border-gray-200" : ""
+                    idx !== members.length - 1 ? "border-brand-gray-200 border-b" : ""
                   }`}
                 >
                   <div className="flex items-center gap-3">

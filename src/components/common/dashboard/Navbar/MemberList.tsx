@@ -27,7 +27,12 @@ export default function MemberList({
     <ol className={cn(liStyle, "tablet:ml-8 pc:ml-9 ml-4 flex flex-row")}>
       {visible.map((m) => (
         <li key={m.id}>
-          <img src={m.profileImageUrl} alt="멤버 프로필" className="h-full w-full object-cover" />
+          <img
+            src={m.profileImageUrl}
+            alt="멤버 프로필"
+            className="h-full w-full object-cover"
+            title={m.nickname}
+          />
         </li>
       ))}
       {members.length > maxCount + 1 && (
