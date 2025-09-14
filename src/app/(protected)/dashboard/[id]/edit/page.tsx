@@ -206,7 +206,7 @@ export default function DashboardIdEdit() {
             <MyButton
               onClick={handleUpdateDashboard}
               color="buttonBlue"
-              className="tablet:text-base h-[54px] w-full text-sm font-semibold text-white"
+              className="tablet:text-base h-[54px] w-full text-sm font-semibold"
             >
               변경
             </MyButton>
@@ -286,7 +286,7 @@ export default function DashboardIdEdit() {
               <MyButton
                 onClick={() => setInviteOpen(true)}
                 color="buttonBlue"
-                className="tablet:flex hidden h-8 w-[105px] items-center justify-center gap-2 rounded-md text-sm text-white"
+                className="tablet:flex hidden h-8 w-[105px] items-center justify-center gap-2 rounded-md text-sm"
               >
                 <img src="/icons/icon-box-add-white.svg" alt="초대하기" className="h-4 w-4" />
                 초대하기
@@ -299,7 +299,7 @@ export default function DashboardIdEdit() {
             <MyButton
               onClick={() => setInviteOpen(true)}
               color="buttonBlue"
-              className="flex h-[26px] w-[86px] items-center justify-center gap-2 rounded-md text-xs font-medium text-white"
+              className="flex h-[26px] w-[86px] items-center justify-center gap-2 rounded-md text-xs font-medium"
             >
               <img src="/icons/icon-box-add-white.svg" alt="초대하기" className="h-4 w-4" />
               초대하기
@@ -335,7 +335,7 @@ export default function DashboardIdEdit() {
         <MyButton
           onClick={handleDeleteDashboard}
           color="buttonBasic"
-          className="tablet:text-lg pc:mb-[33px] tablet:mb-12 tablet:w-80 tablet:h-[62px] text-brand-gray-700 mt-2 mb-25 h-13 w-full text-base font-medium"
+          className="tablet:text-lg pc:mb-[33px] tablet:mb-12 tablet:w-80 tablet:h-[62px] text-brand-gray-700 mt-2 mb-25 h-13 w-full bg-white text-base font-medium"
         >
           대시보드 삭제하기
         </MyButton>

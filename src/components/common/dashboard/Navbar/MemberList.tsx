@@ -4,11 +4,19 @@ import type { Member } from "@/features/members/types";
 import { useDevice } from "@/lib/useDevice";
 import { cn } from "@/lib/utils/cn";
 
-export default function MemberList({ members }: { members: Member[] }) {
+export default function MemberList({
+  members,
+  myUserId,
+}: {
+  members: Member[];
+  myUserId?: number;
+}) {
   const device = useDevice();
+
   const maxCount = device === "pc" ? 4 : 2;
-  const nonOwners = members.filter((m) => !m.isOwner);
-  const visible = nonOwners?.slice(0, maxCount);
+
+  const others = members.filter((m) => !(m.userId === myUserId));
+  const visible = others?.slice(0, maxCount);
 
   const liStyle = cn(
     "[&>li]:h-[34px] [&>li]:w-[34px] [&>li]:tablet:h-[38px] [&>li]:tablet:w-[38px] [&>li]:overflow-hidden [&>li]:rounded-full [&>li]:border-3 [&>li]:border-white [&>li:not(:first-child)]:-ml-2",
@@ -24,7 +32,7 @@ export default function MemberList({ members }: { members: Member[] }) {
       ))}
       {members.length > maxCount + 1 && (
         <li className="flex items-center justify-center bg-[#f4d7da] text-[#D25B68]">
-          +{nonOwners.length - maxCount}
+          +{others.length - maxCount}
         </li>
       )}
     </ol>
