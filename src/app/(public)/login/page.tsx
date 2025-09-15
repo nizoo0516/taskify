@@ -9,7 +9,7 @@ import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/common/Button";
 import { profileAvatar } from "@/features/users/profileAvatar";
-import { getPwError, PasswordToggle } from "@/components/form/PassWordInput";
+import { getPwError, PasswordToggle } from "@/components/form/PasswordInput";
 
 type Errors = { email?: string; password?: string };
 const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());

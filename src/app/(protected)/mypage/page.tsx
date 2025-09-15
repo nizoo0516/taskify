@@ -14,7 +14,7 @@ import {
   UpdateUserRequest,
   UploadProfileImageResponse,
 } from "@/features/users/types";
-import { getPwConfirmError, getPwError, PasswordToggle } from "@/components/form/PassWordInput";
+import { getPwConfirmError, getPwError, PasswordToggle } from "@/components/form/PasswordInput";
 import { useQueryClient } from "@tanstack/react-query";
 
 export default function AccountPage() {
