@@ -147,17 +147,25 @@ export default function DetailCardModal({ isOpen, setIsOpen, setColumns }: Modal
           <ModalHeader
             title={card?.title || "카드 상세 모달"}
             onClose={() => setIsOpen(false)}
-            className="tablet:items-center items-start justify-start"
-            titleStyle="pt-12 tablet:pt-0"
-          >
-            <Button
-              onClick={() => setIsKebabOpen(!isKebabOpen)}
-              className="mr-3 ml-auto h-9 w-9 border-0"
-              disabled={isLoading}
-            >
-              <Image src="/icons/icon-menu.svg" width={28} height={28} alt="더보기" />
-            </Button>
-          </ModalHeader>
+            className="tablet:h-8 h-[70px]"
+            titleStyle="overflow-hidden text-ellipsis pc:w-[500px] tablet:w-[480px] self-end tablet:self-center"
+            btnStyle="self-start tablet:self-center"
+            extraBtn={
+              <Button
+                onClick={() => setIsKebabOpen(!isKebabOpen)}
+                className="tablet:size-8 tablet:mr-3 ml-auto size-6 h-9 w-9 border-0"
+                disabled={isLoading}
+              >
+                <Image
+                  src="/icons/icon-menu.svg"
+                  width={20}
+                  height={20}
+                  alt="더보기"
+                  className="tablet:size-7"
+                />
+              </Button>
+            }
+          ></ModalHeader>
           <ModalContext
             className={cn(
               "relative flex flex-col py-0",

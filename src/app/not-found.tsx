@@ -16,7 +16,7 @@ export default function NotFound() {
 
   return (
     <>
-      <div className="bg-brand-gray-100 tablet:py-0 flex h-full flex-col items-center justify-center py-10 text-center">
+      <div className="bg-brand-gray-100 tablet:py-0 flex min-h-screen flex-col items-center justify-center py-10 text-center">
         <div className="tablet:-mb-11">
           <h1 className={cn("text-brand-blue-500 text-2lg mb-3.5 font-bold", "tablet:text-3xl")}>
             앗, 접근할 수 없는 페이지입니다

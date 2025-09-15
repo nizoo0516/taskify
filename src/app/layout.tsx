@@ -23,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           disableTransitionOnChange
           storageKey="taskify-theme"
         >
+          <div id="portal" />
           <QueryProvider>{children}</QueryProvider>
         </ThemeProvider>
       </body>
