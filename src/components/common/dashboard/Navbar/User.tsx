@@ -2,23 +2,21 @@
 import { useState } from "react";
 
 import UserMenu from "@/components/common/dashboard/Navbar/UserMenu";
-import { getMe } from "@/features/users/api";
-import { useApiHandler } from "@/lib/useApiHandler";
-import { useOutsideClick } from "@/lib/useOutsideClick";
 import Dropdown from "@/components/layout/Dropdown";
 import { cn } from "@/lib/utils/cn";
+import { SignupResponse } from "@/features/users/types";
 
-export default function User() {
-  const { data } = useApiHandler(() => getMe(), []);
-
+export default function User({ users }: { users?: SignupResponse }) {
   const [isMenu, setIsMenu] = useState(false);
 
-  const userProfile = data?.profileImageUrl;
-  const userName = data?.nickname;
+  const userProfile = users?.profileImageUrl;
+  const userName = users?.nickname;
 
   const toggleMenu = () => {
     setIsMenu((prev) => !prev);
   };
+
+  if (!users) return null;
 
   return (
     <div className="tablet:ml-6 pc:ml-8 relative z-10 ml-3">

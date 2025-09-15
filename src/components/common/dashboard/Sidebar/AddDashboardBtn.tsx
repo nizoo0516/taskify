@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils/cn";
 import { CreateData } from ".";
 import MyButton from "../../Button";
 
-export default function AddDashboard({
+export default function AddDashboardBtn({
   handleCreate,
 }: {
   handleCreate: (data: CreateData) => Promise<void>;
