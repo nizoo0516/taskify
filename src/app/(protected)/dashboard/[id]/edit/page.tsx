@@ -123,9 +123,12 @@ export default function DashboardIdEdit() {
 
   // 대시보드 삭제 함수
   const handleDeleteDashboard = async () => {
+    const confirmDelete = window.confirm("이 대시보드를 삭제하시겠습니까?");
+    if (!confirmDelete) return;
+
     try {
       await deleteDashboard(dashboardId);
-      alert("대시보드가 삭제되었습니다!");
+      alert("대시보드가 정상적으로 삭제되었습니다!");
       router.push("/mydashboard");
     } catch (e) {
       console.error("대시보드 삭제 실패", e);
@@ -335,7 +338,7 @@ export default function DashboardIdEdit() {
         <MyButton
           onClick={handleDeleteDashboard}
           color="buttonBasic"
-          className="tablet:text-lg pc:mb-[33px] tablet:mb-12 tablet:w-80 tablet:h-[62px] text-brand-gray-700 mt-2 mb-25 h-13 w-full text-base font-medium"
+          className="tablet:text-lg pc:mb-[33px] tablet:mb-12 tablet:w-80 tablet:h-[62px] text-brand-gray-700 mt-2 mb-25 h-13 w-full bg-white text-base font-medium"
         >
           대시보드 삭제하기
         </MyButton>
