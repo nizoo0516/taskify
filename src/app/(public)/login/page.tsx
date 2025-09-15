@@ -9,6 +9,7 @@ import Field from "@/components/form/Field";
 import Input from "@/components/form/Input";
 import MyButton from "@/components/common/Button";
 import { profileAvatar } from "@/features/users/profileAvatar";
+import { getPwError, PasswordToggle } from "@/components/form/PassWordInput";
 
 type Errors = { email?: string; password?: string };
 const trueEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -39,11 +40,7 @@ export default function LoginPage() {
 
   // 블러 시 비밀번호 검사
   const validatePwOnBlur = () => {
-    setErrors((s) => ({
-      ...s,
-      password:
-        !values.password || values.password.length >= 8 ? undefined : "8자 이상 작성해 주세요.",
-    }));
+    setErrors((s) => ({ ...s, password: getPwError(values.password) }));
   };
 
   const canSubmit = trueEmail(values.email) && values.password.length >= 8;
@@ -108,6 +105,7 @@ export default function LoginPage() {
         <Field id="password" label="비밀번호" error={errors.password}>
           <div className="relative">
             <Input
+              id="password"
               aria-invalid={!!errors.password}
               aria-errormessage="password-error"
               type={showPw ? "text" : "password"}
@@ -115,22 +113,14 @@ export default function LoginPage() {
               value={values.password}
               onChange={onchange("password")}
               onBlur={validatePwOnBlur}
+              rightIcon={
+                <PasswordToggle
+                  show={showPw}
+                  onToggle={() => setShowPw((v) => !v)}
+                  controlsId="password"
+                />
+              }
             />
-            <button
-              type="button"
-              onClick={() => setShowPw((s) => !s)}
-              aria-pressed={showPw}
-              aria-controls="password"
-              aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
-              className="absolute top-1/2 right-3 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-gray-500"
-            >
-              <Image
-                src={showPw ? "/icons/icon-eye-close.svg" : "/icons/icon-eye-open.svg"}
-                alt="눈 아이콘"
-                width={24}
-                height={24}
-              />
-            </button>
           </div>
         </Field>
 

@@ -10,6 +10,7 @@ import Input from "@/components/form/Input";
 import MyButton from "@/components/common/Button";
 import { Modal, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { signup } from "@/features/users/api";
+import { getPwConfirmError, getPwError, PasswordToggle } from "@/components/form/PassWordInput";
 
 type Errors = { email?: string; nickname?: string; password?: string; confirm?: string };
 type Keys = "email" | "nickname" | "password" | "confirm";
@@ -71,10 +72,7 @@ export default function SignupPage() {
   const onBlurPw = () => {
     setErrors((s) => ({
       ...s,
-      password:
-        !values.password || values.password.length >= MIN_PW
-          ? undefined
-          : "8자 이상 작성해 주세요.",
+      password: getPwError(values.password),
     }));
   };
 
@@ -82,10 +80,7 @@ export default function SignupPage() {
   const onBlurConfirm = () => {
     setErrors((s) => ({
       ...s,
-      confirm:
-        !values.confirm || values.confirm === values.password
-          ? undefined
-          : "비밀번호가 일치하지 않습니다.",
+      confirm: getPwConfirmError(values.password, values.confirm),
     }));
   };
 
@@ -99,24 +94,6 @@ export default function SignupPage() {
   }, [values]);
 
   const canSubmit = activeButton && values.agree && !submitting;
-
-  const pwToggle = (controlsId: string) => (
-    <button
-      type="button"
-      onClick={() => setShowPw((s) => !s)}
-      aria-pressed={showPw}
-      aria-controls={controlsId}
-      aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
-      className="top 1/2 itmes-center absolute right-0.5 flex h-6 w-6 -translate-y-1/2 justify-center text-gray-500"
-    >
-      <Image
-        src={showPw ? "/icons/icon-eye-close.svg" : "/icons/icon-eye-open.svg"}
-        alt="눈 아이콘"
-        width={24}
-        height={24}
-      />
-    </button>
-  );
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -194,7 +171,13 @@ export default function SignupPage() {
               value={values.password}
               onChange={onChange("password")}
               onBlur={onBlurPw}
-              rightIcon={pwToggle("password")}
+              rightIcon={
+                <PasswordToggle
+                  show={showPw}
+                  onToggle={() => setShowPw((v) => !v)}
+                  controlsId="password"
+                />
+              }
             />
           </div>
         </Field>
@@ -208,7 +191,13 @@ export default function SignupPage() {
               value={values.confirm}
               onChange={onChange("confirm")}
               onBlur={onBlurConfirm}
-              rightIcon={pwToggle("confirm")}
+              rightIcon={
+                <PasswordToggle
+                  show={showPw}
+                  onToggle={() => setShowPw((v) => !v)}
+                  controlsId="password"
+                />
+              }
             />
           </div>
         </Field>
