@@ -6,7 +6,7 @@ export const MIN_PASSWORD_LEN = 8;
 
 export function getPwError(pw: string, min = MIN_PASSWORD_LEN): string | undefined {
   if (!pw) return undefined;
-  return pw.length >= min ? undefined : `비밀번호는 8자 이상이어야 합니다.`;
+  return pw.length >= min ? undefined : `8자 이상 작성해 주세요.`;
 }
 
 export function getPwConfirmError(pw: string, confirm: string): string | undefined {
