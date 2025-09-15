@@ -10,26 +10,31 @@ import { getMembers } from "@/features/members/api";
 import { Member } from "@/features/members/types";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils/cn";
+import { getMe } from "@/features/users/api";
 
 // id는 사이드 바에서 클릭된 id와 title을 전달
 export default function Navbar({ id }: { id?: number }) {
-  const { data } = useQuery<{
-    members: Member[];
-    dashboard: Dashboard | null;
-  }>({
+  const { data: dashboard } = useQuery<Dashboard | null>({
     queryKey: ["dashboard", id],
-    queryFn: async () => {
-      if (!id) return { members: [], dashboard: null };
-      const [membersRes, dashboard] = await Promise.all([getMembers(id, {}), getDashboardById(id)]);
-      return { members: membersRes.members, dashboard };
-    },
+    queryFn: () => (id ? getDashboardById(id) : Promise.resolve(null)),
     enabled: !!id,
   });
 
-  const members = data?.members ?? [];
+  const { data: members = [] } = useQuery<Member[]>({
+    queryKey: ["members", id],
+    queryFn: () => (id ? getMembers(id, {}).then((res) => res.members) : Promise.resolve([])),
+    enabled: !!id,
+  });
+
+  const { data: users } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
+
   const isMember = members.length > 0;
-  const title = data?.dashboard?.title ?? "내 대시보드";
-  const createdByMe = data?.dashboard?.createdByMe ?? false;
+  const title = dashboard?.title ?? "내 대시보드";
+  const createdByMe = dashboard?.createdByMe ?? false;
+  const myUserId = users?.id;
 
   return (
     <div className="pc:justify-between pc:max-w-[calc(100vw-380px)] tablet:max-w-[calc(100vw-240px)] flex h-full max-w-[calc(100vw-92px)] items-center justify-end">
@@ -69,12 +74,12 @@ export default function Navbar({ id }: { id?: number }) {
               </div>
             )}
 
-            {isMember && <MemberList members={members} />}
+            {isMember && <MemberList members={members} myUserId={myUserId} />}
             <div className="bg-brand-gray-300 pc:ml-8 tablet:ml-6 ml-3 h-[calc(100%-4px)] w-[1px]"></div>
           </>
         )}
 
-        <User />
+        <User users={users} />
       </div>
     </div>
   );

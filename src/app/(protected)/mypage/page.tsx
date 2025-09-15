@@ -15,9 +15,12 @@ import {
   UploadProfileImageResponse,
 } from "@/features/users/types";
 import { getPwConfirmError, getPwError, PasswordToggle } from "@/components/form/PassWordInput";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AccountPage() {
   const router = useRouter();
+
+  const queryClient = useQueryClient();
 
   const [myData, setMyData] = useState<SignupResponse | null>(null);
   const [nickname, setNickname] = useState("");
@@ -108,6 +111,10 @@ export default function AccountPage() {
       setNickname(updated.nickname ?? "");
       setProfileUrl(updated.profileImageUrl ?? null);
       setPendingFile(null);
+
+      // 네브바에 반영
+      queryClient.invalidateQueries({ queryKey: ["me"] });
+
       alert("프로필이 저장되었습니다.");
     } catch (e) {
       console.warn(e);

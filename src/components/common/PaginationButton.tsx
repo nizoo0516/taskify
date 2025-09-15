@@ -15,7 +15,7 @@ export default function PaginationButton({
   const direnctionIconSrc = "/icons/icon-arrow-right.svg";
 
   const buttonStyle = cn(
-    "border-brand-gray-300 border flex h-10 w-10 justify-center items-center px-2 py-1 disabled:opacity-50 disabled:cursor-default",
+    "border-brand-gray-300 border flex h-10 w-10 justify-center items-center px-2 py-1 disabled:opacity-50 disabled:cursor-default bg-white",
     !disabled && "hover:bg-brand-gray-100 dark:bg-dark-700",
     isPrev ? "rounded-l-[4px]" : "rounded-r-[4px]",
   );
