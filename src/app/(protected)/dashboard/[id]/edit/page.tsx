@@ -32,6 +32,7 @@ export default function DashboardIdEdit() {
   const colors = ["#7AC555", "#760DDE", "#FFA500", "#E876EA", "#76A5EA"];
 
   const [dashboardName, setDashboardName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [selectedColor, setSelectedColor] = useState("#7AC555");
 
   const [members, setMembers] = useState<
@@ -58,6 +59,7 @@ export default function DashboardIdEdit() {
       try {
         const data = await getDashboardById(dashboardId);
         setDashboardName(data.title);
+        setDisplayName(data.title);
         setSelectedColor(data.color);
       } catch (e) {
         console.error("대시보드 조회 실패", e);
@@ -103,18 +105,17 @@ export default function DashboardIdEdit() {
 
   // 대시보드 수정 함수
   const handleUpdateDashboard = async () => {
+    const confirmUpdate = window.confirm("대시보드 이름을 변경하시겠습니까?");
+    if (!confirmUpdate) return;
+
     try {
       await updateDashboard(dashboardId, {
         title: dashboardName,
         color: selectedColor,
       });
 
+      setDisplayName(dashboardName);
       alert("대시보드가 성공적으로 수정되었습니다.");
-
-      queryClient.invalidateQueries({ queryKey: ["dashboards"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard", dashboardId] });
-
-      router.refresh();
     } catch (e) {
       console.error("대시보드 수정 실패", e);
       alert("대시보드 수정에 실패했습니다.");
@@ -128,7 +129,7 @@ export default function DashboardIdEdit() {
 
     try {
       await deleteDashboard(dashboardId);
-      alert("대시보드가 정상적으로 삭제되었습니다!");
+      alert("대시보드가 성공적으로 삭제되었습니다!");
       router.push("/mydashboard");
     } catch (e) {
       console.error("대시보드 삭제 실패", e);
@@ -183,7 +184,7 @@ export default function DashboardIdEdit() {
 
         {/* 대시보드 이름 + 색상 */}
         <section className="tablet:px-7 tablet:py-8 rounded-lg bg-white px-4 py-5 shadow-sm">
-          <h2 className="tablet:text-2xl mb-6 text-xl font-bold">비브리지</h2>
+          <h2 className="tablet:text-2xl mb-6 text-xl font-bold">{displayName}</h2>
           <div className="flex flex-col gap-4">
             <div>
               <Label className="tablet:text-2lg text-lg font-medium">대시보드 이름</Label>
