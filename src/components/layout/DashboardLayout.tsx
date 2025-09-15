@@ -29,7 +29,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <div className={cn("flex min-w-0 flex-1 flex-col")}>
         <div
           className={cn(
-            "border-brand-gray-300 tablet:px-10 tablet:py-4 tablet:h-[70px] h-[60px] border-b px-3 py-3.5 align-middle",
+            "border-brand-gray-300 tablet:px-10 tablet:py-4 tablet:h-[70px] h-[60px] border-b bg-white px-3 py-3.5 align-middle",
             darkStyle,
           )}
         >

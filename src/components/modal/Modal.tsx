@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils/cn";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -14,6 +14,13 @@ type ModalProps = {
 };
 
 function Modal({ open, children, size = "lg", isOpenModal, className }: ModalProps) {
+  const [portal, setPortal] = useState<Element | null>(null);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setPortal(document.getElementById("portal"));
+    }
+  }, []);
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -40,7 +47,9 @@ function Modal({ open, children, size = "lg", isOpenModal, className }: ModalPro
       } as const
     )[size] ?? "min-w-[584px] max-w-lg";
 
-  return (
+  if (!portal) return null;
+
+  return createPortal(
     <AnimatePresence mode="wait">
       {open && (
         <motion.div
@@ -69,7 +78,8 @@ function Modal({ open, children, size = "lg", isOpenModal, className }: ModalPro
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    portal,
   );
 }
 
@@ -79,17 +89,36 @@ type ModalHeaderProps = {
   onClose?: () => void;
   className?: string;
   titleStyle?: string;
+  extraBtn?: React.ReactNode;
+  btnStyle?: string;
 };
-function ModalHeader({ title, children, onClose, className, titleStyle }: ModalHeaderProps) {
+function ModalHeader({
+  title,
+  children,
+  onClose,
+  className,
+  titleStyle,
+  btnStyle,
+  extraBtn,
+}: ModalHeaderProps) {
   return (
     <div className={cn("mb-3 flex justify-between", className)}>
       <h3 className={cn("text-2xl font-bold", titleStyle)}>{title}</h3>
       {children}
-      {onClose && (
-        <button onClick={onClose}>
-          <Image src="/icons/icon-close-big.svg" alt="close" width={36} height={36} />
-        </button>
-      )}
+      <div className={cn("flex items-center", btnStyle)}>
+        {extraBtn}
+        {onClose && (
+          <button onClick={onClose} className="tablet:size-8 size-6">
+            <Image
+              src="/icons/icon-close-big.svg"
+              alt="close"
+              width={24}
+              height={24}
+              className="tablet:size-8"
+            />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
