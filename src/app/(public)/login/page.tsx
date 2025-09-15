@@ -48,13 +48,14 @@ export default function LoginPage() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
     validateEmailOnBlur();
     validatePwOnBlur();
     if (!canSubmit) return;
 
     try {
       // 로그인 성공
-      setSubmitting(true);
 
       const res = await fetch("/api/login", {
         method: "POST",
@@ -71,7 +72,6 @@ export default function LoginPage() {
       } catch (e) {
         console.warn("프로필 기본 이미지 적용 실패:", e);
       }
-
       router.replace("/mydashboard");
     } catch (err: unknown) {
       // 로그인 실패
@@ -80,6 +80,9 @@ export default function LoginPage() {
       window.alert(message);
     } finally {
       setSubmitting(false);
+      // alert 닫힌 뒤 재제출 방지
+      (document.activeElement as HTMLElement | null)?.blur();
+      setValues((s) => ({ ...s, password: "" }));
     }
   };
 
