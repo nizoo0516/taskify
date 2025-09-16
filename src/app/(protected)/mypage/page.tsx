@@ -14,9 +14,13 @@ import {
   UpdateUserRequest,
   UploadProfileImageResponse,
 } from "@/features/users/types";
+import { getPwConfirmError, getPwError, PasswordToggle } from "@/components/form/PasswordInput";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AccountPage() {
   const router = useRouter();
+
+  const queryClient = useQueryClient();
 
   const [myData, setMyData] = useState<SignupResponse | null>(null);
   const [nickname, setNickname] = useState("");
@@ -28,6 +32,11 @@ export default function AccountPage() {
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
   const [error, setError] = useState<string | undefined>(undefined);
+  const [confirmError, setConfirmError] = useState<string | undefined>(undefined);
+
+  const [showCur, setShowCur] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const [saving, setSaving] = useState(false);
   const [changing, setChanging] = useState(false);
@@ -61,9 +70,8 @@ export default function AccountPage() {
   };
 
   // 블러 시 비밀번호 검사
-  const onBlurConfirm = () => {
-    setError(!confirmPw || confirmPw === newPw ? undefined : "비밀번호가 일치하지 않습니다.");
-  };
+  const onBlurNew = () => setError(getPwError(newPw));
+  const onBlurConfirm = () => setConfirmError(getPwConfirmError(newPw, confirmPw));
 
   // 프로필 저장 버튼 활성화 조건
   const canSaveProfile = useMemo(() => {
@@ -75,8 +83,8 @@ export default function AccountPage() {
 
   // 비밀번호 변경 버튼 활성화 조건
   const canChange = useMemo(
-    () => curPw.length > 0 && newPw.length > 0 && confirmPw.length > 0 && !error,
-    [curPw, newPw, confirmPw, error],
+    () => curPw.length > 0 && newPw.length > 0 && confirmPw.length > 0 && !error && !confirmError,
+    [curPw, newPw, confirmPw, error, confirmError],
   );
 
   // 프로필 저장 로직
@@ -103,6 +111,10 @@ export default function AccountPage() {
       setNickname(updated.nickname ?? "");
       setProfileUrl(updated.profileImageUrl ?? null);
       setPendingFile(null);
+
+      // 네브바에 반영
+      queryClient.invalidateQueries({ queryKey: ["me"] });
+
       alert("프로필이 저장되었습니다.");
     } catch (e) {
       console.warn(e);
@@ -123,6 +135,7 @@ export default function AccountPage() {
       setNewPw("");
       setConfirmPw("");
       setError(undefined);
+      setConfirmError(undefined);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "비밀번호 변경 실패";
       if (msg.includes("현재 비밀번호")) {
@@ -222,49 +235,86 @@ export default function AccountPage() {
             label="현재 비밀번호"
             className="[&>label]:text-brand-gray-700 [&>label]:text-lg"
           >
-            <Input
-              type="password"
-              name="current-password"
-              autoComplete="current-password"
-              value={curPw}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCurPw(e.target.value)}
-              placeholder="비밀번호 입력"
-            />
+            <div className="relative">
+              <Input
+                id="currentPw"
+                type={showCur ? "text" : "password"}
+                name="current-password"
+                autoComplete="current-password"
+                value={curPw}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCurPw(e.target.value)}
+                placeholder="비밀번호 입력"
+                rightIcon={
+                  <PasswordToggle
+                    show={showCur}
+                    onToggle={() => setShowCur((s) => !s)}
+                    controlsId="currentPw"
+                  />
+                }
+              />
+            </div>
           </Field>
           <Field
             id="newPw"
             label="새 비밀번호"
+            error={error}
             className="[&>label]:text-brand-gray-700 [&>label]:text-lg"
           >
-            <Input
-              type="password"
-              name="new-password"
-              autoComplete="new-password"
-              value={newPw}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPw(e.target.value)}
-              placeholder="새 비밀번호 입력"
-            />
+            <div className="relative">
+              <Input
+                id="newPw"
+                type={showNew ? "text" : "password"}
+                name="new-password"
+                autoComplete="new-password"
+                value={newPw}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setNewPw(e.target.value);
+                  setError(getPwError(e.target.value));
+                }}
+                onBlur={onBlurNew}
+                aria-invalid={!!error}
+                className={error ? "border-red-500" : ""}
+                placeholder="새 비밀번호 입력"
+                rightIcon={
+                  <PasswordToggle
+                    show={showNew}
+                    onToggle={() => setShowNew((s) => !s)}
+                    controlsId="newPw"
+                  />
+                }
+              />
+            </div>
           </Field>
           <Field
             id="confirmPw"
             label="새 비밀번호 확인"
-            error={error}
+            error={confirmError}
             className="[&>label]:text-brand-gray-700 [&>label]:text-lg"
           >
-            <Input
-              type="password"
-              name="new-password-confirm"
-              autoComplete="new-password-confirm"
-              value={confirmPw}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setConfirmPw(e.target.value);
-                if (error) setError(undefined);
-              }}
-              onBlur={onBlurConfirm}
-              aria-invalid={!!error}
-              className={error ? "border-red-500" : ""}
-              placeholder="새 비밀번호 입력"
-            />
+            <div className="relative">
+              <Input
+                id="confirmPw"
+                type={showConfirm ? "text" : "password"}
+                name="new-password-confirm"
+                autoComplete="new-password-confirm"
+                value={confirmPw}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setConfirmPw(e.target.value);
+                  if (confirmError) setConfirmError(undefined);
+                }}
+                onBlur={onBlurConfirm}
+                aria-invalid={!!confirmError}
+                className={confirmError ? "border-red-500" : ""}
+                placeholder="새 비밀번호 입력"
+                rightIcon={
+                  <PasswordToggle
+                    show={showConfirm}
+                    onToggle={() => setShowConfirm((s) => !s)}
+                    controlsId="confirmPw"
+                  />
+                }
+              />
+            </div>
           </Field>
 
           <MyButton

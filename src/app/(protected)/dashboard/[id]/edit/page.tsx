@@ -32,6 +32,7 @@ export default function DashboardIdEdit() {
   const colors = ["#7AC555", "#760DDE", "#FFA500", "#E876EA", "#76A5EA"];
 
   const [dashboardName, setDashboardName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [selectedColor, setSelectedColor] = useState("#7AC555");
 
   const [members, setMembers] = useState<
@@ -58,6 +59,7 @@ export default function DashboardIdEdit() {
       try {
         const data = await getDashboardById(dashboardId);
         setDashboardName(data.title);
+        setDisplayName(data.title);
         setSelectedColor(data.color);
       } catch (e) {
         console.error("대시보드 조회 실패", e);
@@ -103,18 +105,17 @@ export default function DashboardIdEdit() {
 
   // 대시보드 수정 함수
   const handleUpdateDashboard = async () => {
+    const confirmUpdate = window.confirm("대시보드 이름을 변경하시겠습니까?");
+    if (!confirmUpdate) return;
+
     try {
       await updateDashboard(dashboardId, {
         title: dashboardName,
         color: selectedColor,
       });
 
+      setDisplayName(dashboardName);
       alert("대시보드가 성공적으로 수정되었습니다.");
-
-      queryClient.invalidateQueries({ queryKey: ["dashboards"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard", dashboardId] });
-
-      router.refresh();
     } catch (e) {
       console.error("대시보드 수정 실패", e);
       alert("대시보드 수정에 실패했습니다.");
@@ -123,9 +124,12 @@ export default function DashboardIdEdit() {
 
   // 대시보드 삭제 함수
   const handleDeleteDashboard = async () => {
+    const confirmDelete = window.confirm("이 대시보드를 삭제하시겠습니까?");
+    if (!confirmDelete) return;
+
     try {
       await deleteDashboard(dashboardId);
-      alert("대시보드가 삭제되었습니다!");
+      alert("대시보드가 성공적으로 삭제되었습니다!");
       router.push("/mydashboard");
     } catch (e) {
       console.error("대시보드 삭제 실패", e);
@@ -180,7 +184,7 @@ export default function DashboardIdEdit() {
 
         {/* 대시보드 이름 + 색상 */}
         <section className="tablet:px-7 tablet:py-8 rounded-lg bg-white px-4 py-5 shadow-sm">
-          <h2 className="tablet:text-2xl mb-6 text-xl font-bold">비브리지</h2>
+          <h2 className="tablet:text-2xl mb-6 text-xl font-bold">{displayName}</h2>
           <div className="flex flex-col gap-4">
             <div>
               <Label className="tablet:text-2lg text-lg font-medium">대시보드 이름</Label>
@@ -206,7 +210,7 @@ export default function DashboardIdEdit() {
             <MyButton
               onClick={handleUpdateDashboard}
               color="buttonBlue"
-              className="tablet:text-base h-[54px] w-full text-sm font-semibold text-white"
+              className="tablet:text-base h-[54px] w-full text-sm font-semibold"
             >
               변경
             </MyButton>
@@ -242,7 +246,7 @@ export default function DashboardIdEdit() {
                 <li
                   key={m.id}
                   className={`flex h-[70px] items-center justify-between py-3 ${
-                    idx !== members.length - 1 ? "border-b border-gray-200" : ""
+                    idx !== members.length - 1 ? "border-brand-gray-200 border-b" : ""
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -286,7 +290,7 @@ export default function DashboardIdEdit() {
               <MyButton
                 onClick={() => setInviteOpen(true)}
                 color="buttonBlue"
-                className="tablet:flex hidden h-8 w-[105px] items-center justify-center gap-2 rounded-md text-sm text-white"
+                className="tablet:flex hidden h-8 w-[105px] items-center justify-center gap-2 rounded-md text-sm"
               >
                 <img src="/icons/icon-box-add-white.svg" alt="초대하기" className="h-4 w-4" />
                 초대하기
@@ -299,7 +303,7 @@ export default function DashboardIdEdit() {
             <MyButton
               onClick={() => setInviteOpen(true)}
               color="buttonBlue"
-              className="flex h-[26px] w-[86px] items-center justify-center gap-2 rounded-md text-xs font-medium text-white"
+              className="flex h-[26px] w-[86px] items-center justify-center gap-2 rounded-md text-xs font-medium"
             >
               <img src="/icons/icon-box-add-white.svg" alt="초대하기" className="h-4 w-4" />
               초대하기
@@ -335,7 +339,7 @@ export default function DashboardIdEdit() {
         <MyButton
           onClick={handleDeleteDashboard}
           color="buttonBasic"
-          className="tablet:text-lg pc:mb-[33px] tablet:mb-12 tablet:w-80 tablet:h-[62px] text-brand-gray-700 mt-2 mb-25 h-13 w-full text-base font-medium"
+          className="tablet:text-lg pc:mb-[33px] tablet:mb-12 tablet:w-80 tablet:h-[62px] text-brand-gray-700 mt-2 mb-25 h-13 w-full bg-white text-base font-medium"
         >
           대시보드 삭제하기
         </MyButton>

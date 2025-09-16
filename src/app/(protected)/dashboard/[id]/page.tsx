@@ -84,7 +84,7 @@ export default function DashboardId() {
       ))}
 
       {/* 새로운 컬럼 추가 버튼 */}
-      <div className="pc:pt-17 pc:w-[354px] mx-5 flex flex-shrink-0 py-5">
+      <div className="pc:pt-[38px] pc:w-[354px] flex flex-shrink-0 px-5 py-5">
         <MyButton
           onClick={handleAddColumn}
           className="border-brand-gray-300 dark:bg-dark-700 flex h-[70px] w-full items-center justify-center border bg-white"

@@ -187,6 +187,9 @@ export default function MyDashboardList() {
     const now = new Date().toISOString();
     addDashboard({ ...newDashboard, acceptedAt: now });
     saveAcceptedAt(newDashboard.id, now);
+
+    // 사이드 바 반영
+    queryClient.invalidateQueries({ queryKey: ["dashboards", "sidebar"] });
   };
 
   return (
@@ -196,7 +199,7 @@ export default function MyDashboardList() {
         <div className="tablet:grid-cols-2 pc:grid-cols-3 grid min-h-[156px] grid-cols-1 gap-4">
           {/* 새 대시보드 버튼 */}
           <MyButton
-            className="h-[70px] p-4 text-center font-semibold"
+            className="h-[70px] bg-white p-4 text-center font-semibold"
             color="buttonBasic"
             onClick={() => setIsModalOpen(true)}
           >
@@ -206,7 +209,7 @@ export default function MyDashboardList() {
           {currentItems.map((dashboard, index) => (
             <MyButton
               key={`${dashboard.id}-${index}`}
-              className="pc:text-lg tablet:text-lg h-[70px] p-4 text-left text-sm font-semibold"
+              className="pc:text-lg tablet:text-lg h-[70px] bg-white p-4 text-left text-sm font-semibold"
               color="buttonBasic"
               onClick={() => router.push(`/dashboard/${dashboard.id}`)}
             >
@@ -407,7 +410,7 @@ export default function MyDashboardList() {
                       수락
                     </MyButton>
                     <MyButton
-                      className="w-full px-[29.5px] py-[4px] text-[#4276EC]"
+                      className="w-full bg-white px-[29.5px] py-[4px] text-[#4276EC]"
                       color="buttonBasic"
                       onClick={() => handleRejectInvite(invite.id)}
                     >
