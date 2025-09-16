@@ -11,6 +11,8 @@ import MyButton from "@/components/common/Button";
 import { Modal, ModalContext, ModalFooter } from "@/components/modal/Modal";
 import { signup } from "@/features/users/api";
 
+import { PasswordToggle, getPwError, getPwConfirmError } from "@/components/form/PasswordInput";
+
 type Errors = { email?: string; nickname?: string; password?: string; confirm?: string };
 type Keys = "email" | "nickname" | "password" | "confirm";
 
@@ -32,12 +34,11 @@ export default function SignupPage() {
   const [errors, setErrors] = useState<Errors>({});
   const [showPw, setShowPw] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  // 중복 이메일 모달 상태
   const [dupModal, setDupModal] = useState(false);
 
+  // 공통 onChange
   const onChange = (k: Keys) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value;
-    // 이전 상태(s)를 받아서 복사 후 [k] 자리에 덮어씀
     setValues((s) => ({ ...s, [k]: v }));
     setErrors((s) => ({ ...s, [k]: undefined }));
   };
@@ -46,93 +47,70 @@ export default function SignupPage() {
     setValues((s) => ({ ...s, agree: e.target.checked }));
   };
 
-  // 블러 시 이메일 검사
-  const onBlurEmail = () => {
-    // 기존 에러 객체 s 복사 후 email 필드만 새로운 값으로 갱신
+  // Blur 검증
+  const onBlurEmail = () =>
     setErrors((s) => ({
       ...s,
       email:
         !values.email || trueEmail(values.email) ? undefined : "이메일 형식으로 작성해 주세요.",
     }));
-  };
 
-  // 블러 시 닉네임 검사
-  const onBlurNickname = () => {
+  const onBlurNickname = () =>
     setErrors((s) => ({
       ...s,
       nickname:
         !values.nickname || values.nickname.length <= MAX_NICK
           ? undefined
-          : "열 자 이하로 작성해주세요.",
+          : "열 자 이하로 작성해 주세요.",
     }));
-  };
 
-  // 블러 시 비밀번호 검사
-  const onBlurPw = () => {
+  const onBlurPw = () =>
     setErrors((s) => ({
       ...s,
       password:
-        !values.password || values.password.length >= MIN_PW
-          ? undefined
-          : "8자 이상 작성해 주세요.",
+        getPwError(values.password) ?? // 길이 등 공통 규칙
+        (values.password.length > 0 && values.password.length < MIN_PW
+          ? "8자 이상 작성해 주세요."
+          : undefined),
     }));
-  };
 
-  // 비밀번호 일치 확인 여부
-  const onBlurConfirm = () => {
+  const onBlurConfirm = () =>
     setErrors((s) => ({
       ...s,
-      confirm:
-        !values.confirm || values.confirm === values.password
-          ? undefined
-          : "비밀번호가 일치하지 않습니다.",
+      confirm: getPwConfirmError(values.password, values.confirm),
     }));
-  };
 
-  // 가입하기 버튼 활성화 조건
+  // 버튼 활성화 조건
   const activeButton = useMemo(() => {
     const okEmail = trueEmail(values.email);
     const okNickname = values.nickname.length > 0 && values.nickname.length <= MAX_NICK;
-    const okPw = values.password.length >= MIN_PW;
-    const okConfirm = values.confirm.length > 0 && values.confirm === values.password;
+    const okPw = values.password.length >= MIN_PW && !getPwError(values.password);
+    const okConfirm =
+      values.confirm.length > 0 && !getPwConfirmError(values.password, values.confirm);
     return okEmail && okNickname && okPw && okConfirm;
   }, [values]);
 
   const canSubmit = activeButton && values.agree && !submitting;
 
-  const pwToggle = (controlsId: string) => (
-    <button
-      type="button"
-      onClick={() => setShowPw((s) => !s)}
-      aria-pressed={showPw}
-      aria-controls={controlsId}
-      aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 보기"}
-      className="top 1/2 itmes-center absolute right-0.5 flex h-6 w-6 -translate-y-1/2 justify-center text-gray-500"
-    >
-      <Image
-        src={showPw ? "/icons/icon-eye-close.svg" : "/icons/icon-eye-open.svg"}
-        alt="눈 아이콘"
-        width={24}
-        height={24}
-      />
-    </button>
-  );
-
+  // 제출
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
+
     onBlurEmail();
     onBlurNickname();
     onBlurPw();
     onBlurConfirm();
-
-    if (!activeButton || !values.agree) return;
-
-    setSubmitting(true);
+    if (!activeButton || !values.agree) {
+      setSubmitting(false);
+      return;
+    }
 
     try {
       await signup({
-        email: values.email,
-        nickname: values.nickname,
+        email: values.email.trim(),
+        nickname: values.nickname.trim(),
         password: values.password,
       });
 
@@ -145,14 +123,15 @@ export default function SignupPage() {
           : undefined;
       const message = err instanceof Error ? err.message : "회원가입에 실패했습니다.";
 
-      // 409: 이미 사용중인 이메일 → 모달
       if (status === 409 || message.includes("이미 사용중인")) {
         setDupModal(true);
       } else {
-        alert(message); // 400 등 다른 메시지 그대로 표시 (예: 이메일 형식으로 작성해주세요.)
+        alert(message);
       }
     } finally {
       setSubmitting(false);
+      // 재제출 방지
+      setTimeout(() => (document.activeElement as HTMLElement | null)?.blur(), 0);
     }
   };
 
@@ -161,13 +140,16 @@ export default function SignupPage() {
       <Link href="/" className="mb-3 flex flex-col items-center gap-[5px]" aria-label="홈으로 이동">
         <Image src="/images/img-logo-large.svg" alt="Taskify 텍스트 로고" width={300} height={60} />
       </Link>
+
       <p className="mb-[30px] text-center text-xl text-[var(--text-primary)]">
         첫 방문을 환영합니다!
       </p>
 
       <form ref={formRef} onSubmit={onSubmit} className="w-full space-y-8">
+        {/* 이메일 */}
         <Field id="email" label="이메일" error={errors.email}>
           <Input
+            id="email"
             type="email"
             placeholder="이메일을 입력해 주세요."
             value={values.email}
@@ -175,8 +157,11 @@ export default function SignupPage() {
             onBlur={onBlurEmail}
           />
         </Field>
+
+        {/* 닉네임 */}
         <Field id="nickname" label="닉네임" error={errors.nickname}>
           <Input
+            id="nickname"
             type="text"
             placeholder="닉네임을 입력해 주세요"
             value={values.nickname}
@@ -184,9 +169,12 @@ export default function SignupPage() {
             onBlur={onBlurNickname}
           />
         </Field>
+
+        {/* 비밀번호 */}
         <Field id="password" label="비밀번호" error={errors.password}>
           <div className="relative">
             <Input
+              id="password"
               aria-invalid={!!errors.password}
               aria-errormessage="password-error"
               type={showPw ? "text" : "password"}
@@ -194,25 +182,41 @@ export default function SignupPage() {
               value={values.password}
               onChange={onChange("password")}
               onBlur={onBlurPw}
-              rightIcon={pwToggle("password")}
+              rightIcon={
+                <PasswordToggle
+                  show={showPw}
+                  onToggle={() => setShowPw((s) => !s)}
+                  controlsId="password"
+                />
+              }
             />
           </div>
         </Field>
+
+        {/* 비밀번호 확인 */}
         <Field id="confirm" label="비밀번호 확인" error={errors.confirm}>
           <div className="relative">
             <Input
-              aria-invalid={!!errors.password}
-              aria-errormessage="password-error"
+              id="confirm"
+              aria-invalid={!!errors.confirm}
+              aria-errormessage="confirm-error"
               type={showPw ? "text" : "password"}
               placeholder="비밀번호를 한번 더 입력해 주세요"
               value={values.confirm}
               onChange={onChange("confirm")}
               onBlur={onBlurConfirm}
-              rightIcon={pwToggle("confirm")}
+              rightIcon={
+                <PasswordToggle
+                  show={showPw}
+                  onToggle={() => setShowPw((s) => !s)}
+                  controlsId="confirm"
+                />
+              }
             />
           </div>
         </Field>
 
+        {/* 약관 동의 */}
         <label className="flex items-center gap-2 text-[16px] text-[var(--text-primary)]">
           <input
             type="checkbox"
@@ -229,12 +233,13 @@ export default function SignupPage() {
             formRef.current?.requestSubmit();
           }}
           color={canSubmit ? "buttonBlue" : "buttonGrey"}
-          className={`h-[50px] w-full ${!canSubmit ? "pointer-events-none" : ""}`}
+          className="h-[50px] w-full"
         >
           {submitting ? "가입 중" : "가입하기"}
         </MyButton>
       </form>
 
+      {/* 하단 링크 */}
       <div className="mt-6 text-center text-[16px] text-[var(--text-primary)]">
         이미 회원이신가요?
         <Link
@@ -245,6 +250,7 @@ export default function SignupPage() {
         </Link>
       </div>
 
+      {/* 중복 이메일 모달 */}
       {dupModal && (
         <Modal open={true} isOpenModal={setDupModal} size="sm">
           <ModalContext>
@@ -254,7 +260,7 @@ export default function SignupPage() {
             <MyButton
               onClick={() => setDupModal(false)}
               color="buttonBlue"
-              className={`h-[50px] w-full text-white`}
+              className="h-[50px] w-full text-white"
             >
               확인
             </MyButton>

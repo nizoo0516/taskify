@@ -1,5 +1,6 @@
 import { getMe, updateMe, uploadProfileImage } from "./api";
 
+// 닉네임 첫 글자를 알파벳으로 변환해주는 함수
 function getInitialLetter(nickname: string): string {
   const ch = (nickname ?? "").trim().charAt(0);
   if (!ch) return "?";
@@ -33,6 +34,7 @@ function getInitialLetter(nickname: string): string {
   return "?";
 }
 
+// 알파벳별 색상 추출
 const LETTER_COLOR: Record<string, string> = {
   A: "#93C5FD",
   B: "#93C5AA",
@@ -63,6 +65,7 @@ const LETTER_COLOR: Record<string, string> = {
 };
 const colorByLetter = (l: string) => LETTER_COLOR[l.toUpperCase()] ?? "#CBD5E1";
 
+// 원형 배경 + 이니셜 그려서 PNG blob 생성
 async function makeAvatarBlob(letter: string, color: string, size = 256): Promise<Blob> {
   const canvas = document.createElement("canvas");
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -85,7 +88,7 @@ async function makeAvatarBlob(letter: string, color: string, size = 256): Promis
 const flagKey = (userId: string | number) => `profileSeeded:${String(userId)}`;
 
 export async function profileAvatar() {
-  const me = await getMe();
+  const me = await getMe(); // 내 정보 조회
   if (!me?.id) return;
 
   if (me.profileImageUrl) return;
@@ -97,12 +100,12 @@ export async function profileAvatar() {
 
   const fd = new FormData();
   fd.append("image", blob, "avatar.png");
-  const res = await uploadProfileImage(fd);
+  const res = await uploadProfileImage(fd); // POST /users/me/image 업로드, URL 획득
   if (res?.profileImageUrl) {
     await updateMe({
       nickname: me.nickname,
       profileImageUrl: res.profileImageUrl,
     });
-    localStorage.setItem(flagKey(me.id), "1");
+    localStorage.setItem(flagKey(me.id), "1"); // PUT /users/me에 profileImageUrl 저장
   }
 }
